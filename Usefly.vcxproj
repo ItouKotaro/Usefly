@@ -179,9 +179,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\general\component.cpp" />
+    <ClCompile Include="src\general\gameobject.cpp" />
+    <ClCompile Include="src\general\transform.cpp" />
     <ClCompile Include="src\sysyem\log.cpp" />
     <ClCompile Include="src\sysyem\main.cpp" />
     <ClCompile Include="src\sysyem\manager.cpp" />
+    <ClCompile Include="src\sysyem\object.cpp" />
     <ClCompile Include="src\sysyem\PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.h</PrecompiledHeaderFile>
@@ -194,9 +198,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\general\component.h" />
+    <ClInclude Include="src\general\gameobject.h" />
+    <ClInclude Include="src\general\transform.h" />
     <ClInclude Include="src\sysyem\log.h" />
     <ClInclude Include="src\sysyem\main.h" />
     <ClInclude Include="src\sysyem\manager.h" />
+    <ClInclude Include="src\sysyem\object.h" />
     <ClInclude Include="src\sysyem\PCH.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

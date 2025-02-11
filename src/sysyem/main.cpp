@@ -128,6 +128,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 	// メインループのスレッドが終わるまで待つ
 	mainApp->ThreadJoin();
 
+	// マネージャーの終了
+	Manager::getInstance()->Uninit();
+
 	// Mainの破棄
 	if (mainApp != nullptr)
 	{

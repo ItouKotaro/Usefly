@@ -8,7 +8,7 @@
 
  // マクロ定義
 #define CLASS_NAME			"WindowClass"	// クラス名
-#define WINDOW_NAME	"Caplush"			// ウィンドウ名
+#define WINDOW_NAME	"Usefly"			// ウィンドウ名
 
 // インクルード
 #include <thread>

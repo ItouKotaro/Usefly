@@ -30,6 +30,9 @@
     <ClInclude Include="src\sysyem\manager.h">
       <Filter>ヘッダー ファイル\system</Filter>
     </ClInclude>
+    <ClInclude Include="src\sysyem\log.h">
+      <Filter>ヘッダー ファイル\system</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\sysyem\main.cpp">
@@ -39,6 +42,9 @@
       <Filter>ソース ファイル\system</Filter>
     </ClCompile>
     <ClCompile Include="src\sysyem\manager.cpp">
+      <Filter>ソース ファイル\system</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sysyem\log.cpp">
       <Filter>ソース ファイル\system</Filter>
     </ClCompile>
   </ItemGroup>

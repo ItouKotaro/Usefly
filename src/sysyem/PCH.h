@@ -7,6 +7,9 @@
 
 // インクルード
 #include <iostream>
+#include <string>
+#include <vector>
+#include "log.h"
 
 // SDK
 #include <Windows.h>

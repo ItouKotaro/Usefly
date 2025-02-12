@@ -19,7 +19,7 @@
 #define OUTPUT_LOG_PATH		"logs\\log-%data.txt"
 
 // ログテンプレート
-#define LOG_TEMPLATE				"%time: [%type] %message\n"
+#define LOG_TEMPLATE				"%time > [%type] %message\n"
 
 // タグの設定
 #define LOG_TAG_NORMAL		"LOG"
@@ -46,6 +46,7 @@ public:
 	{
 		TYPE type;					// 種類
 		std::string message;	// メッセージ
+		time_t time;					// 時刻
 	};
 
 	//@brief ログを送信する

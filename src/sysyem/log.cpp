@@ -21,6 +21,9 @@ void Log::sendLog(std::string message, TYPE type)
 	data.type = type;
 	data.message = message;
 
+    // 時刻
+    data.time = time(nullptr);
+        
 #if SHOW_LOG_TERMINAL
 	// ログをターミナルに出力する
 	OutputDebugString(writeLog(data).c_str());
@@ -40,7 +43,11 @@ std::string Log::writeLog(LogData data)
 
     // 時間を置き換える
     regex patternTime("%time");
-    log_template = regex_replace(log_template, patternTime, __TIME__);
+
+    // 時間をテキストに起こす
+    char buffer[128];
+    strftime(buffer, sizeof(buffer), "%H:%M:%S", localtime(&data.time));
+    log_template = regex_replace(log_template, patternTime, buffer);
 
     // ログの種類を置き換える
     regex patternType("%type");

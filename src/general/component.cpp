@@ -16,3 +16,12 @@ void Component::AttachGameObject(GameObject* attachObj)
 		m_attached = true;
 	}
 }
+
+//=============================================================
+// ‰ð•ú‚·‚é
+//=============================================================
+void Component::Release()
+{
+	// I—¹ˆ—‚ðs‚¤
+	this->Uninit();
+}

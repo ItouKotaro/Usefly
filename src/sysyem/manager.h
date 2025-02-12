@@ -6,12 +6,14 @@
 #ifndef _MANAGER_H_
 #define _MANAGER_H_
 
+#include "renderer.h"
+
 //@brief 管理クラス
 class Manager final
 {
 public:
 	//@brief 初期化
-	void Init();
+	void Init(HINSTANCE hInstance, HWND hWnd);
 
 	//@brief 終了
 	void Uninit();
@@ -29,7 +31,7 @@ public:
 		return &instance;
 	}
 private:
-
+	Renderer* m_renderer;		// レンダラー
 };
 
 #endif // !_MANAGER_H_

@@ -5,6 +5,7 @@
 //------------------------------------------------------------
 #include "main.h"
 #include "manager.h"
+#include "renderer.h"
 
  // メモリーリーク検出
 #define _CRTDBG_MAP_ALLOC
@@ -60,7 +61,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 	MSG msg;			// メッセージを格納する変数
 
 	// ウィンドウの座標を格納
-	RECT rect = { 0, 0, 1920, 1080 };
+	RECT rect = { 0, 0, DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT };
 
 	// ウィンドウクラスの登録
 	RegisterClassEx(&wcex);
@@ -89,7 +90,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 	UpdateWindow(hWnd);						// クライアント領域を更新
 
 	// マネージャーの初期化
-	Manager::getInstance()->Init();
+	Manager::getInstance()->Init(hInstance, hWnd);
 
 	// Mainの生成
 	Main* mainApp = new Main();
@@ -201,6 +202,7 @@ void Main::ThreadStart()
 {
 	// スレッドを作成する
 	m_thread = new std::thread(&Main::MainLoop, this);
+	Log::sendLog("メインループのスレッドを開始しました");
 }
 
 //=============================================================
@@ -212,6 +214,8 @@ void Main::ThreadJoin()
 	{
 		m_thread->join();
 	}
+
+	Log::sendLog("メインループのスレッドを終了しました");
 }
 
 //=============================================================

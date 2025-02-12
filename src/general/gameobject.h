@@ -7,7 +7,7 @@
 #define _GAMEOBJECT_H_
 
 #include "sysyem/object.h"
-#include "general/transform.h"
+#include "transform.h"
 
 // コンポーネントの宣言
 class Component;
@@ -19,11 +19,23 @@ public:
 	GameObject();
 	virtual ~GameObject();
 
+	//@brief 初期化
 	void Init();
+	//@brief 終了
 	void Uninit();
+	//@brief 更新
 	void Update();
+	//@brief 描画
 	void Draw();
+	//@brief UI描画
 	void DrawUI();
+
+	//@brief すべてのオブジェクトを更新する
+	static void AllUpdate();
+	//@brief すべてのオブジェクトを描画する
+	static void AllDraw();
+	//@brief すべてのオブジェクトをUI描画する
+	static void AllDrawUI();
 
 	//@brief コンポーネントを追加する
 	template<class T, typename ...Args > inline T* AddComponent(Args... args) {
@@ -43,9 +55,11 @@ public:
 		return component;
 	}
 
-
 	Transform* transform;	// トランスフォーム情報
 private:
+	//@brief 解放処理
+	void Release() override;
+
 	std::vector<Component*> m_components;
 	static std::vector<GameObject*> m_gameObjects;
 };

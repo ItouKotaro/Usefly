@@ -6,6 +6,8 @@
 #ifndef _TRANSFORM_H_
 #define _TRANSFORM_H_
 
+#include "d3dx9.h"
+
 //@brief トランスフォームクラス
 class Transform
 {

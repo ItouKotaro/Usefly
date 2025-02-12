@@ -8,8 +8,13 @@
 //=============================================================
 // 初期化
 //=============================================================
-void Manager::Init()
+void Manager::Init(HINSTANCE hInstance, HWND hWnd)
 {
+	// レンダラーを生成する
+	m_renderer = new Renderer();
+	m_renderer->Init(hInstance, hWnd);
+
+	GameObject* test = new GameObject();
 }
 
 //=============================================================
@@ -17,6 +22,17 @@ void Manager::Init()
 //=============================================================
 void Manager::Uninit()
 {
+	// レンダラーを終了する
+	if (m_renderer != nullptr)
+	{
+		m_renderer->Uninit();
+		delete m_renderer;
+		m_renderer = nullptr;
+	}
+
+	// すべてのオブジェクトを破棄する
+	Object::AllDestroy();
+
 #if OUTPUT_LOG_FILE
 	// ログを書き出す
 	Log::outputLog();
@@ -29,7 +45,10 @@ void Manager::Uninit()
 void Manager::Update()
 {
 	// ゲームオブジェクトを更新する
+	GameObject::AllUpdate();
 
+	// レンダラーを更新する
+	m_renderer->Update();
 }
 
 //=============================================================
@@ -37,4 +56,6 @@ void Manager::Update()
 //=============================================================
 void Manager::Draw()
 {
+	// レンダラーを描画する
+	m_renderer->Draw();
 }

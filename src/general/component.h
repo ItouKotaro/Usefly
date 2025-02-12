@@ -67,10 +67,12 @@ public:
 	*/
 	void AttachGameObject(GameObject* attachObj);
 
-
 	GameObject* gameObject;	// アタッチ先のゲームオブジェクト
 	Transform* transform;		// アタッチ先のトランスフォーム
 private:
+	//@brief 解放処理
+	void Release() override;
+
 	bool m_attached;	// アタッチ済みか
 };
 

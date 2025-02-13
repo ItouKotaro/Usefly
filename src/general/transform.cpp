@@ -145,6 +145,43 @@ D3DXMATRIX Transform::getRotationMatrix()
 }
 
 //=============================================================
+// 演算子 ==
+//=============================================================
+bool Transform::operator==(Transform value)
+{
+	return (position == value.position &&
+		rotation == value.rotation &&
+		scale == value.scale &&
+		size == value.size &&
+		m_parent == value.m_parent);
+}
+
+//=============================================================
+// 演算子 !=
+//=============================================================
+bool Transform::operator!=(Transform value)
+{
+	return !(position == value.position &&
+		rotation == value.rotation &&
+		scale == value.scale &&
+		size == value.size &&
+		m_parent == value.m_parent);
+}
+
+//=============================================================
+// 演算子 =
+//=============================================================
+Transform& Transform::operator=(Transform value)
+{
+	position = value.position;
+	rotation = value.rotation;
+	scale = value.scale;
+	size = value.size;
+	m_parent = value.m_parent;
+	return *this;
+}
+
+//=============================================================
 // クォータニオンをオイラー角に変換する
 //=============================================================
 D3DXVECTOR3 Transform::QuaternionToEulerAngle(D3DXQUATERNION q)

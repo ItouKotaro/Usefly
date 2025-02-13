@@ -53,6 +53,16 @@ public:
 	D3DXQUATERNION rotation;	// 回転
 	D3DXVECTOR3 scale;				// スケール
 	D3DXVECTOR2 size;				// サイズ
+
+	//@brief 演算子 ==
+	bool operator==(Transform value);
+
+	//@brief 演算子 !=
+	bool operator!=(Transform value);
+
+	//@brief 演算子 =
+	Transform& operator=(Transform value);
+
 private:
 	//@brief クォータニオンをオイラー角に変換する
 	D3DXVECTOR3 QuaternionToEulerAngle(D3DXQUATERNION q);

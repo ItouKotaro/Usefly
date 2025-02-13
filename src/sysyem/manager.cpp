@@ -15,8 +15,8 @@ void Manager::Init(HINSTANCE hInstance, HWND hWnd)
 	m_renderer = new Renderer();
 	m_renderer->Init(hInstance, hWnd);
 
-	GameObject* test = new GameObject();
-	test->AddComponent<Sprite>();
+	// リソースデータを生成する
+	m_resourceData = new ResourceDataManager();
 }
 
 //=============================================================
@@ -24,6 +24,9 @@ void Manager::Init(HINSTANCE hInstance, HWND hWnd)
 //=============================================================
 void Manager::Uninit()
 {
+	// すべてのオブジェクトを破棄する
+	Object::AllDestroy();
+	
 	// レンダラーを終了する
 	if (m_renderer != nullptr)
 	{
@@ -32,8 +35,13 @@ void Manager::Uninit()
 		m_renderer = nullptr;
 	}
 
-	// すべてのオブジェクトを破棄する
-	Object::AllDestroy();
+	// リソースデータをすべて破棄する
+	if (m_resourceData != nullptr)
+	{
+		m_resourceData->AllRelease();
+		delete m_resourceData;
+		m_resourceData = nullptr;
+	}
 
 #if OUTPUT_LOG_FILE
 	// ログを書き出す

@@ -42,9 +42,6 @@
     <ClInclude Include="src\sysyem\main.h">
       <Filter>ヘッダー ファイル\system</Filter>
     </ClInclude>
-    <ClInclude Include="src\sysyem\PCH.h">
-      <Filter>ヘッダー ファイル\system</Filter>
-    </ClInclude>
     <ClInclude Include="src\sysyem\manager.h">
       <Filter>ヘッダー ファイル\system</Filter>
     </ClInclude>
@@ -69,12 +66,15 @@
     <ClInclude Include="src\components\2d\sprite.h">
       <Filter>ヘッダー ファイル\components\2d</Filter>
     </ClInclude>
+    <ClInclude Include="src\sysyem\resource_data.h">
+      <Filter>ヘッダー ファイル\system</Filter>
+    </ClInclude>
+    <ClInclude Include="PCH.h">
+      <Filter>ヘッダー ファイル\system</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\sysyem\main.cpp">
-      <Filter>ソース ファイル\system</Filter>
-    </ClCompile>
-    <ClCompile Include="src\sysyem\PCH.cpp">
       <Filter>ソース ファイル\system</Filter>
     </ClCompile>
     <ClCompile Include="src\sysyem\manager.cpp">
@@ -100,6 +100,12 @@
     </ClCompile>
     <ClCompile Include="src\components\2d\sprite.cpp">
       <Filter>ソース ファイル\components\2d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sysyem\resource_data.cpp">
+      <Filter>ソース ファイル\system</Filter>
+    </ClCompile>
+    <ClCompile Include="PCH.cpp">
+      <Filter>ソース ファイル\system</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

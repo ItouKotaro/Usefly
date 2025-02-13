@@ -55,6 +55,54 @@ public:
 		return component;
 	}
 
+	/*
+	@brief コンポーネントを取得する
+	@param[in] includeChild : 子クラスを含めるか
+	*/
+	template<class T> inline T* GetComponent(const bool& includeChild = false) {
+		for (auto itr = m_components.begin(); itr != m_components.end(); itr++)
+		{
+			if (includeChild)
+			{ // 子を含むとき
+				if (T* pComp = dynamic_cast<T*>(*itr))
+					return (T*)*itr;
+			}
+			else
+			{ // 子を含まないとき
+				if (typeid(T) == typeid(**itr))
+					return (T*)*itr;
+			}
+		}
+		return nullptr;
+	}
+
+	/*
+	@brief 複数のコンポーネントを取得する
+	@param[in] includeChild : 子クラスを含めるか
+	*/
+	template<class T> inline std::vector<T*> GetComponents(const bool& includeChild = false) {
+		std::vector<T*> result;
+		for (auto itr = m_components.begin(); itr != m_components.end(); itr++)
+		{
+			if (includeChild)
+			{ // 子を含むとき
+				if (T* pComp = dynamic_cast<T*>(*itr))
+					result.push_back((T*)*itr);
+			}
+			else
+			{ // 子を含まないとき
+				if (typeid(T) == typeid(**itr))
+					result.push_back((T*)*itr);
+			}
+		}
+		return result;
+	}
+
+	//@brief すべてのコンポーネントを取得する
+	std::vector<Component*>& GetComponents() {
+		return m_components;
+	}
+
 	//@brief コンポーネントをデタッチする
 	void DetachComponent(Component* component);
 

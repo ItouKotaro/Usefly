@@ -4,6 +4,7 @@
 // @detail	描画を行うシステムです
 //------------------------------------------------------------
 #include "renderer.h"
+#include "gameobject.h"
 
 //=============================================================
 // 初期化
@@ -104,14 +105,21 @@ void Renderer::Update()
 //=============================================================
 void Renderer::Draw()
 {
-	// 画面クリア（バッファクリア＆Zバッファクリア）
-	m_d3dDevice->Clear(0, nullptr, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL), D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f), 1.0f, 0);
+	if (SUCCEEDED(m_d3dDevice->BeginScene()))
+	{ // 描画開始が成功した場合
 
-	// ゲームオブジェクトを描画する
-	GameObject::AllDraw();
+		// 画面クリア（バッファクリア＆Zバッファクリア）
+		m_d3dDevice->Clear(0, nullptr, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL), D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f), 1.0f, 0);
 
-	// ゲームオブジェクトをUI描画する
-	GameObject::AllDrawUI();
+		// ゲームオブジェクトを描画する
+		GameObject::AllDraw();
+
+		// ゲームオブジェクトをUI描画する
+		GameObject::AllDrawUI();
+
+		// 描画終了
+		m_d3dDevice->EndScene();
+	}
 
 	// バックバッファとフロントバッファの入れ替え
 	m_d3dDevice->Present(nullptr, nullptr, nullptr, nullptr);

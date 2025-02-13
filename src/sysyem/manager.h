@@ -7,6 +7,7 @@
 #define _MANAGER_H_
 
 #include "renderer.h"
+#include "resource_data.h"
 
 //@brief 管理クラス
 class Manager final
@@ -14,15 +15,20 @@ class Manager final
 public:
 	//@brief 初期化
 	void Init(HINSTANCE hInstance, HWND hWnd);
-
 	//@brief 終了
 	void Uninit();
-
 	//@brief 更新
 	void Update();
-
 	//@brief 描画
 	void Draw();
+
+	//@brief レンダラーを取得する
+	Renderer* getRenderer() { return m_renderer; }
+	//@brief リソースデータを取得する
+	ResourceDataManager* getResourceData() { return m_resourceData; }
+
+	//@brief デバイスを取得する
+	LPDIRECT3DDEVICE9 getDevice() { return m_renderer->getDevice(); }
 
 	//@brief インスタンスの取得
 	static Manager* getInstance()
@@ -31,7 +37,8 @@ public:
 		return &instance;
 	}
 private:
-	Renderer* m_renderer;		// レンダラー
+	Renderer* m_renderer;								// レンダラー
+	ResourceDataManager* m_resourceData;	// リソースデータ
 };
 
 #endif // !_MANAGER_H_

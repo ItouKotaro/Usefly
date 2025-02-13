@@ -17,6 +17,20 @@ void Component::AttachGameObject(GameObject* attachObj)
 }
 
 //=============================================================
+// ゲームオブジェクトをデタッチする
+//=============================================================
+void Component::DetachGameObject()
+{
+	if (gameObject != nullptr)
+	{ // アタッチされているとき
+		GameObject* gameObjectData = gameObject;
+		gameObject = nullptr;
+		transform = nullptr;
+		gameObjectData->DetachComponent(this);
+	}
+}
+
+//=============================================================
 // 解放する
 //=============================================================
 void Component::Release()
@@ -25,5 +39,8 @@ void Component::Release()
 	this->Uninit();
 
 	// コンポーネントを解除する
-	gameObject->DetachComponent(this);
+	if (gameObject != nullptr)
+	{
+		gameObject->DetachComponent(this);
+	}
 }

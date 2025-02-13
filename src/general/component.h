@@ -67,6 +67,9 @@ public:
 	*/
 	void AttachGameObject(GameObject* attachObj);
 
+	//@brief オブジェクトをデタッチする
+	void DetachGameObject();
+
 	GameObject* gameObject;	// アタッチ先のゲームオブジェクト
 	Transform* transform;		// アタッチ先のトランスフォーム
 private:

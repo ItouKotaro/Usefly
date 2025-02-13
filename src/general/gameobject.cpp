@@ -144,6 +144,7 @@ void GameObject::DetachComponent(Component* component)
 		if (*itr == component)
 		{
 			(*itr)->gameObject = nullptr;
+			(*itr)->transform = nullptr;
 			m_components.erase(itr);
 			break;
 		}
@@ -165,9 +166,10 @@ void GameObject::Release()
 	}
 
 	// コンポーネントを解放する
-	for (auto itr = m_components.begin(); itr != m_components.end(); itr++)
+	int idx = static_cast<int>(m_components.size());
+	for (int i = idx - 1; i >= 0; i--)
 	{
-		// 死亡フラグを立てる
-		(*itr)->Destroy();
+		m_components[i]->Destroy();
+		m_components[i]->DetachGameObject();
 	}
 }

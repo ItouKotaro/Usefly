@@ -55,6 +55,9 @@ public:
 		return component;
 	}
 
+	//@brief コンポーネントをデタッチする
+	void DetachComponent(Component* component);
+
 	Transform* transform;	// トランスフォーム情報
 private:
 	//@brief 解放処理

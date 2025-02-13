@@ -25,6 +25,18 @@
     <Filter Include="ヘッダー ファイル\general">
       <UniqueIdentifier>{23a56079-df60-4ab7-882d-3ba40e4efc49}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\components">
+      <UniqueIdentifier>{8dc3322e-aafe-4f53-a4f4-8a4b920fecf8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\components\2d">
+      <UniqueIdentifier>{4769b687-6600-49e6-be82-698b608754d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\components">
+      <UniqueIdentifier>{4beefbc9-fe26-4521-94ee-ae36414e3a60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\components\2d">
+      <UniqueIdentifier>{de39cf3f-486d-4168-a6a2-49d4a37ef63d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\sysyem\main.h">
@@ -54,6 +66,9 @@
     <ClInclude Include="src\sysyem\renderer.h">
       <Filter>ヘッダー ファイル\system</Filter>
     </ClInclude>
+    <ClInclude Include="src\components\2d\sprite.h">
+      <Filter>ヘッダー ファイル\components\2d</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\sysyem\main.cpp">
@@ -82,6 +97,9 @@
     </ClCompile>
     <ClCompile Include="src\sysyem\renderer.cpp">
       <Filter>ソース ファイル\system</Filter>
+    </ClCompile>
+    <ClCompile Include="src\components\2d\sprite.cpp">
+      <Filter>ソース ファイル\components\2d</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

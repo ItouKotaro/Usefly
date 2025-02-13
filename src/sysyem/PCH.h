@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 #include "log.h"
-#include "general/gameobject.h"
+#include "general/component.h"
 
 // SDK
 #include <Windows.h>

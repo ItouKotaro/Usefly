@@ -179,6 +179,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\components\2d\sprite.cpp" />
     <ClCompile Include="src\general\component.cpp" />
     <ClCompile Include="src\general\gameobject.cpp" />
     <ClCompile Include="src\general\transform.cpp" />
@@ -199,6 +200,7 @@
     <ClCompile Include="src\sysyem\renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\components\2d\sprite.h" />
     <ClInclude Include="src\general\component.h" />
     <ClInclude Include="src\general\gameobject.h" />
     <ClInclude Include="src\general\transform.h" />

@@ -9,11 +9,10 @@
 //=============================================================
 void Component::AttachGameObject(GameObject* attachObj)
 {
-	if (!m_attached)
+	if (gameObject == nullptr)
 	{ // アタッチされていないとき
 		gameObject = attachObj;
 		transform = gameObject->transform;
-		m_attached = true;
 	}
 }
 
@@ -24,4 +23,7 @@ void Component::Release()
 {
 	// 終了処理を行う
 	this->Uninit();
+
+	// コンポーネントを解除する
+	gameObject->DetachComponent(this);
 }

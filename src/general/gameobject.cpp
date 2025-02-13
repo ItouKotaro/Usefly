@@ -135,6 +135,22 @@ void GameObject::AllDrawUI()
 }
 
 //=============================================================
+// コンポーネントをデタッチする
+//=============================================================
+void GameObject::DetachComponent(Component* component)
+{
+	for (auto itr = m_components.begin(); itr != m_components.end(); itr++)
+	{
+		if (*itr == component)
+		{
+			(*itr)->gameObject = nullptr;
+			m_components.erase(itr);
+			break;
+		}
+	}
+}
+
+//=============================================================
 // 解放する
 //=============================================================
 void GameObject::Release()

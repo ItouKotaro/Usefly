@@ -4,6 +4,7 @@
 // @detail	システムの管理を行います
 //------------------------------------------------------------
 #include "manager.h"
+#include "components/2d/sprite.h"
 
 //=============================================================
 // 初期化
@@ -15,6 +16,7 @@ void Manager::Init(HINSTANCE hInstance, HWND hWnd)
 	m_renderer->Init(hInstance, hWnd);
 
 	GameObject* test = new GameObject();
+	test->AddComponent<Sprite>();
 }
 
 //=============================================================

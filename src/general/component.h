@@ -72,8 +72,6 @@ public:
 private:
 	//@brief 解放処理
 	void Release() override;
-
-	bool m_attached;	// アタッチ済みか
 };
 
 #endif // !_COMPONENT_H_

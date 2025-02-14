@@ -9,6 +9,9 @@
 #include "sysyem/object.h"
 #include "transform.h"
 
+// マクロ定義
+#define TAG_NODESTROY		"NO_DESTROY"
+
 // コンポーネントの宣言
 class Component;
 
@@ -16,7 +19,7 @@ class Component;
 class GameObject : public Object
 {
 public:
-	GameObject();
+	GameObject(std::string vName = "", std::string vTag = "");
 	virtual ~GameObject();
 
 	//@brief 初期化
@@ -106,13 +109,18 @@ public:
 	//@brief コンポーネントをデタッチする
 	void DetachComponent(Component* component);
 
+	//@brief すべてのゲームオブジェクトを取得する
+	static std::vector<GameObject*>& getAllGameObjects() { return m_gameObjects; }
+
 	Transform* transform;	// トランスフォーム情報
+	std::string name;			// 名前
+	std::string tag;				// タグ
 private:
 	//@brief 解放処理
 	void Release() override;
 
-	std::vector<Component*> m_components;
-	static std::vector<GameObject*> m_gameObjects;
+	std::vector<Component*> m_components;					// コンポーネント
+	static std::vector<GameObject*> m_gameObjects;		// すべてのゲームオブジェクト
 };
 
 #endif // !_GAMEOBJECT_H_

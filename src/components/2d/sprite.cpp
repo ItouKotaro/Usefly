@@ -106,7 +106,7 @@ void Sprite::DrawUI()
 void Sprite::setTexture(std::string path)
 {
 	// データを参照する
-	TextureData* data = Manager::getInstance()->getResourceData()->refTexture(path);
+	TextureData* data = Manager::getInstance()->getResourceDataManager()->refTexture(path);
 
 	// テクスチャをバインドする
 	if (data != nullptr)

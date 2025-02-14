@@ -15,8 +15,12 @@ void Manager::Init(HINSTANCE hInstance, HWND hWnd)
 	m_renderer = new Renderer();
 	m_renderer->Init(hInstance, hWnd);
 
-	// リソースデータを生成する
-	m_resourceData = new ResourceDataManager();
+	// シーンマネージャーを生成する
+	m_sceneManager = new SceneManager();
+	m_sceneManager->Init();
+
+	// リソースデータマネージャーを生成する
+	m_resourceDataManager = new ResourceDataManager();
 }
 
 //=============================================================
@@ -35,12 +39,20 @@ void Manager::Uninit()
 		m_renderer = nullptr;
 	}
 
-	// リソースデータをすべて破棄する
-	if (m_resourceData != nullptr)
+	// シーンマネージャーを終了する
+	if (m_sceneManager != nullptr)
 	{
-		m_resourceData->AllRelease();
-		delete m_resourceData;
-		m_resourceData = nullptr;
+		m_sceneManager->AllRelease();
+		delete m_sceneManager;
+		m_sceneManager = nullptr;
+	}
+
+	// リソースデータをすべて破棄する
+	if (m_resourceDataManager != nullptr)
+	{
+		m_resourceDataManager->AllRelease();
+		delete m_resourceDataManager;
+		m_resourceDataManager = nullptr;
 	}
 
 #if OUTPUT_LOG_FILE
@@ -59,6 +71,9 @@ void Manager::Update()
 
 	// レンダラーを更新する
 	m_renderer->Update();
+
+	// シーンを更新する
+	m_sceneManager->Update();
 
 	// デスフラグがついているオブジェクトを破棄する
 	Object::ReleaseDeathFlag();

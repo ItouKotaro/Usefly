@@ -14,8 +14,12 @@ std::vector<GameObject*> GameObject::m_gameObjects;
 //=============================================================
 // コンストラクタ
 //=============================================================
-GameObject::GameObject()
+GameObject::GameObject(std::string vName, std::string vTag)
 {
+	// 基本情報
+	this->name = vName;
+	this->tag = vTag;
+
 	// トランスフォームを作成する
 	transform = new Transform();
 

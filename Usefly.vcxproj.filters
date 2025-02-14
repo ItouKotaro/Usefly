@@ -37,6 +37,12 @@
     <Filter Include="ヘッダー ファイル\components\2d">
       <UniqueIdentifier>{de39cf3f-486d-4168-a6a2-49d4a37ef63d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\scenes">
+      <UniqueIdentifier>{b6f5e3e4-600c-4f38-b3e9-6c24556d40c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\scenes">
+      <UniqueIdentifier>{22211bb2-e38e-495e-ba83-c65d17621775}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\sysyem\main.h">
@@ -72,6 +78,15 @@
     <ClInclude Include="PCH.h">
       <Filter>ヘッダー ファイル\system</Filter>
     </ClInclude>
+    <ClInclude Include="src\general\scene.h">
+      <Filter>ヘッダー ファイル\general</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scenes\title.h">
+      <Filter>ヘッダー ファイル\scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scenes\start.h">
+      <Filter>ヘッダー ファイル\scenes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\sysyem\main.cpp">
@@ -106,6 +121,15 @@
     </ClCompile>
     <ClCompile Include="PCH.cpp">
       <Filter>ソース ファイル\system</Filter>
+    </ClCompile>
+    <ClCompile Include="src\general\scene.cpp">
+      <Filter>ソース ファイル\general</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scenes\title.cpp">
+      <Filter>ソース ファイル\scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scenes\start.cpp">
+      <Filter>ソース ファイル\scenes</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

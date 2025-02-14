@@ -8,6 +8,7 @@
 
 #include "renderer.h"
 #include "resource_data.h"
+#include "scene.h"
 
 //@brief 管理クラス
 class Manager final
@@ -24,8 +25,10 @@ public:
 
 	//@brief レンダラーを取得する
 	Renderer* getRenderer() { return m_renderer; }
-	//@brief リソースデータを取得する
-	ResourceDataManager* getResourceData() { return m_resourceData; }
+	//@brief リソースデータマネージャーを取得する
+	ResourceDataManager* getResourceDataManager() { return m_resourceDataManager; }
+	//@brief シーンマネージャーを取得する
+	SceneManager* getSceneManager() { return m_sceneManager; }
 
 	//@brief デバイスを取得する
 	LPDIRECT3DDEVICE9 getDevice() { return m_renderer->getDevice(); }
@@ -37,8 +40,9 @@ public:
 		return &instance;
 	}
 private:
-	Renderer* m_renderer;								// レンダラー
-	ResourceDataManager* m_resourceData;	// リソースデータ
+	Renderer* m_renderer;											// レンダラー
+	ResourceDataManager* m_resourceDataManager;	// リソースデータマネージャー
+	SceneManager* m_sceneManager;							// シーンマネージャー
 };
 
 #endif // !_MANAGER_H_

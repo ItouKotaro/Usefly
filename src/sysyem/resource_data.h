@@ -59,6 +59,33 @@ private:
 	LPDIRECT3DTEXTURE9 m_texture;		// テクスチャ
 };
 
+//@brief モデルデータ
+class ModelData : public ResourceData
+{
+public:
+	ModelData() : ResourceData(FORMAT::MODEL), m_mesh(nullptr), m_buffMat(nullptr), m_numMat(0) {}
+
+	//@brief ロードする
+	bool Load(std::string path) override;
+
+	//@brief 解放する
+	void Release() override;
+
+	//@brief メッシュを取得する
+	LPD3DXMESH getMesh() { return m_mesh; }
+	//@brief マテリアルデータを取得する
+	LPD3DXBUFFER getBufferMaterial() { return m_buffMat; }
+	//@brief マテリアル数を取得する
+	DWORD getNumMaterial() { return m_numMat; }
+private:
+	LPD3DXMESH m_mesh;				// メッシュデータ
+	LPD3DXBUFFER m_buffMat;		// マテリアルデータ
+	DWORD m_numMat;					// マテリアル数
+};
+
+
+
+
 //@brief リソースデータ管理クラス
 class ResourceDataManager final
 {
@@ -68,6 +95,8 @@ public:
 
 	//@brief テクスチャデータを参照する
 	TextureData* refTexture(std::string path);
+	//@brief モデルデータを参照する
+	ModelData* refModel(std::string path);
 
 	//@brief すべてのリソースを解放する
 	void AllRelease();

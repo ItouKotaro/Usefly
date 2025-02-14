@@ -7,35 +7,6 @@
 #include "manager.h"
 
 //=============================================================
-// 読み込み
-//=============================================================
-bool TextureData::Load(std::string path)
-{
-	// デバイスの取得
-	LPDIRECT3DDEVICE9 device = Manager::getInstance()->getDevice();
-
-	// テクスチャの作成
-	if (FAILED(D3DXCreateTextureFromFile(device, path.c_str(), &m_texture)))
-	{
-		return false;
-	}
-	return true;
-}
-
-//=============================================================
-// 解放
-//=============================================================
-void TextureData::Release()
-{
-	// テクスチャの破棄
-	if (m_texture != nullptr)
-	{
-		m_texture->Release();
-		m_texture = nullptr;
-	}
-}
-
-//=============================================================
 // テクスチャデータを参照する
 //=============================================================
 TextureData* ResourceDataManager::refTexture(std::string path)
@@ -74,6 +45,44 @@ TextureData* ResourceDataManager::refTexture(std::string path)
 }
 
 //=============================================================
+// モデルデータを参照する
+//=============================================================
+ModelData* ResourceDataManager::refModel(std::string path)
+{
+	// データが存在するときは返す
+	auto datas = m_resourceDatas[ResourceData::FORMAT::MODEL];
+	for (auto itr = datas.begin(); itr != datas.end(); itr++)
+	{
+		if (path == (*itr)->getPath())
+		{
+			return static_cast<ModelData*>(*itr);
+		}
+	}
+
+	// データが存在しないときはデータを生成する
+	ModelData* data = new ModelData();
+	data->setPath(path);
+
+	// データをロードする
+	if (!data->Load(path))
+	{
+		Log::sendLog("モデルデータ \"" + path + "\" のロードに失敗しました！", Log::TYPE::TYPE_ERROR);
+		delete data;
+		data = nullptr;
+		return data;
+	}
+
+	// データを登録する
+	m_resourceDatas->push_back(data);
+
+	// ログを送信する
+	Log::sendLog("モデルデータ \"" + path + "\" のロードに成功しました！");
+
+	// データを返す
+	return data;
+}
+
+//=============================================================
 // すべてのリソースを解放する
 //=============================================================
 void ResourceDataManager::AllRelease()
@@ -92,5 +101,81 @@ void ResourceDataManager::AllRelease()
 
 		// リソースを空にする
 		m_resourceDatas[i].clear();
+	}
+}
+
+//=============================================================
+// 読み込み
+//=============================================================
+bool TextureData::Load(std::string path)
+{
+	// デバイスの取得
+	LPDIRECT3DDEVICE9 device = Manager::getInstance()->getDevice();
+
+	// テクスチャの作成
+	if (FAILED(D3DXCreateTextureFromFile(device, path.c_str(), &m_texture)))
+	{
+		return false;
+	}
+	return true;
+}
+
+//=============================================================
+// 解放
+//=============================================================
+void TextureData::Release()
+{
+	// テクスチャの破棄
+	if (m_texture != nullptr)
+	{
+		m_texture->Release();
+		m_texture = nullptr;
+	}
+}
+
+//=============================================================
+// 読み込み
+//=============================================================
+bool ModelData::Load(std::string path)
+{
+	// デバイスの取得
+	LPDIRECT3DDEVICE9 device = Manager::getInstance()->getDevice();
+
+	// メッシュの生成
+	if (FAILED(D3DXLoadMeshFromX(
+		path.c_str(),
+		D3DXMESH_SYSTEMMEM,
+		device,
+		nullptr,
+		&m_buffMat,
+		nullptr,
+		&m_numMat,
+		&m_mesh
+	)))
+	{ // 失敗
+		return false;
+	}
+
+	// 成功
+	return true;
+}
+
+//=============================================================
+// 解放
+//=============================================================
+void ModelData::Release()
+{
+	// メッシュの破棄
+	if (m_mesh != nullptr)
+	{
+		m_mesh->Release();
+		m_mesh = nullptr;
+	}
+
+	// マテリアルの破棄
+	if (m_buffMat != nullptr)
+	{
+		m_buffMat->Release();
+		m_buffMat = nullptr;
 	}
 }

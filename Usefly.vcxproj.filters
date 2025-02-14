@@ -43,6 +43,12 @@
     <Filter Include="ソース ファイル\scenes">
       <UniqueIdentifier>{22211bb2-e38e-495e-ba83-c65d17621775}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\components\3d">
+      <UniqueIdentifier>{7c405a1a-41af-4ccb-84a8-53c9039d15d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\components\3d">
+      <UniqueIdentifier>{a2d6fccd-3aff-4664-876f-0306b15b9138}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\sysyem\main.h">
@@ -87,6 +93,9 @@
     <ClInclude Include="src\scenes\start.h">
       <Filter>ヘッダー ファイル\scenes</Filter>
     </ClInclude>
+    <ClInclude Include="src\components\3d\model.h">
+      <Filter>ヘッダー ファイル\components\3d</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\sysyem\main.cpp">
@@ -130,6 +139,9 @@
     </ClCompile>
     <ClCompile Include="src\scenes\start.cpp">
       <Filter>ソース ファイル\scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\components\3d\model.cpp">
+      <Filter>ソース ファイル\components\3d</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

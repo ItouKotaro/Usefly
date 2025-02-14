@@ -186,6 +186,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\components\2d\sprite.cpp" />
+    <ClCompile Include="src\components\3d\model.cpp" />
     <ClCompile Include="src\general\component.cpp" />
     <ClCompile Include="src\general\gameobject.cpp" />
     <ClCompile Include="src\general\scene.cpp" />
@@ -202,6 +203,7 @@
   <ItemGroup>
     <ClInclude Include="PCH.h" />
     <ClInclude Include="src\components\2d\sprite.h" />
+    <ClInclude Include="src\components\3d\model.h" />
     <ClInclude Include="src\general\component.h" />
     <ClInclude Include="src\general\gameobject.h" />
     <ClInclude Include="src\general\scene.h" />

@@ -61,7 +61,7 @@ void SceneManager::releaseGameObjects()
 	{
 		if ((*itr)->tag != TAG_NODESTROY)
 		{
-			(*itr)->Destroy();
+			Object::Destroy(*itr);
 		}
 	}
 }

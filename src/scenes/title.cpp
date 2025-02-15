@@ -4,9 +4,16 @@
 //------------------------------------------------------------
 #include "title.h"
 
+#include "components/3d/model.h"
+
 //=============================================================
 // ‰Šú‰»
 //=============================================================
 void TitleScene::Init()
 {
+	// ƒ‚ƒfƒ‹‚ðì¬‚·‚é
+	GameObject* model = new GameObject("TestModel");
+	model->AddComponent<Model>()->Load("data\\MODEL\\bench.x");
+
+
 }

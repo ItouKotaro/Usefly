@@ -37,23 +37,16 @@ void Model::Draw()
 	// マテリアルデータへのポインタを取得
 	pMat = (D3DXMATERIAL*)m_modelData->getBufferMaterial()->GetBufferPointer();
 
-	for (int nCntMat = 0; nCntMat < (int)m_modelData->getNumMaterial(); nCntMat++)
+	for (int i = 0; i < static_cast<int>(m_modelData->getNumMaterial()); i++)
 	{
 		// マテリアルの設定
-		device->SetMaterial(&pMat[nCntMat].MatD3D);
+		device->SetMaterial(&pMat[i].MatD3D);
 
 		// テクスチャの設定
-		if (pMat[nCntMat].pTextureFilename != NULL)
-		{ // テクスチャがあるとき
-			device->SetTexture(0, m_textures[nCntMat]);
-		}
-		else
-		{
-			device->SetTexture(0, nullptr);
-		}
+		device->SetTexture(0, pMat[i].pTextureFilename != nullptr ? m_textures[i] : nullptr);
 
 		// モデル（パーツ）の描画
-		m_modelData->getMesh()->DrawSubset(nCntMat);
+		m_modelData->getMesh()->DrawSubset(i);
 	}
 
 	// 保存していたマテリアルに戻す

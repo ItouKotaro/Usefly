@@ -15,11 +15,12 @@ public:
 
 	//@brief デスフラグのオブジェクトを破棄する
 	static void ReleaseDeathFlag();
-	//@brief 破棄する
-	void Destroy() { m_deathFlag = true; }
 
 	//@brief すべてのオブジェクトを破棄する
 	static void AllDestroy();
+
+	//@brief オブジェクトを破棄する
+	static void Destroy(Object* obj) { obj->m_deathFlag = true; }
 
 protected:
 	//@brief 解放処理

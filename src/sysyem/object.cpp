@@ -56,7 +56,7 @@ void Object::AllDestroy()
 {
 	for (auto itr = m_objects.begin(); itr != m_objects.end(); itr++)
 	{
-		(*itr)->Destroy();
+		Destroy(*itr);
 	}
 	
 	// デスフラグのオブジェクトを破棄する

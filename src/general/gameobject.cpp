@@ -173,7 +173,7 @@ void GameObject::Release()
 	int idx = static_cast<int>(m_components.size());
 	for (int i = idx - 1; i >= 0; i--)
 	{
-		m_components[i]->Destroy();
+		Destroy(m_components[i]);
 		m_components[i]->DetachGameObject();
 	}
 }

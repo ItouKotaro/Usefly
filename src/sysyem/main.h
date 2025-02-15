@@ -29,15 +29,17 @@ public:
 	void ThreadJoin();
 
 	//@brief デルタタイムを取得する
-	static float getDeltaTime() { return m_deltaTime; }
+	static float GetDeltaTime() { return m_deltaTime; }
 	//@brief FPS値を取得する
-	static int getFPS() { return m_fps; }
+	static int GetFPS() { return m_fps; }
 	//@brief ウィンドウのアクティブ状態を取得する
-	static bool isActiveWindow();
+	static bool IsActiveWindow();
 	//@brief アプリケーションを終了する
 	static void ExitApplication();
 	//@brief カーソルの表示状態を変更する
-	static void setShowCursor(const bool& show);
+	static void SetShowCursor(const bool& show);
+	//@brief ウィンドウサイズを取得する
+	static D3DXVECTOR2 GetWindowSize();
 private:
 	//@brief メインループ
 	void MainLoop();

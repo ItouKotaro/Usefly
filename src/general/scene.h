@@ -30,16 +30,16 @@ public:
 	void Update();
 
 	//@brief シーンを変更する
-	template<class T> bool setScene(bool releaseObjects = true)
+	template<class T> bool SetScene(bool releaseObjects = true)
 	{
 		// 次のシーンをキューに入れる
-		m_nextScene = getScene<T>();
+		m_nextScene = GetScene<T>();
 		m_isReleaseObjects = releaseObjects;
 
 		// シーンの変更先が現在のシーンと一致するとき
 		if (m_nextScene == m_currentScene)
 		{
-			Log::sendLog("シーンの変更先が現在のシーンと一致しています（" + static_cast<std::string>(typeid(T).name()) + "）", Log::TYPE_WARNING);
+			Log::SendLog("シーンの変更先が現在のシーンと一致しています（" + static_cast<std::string>(typeid(T).name()) + "）", Log::TYPE_WARNING);
 			return false;
 		}
 
@@ -48,7 +48,7 @@ public:
 	}
 
 	//@brief シーンを取得する
-	template<class T> T* getScene()
+	template<class T> T* GetScene()
 	{
 		// クラスが一致するシーンを見つける
 		for (auto itr = m_scenes.begin(); itr != m_scenes.end(); itr++)
@@ -64,14 +64,14 @@ public:
 	}
 
 	//@brief シーンを登録する
-	template<class T> bool registerScene()
+	template<class T> bool RegisterScene()
 	{
 		// 既に登録されていないかを確認する
 		for (auto itr = m_scenes.begin(); itr != m_scenes.end(); itr++)
 		{
 			if (typeid(T) == typeid(**itr))
 			{ // 登録済みのとき
-				Log::sendLog("登録済みのシーン \"" + static_cast<std::string>(typeid(T).name()) + "\" を再登録しようとしました", Log::TYPE_WARNING);
+				Log::SendLog("登録済みのシーン \"" + static_cast<std::string>(typeid(T).name()) + "\" を再登録しようとしました", Log::TYPE_WARNING);
 				return false;
 			}
 		}
@@ -79,7 +79,7 @@ public:
 		// 新しく登録する
 		Scene* addScene = new T();
 		m_scenes.push_back(addScene);
-		Log::sendLog("シーン \"" + static_cast<std::string>(typeid(T).name()) + "\" を登録しました");
+		Log::SendLog("シーン \"" + static_cast<std::string>(typeid(T).name()) + "\" を登録しました");
 
 		return true;
 	}
@@ -88,10 +88,10 @@ public:
 	void AllRelease();
 private:
 	//@brief ゲームオブジェクトを破棄する
-	void releaseGameObjects();
+	void ReleaseGameObjects();
 
 	//@brief キューに入っているシーンに変更する
-	void changeScene();
+	void ChangeScene();
 
 	Scene* m_currentScene;				// 現在のシーン
 	Scene* m_nextScene;					// 次のシーン（キュー）

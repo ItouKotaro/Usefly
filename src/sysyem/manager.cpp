@@ -57,7 +57,7 @@ void Manager::Uninit()
 
 #if OUTPUT_LOG_FILE
 	// ƒƒO‚ğ‘‚«o‚·
-	Log::outputLog();
+	Log::OutputLog();
 #endif
 }
 

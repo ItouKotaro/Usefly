@@ -61,7 +61,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 	MSG msg;			// メッセージを格納する変数
 
 	// ウィンドウの座標を格納
-	RECT rect = { 0, 0, DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT };
+	RECT rect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 
 	// ウィンドウクラスの登録
 	RegisterClassEx(&wcex);
@@ -90,7 +90,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 	UpdateWindow(hWnd);						// クライアント領域を更新
 
 	// マネージャーの初期化
-	Manager::getInstance()->Init(hInstance, hWnd);
+	Manager::GetInstance()->Init(hInstance, hWnd);
 
 	// Mainの生成
 	Main* mainApp = new Main();
@@ -130,7 +130,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 	mainApp->ThreadJoin();
 
 	// マネージャーの終了
-	Manager::getInstance()->Uninit();
+	Manager::GetInstance()->Uninit();
 
 	// Mainの破棄
 	if (mainApp != nullptr)
@@ -202,7 +202,7 @@ void Main::ThreadStart()
 {
 	// スレッドを作成する
 	m_thread = new std::thread(&Main::MainLoop, this);
-	Log::sendLog("メインループのスレッドを開始しました");
+	Log::SendLog("メインループのスレッドを開始しました");
 }
 
 //=============================================================
@@ -215,7 +215,7 @@ void Main::ThreadJoin()
 		m_thread->join();
 	}
 
-	Log::sendLog("メインループのスレッドを終了しました");
+	Log::SendLog("メインループのスレッドを終了しました");
 }
 
 //=============================================================
@@ -246,10 +246,10 @@ void Main::MainLoop()
 			m_execLastTime = m_currentTime;
 
 			// 更新処理
-			Manager::getInstance()->Update();
+			Manager::GetInstance()->Update();
 
 			// 描画処理
-			Manager::getInstance()->Draw();
+			Manager::GetInstance()->Draw();
 
 			// フレームカウントを加算
 			m_frameCount++;
@@ -260,7 +260,7 @@ void Main::MainLoop()
 //=============================================================
 // アクティブウィンドウか
 //=============================================================
-bool Main::isActiveWindow()
+bool Main::IsActiveWindow()
 {
 	return g_isActiveWindow;
 }
@@ -276,7 +276,17 @@ void Main::ExitApplication()
 //=============================================================
 // カーソルの表示
 //=============================================================
-void Main::setShowCursor(const bool& show)
+void Main::SetShowCursor(const bool& show)
 {
 	g_showCursor = show;
+}
+
+//=============================================================
+// ウィンドウサイズの取得
+//=============================================================
+D3DXVECTOR2 Main::GetWindowSize()
+{
+	RECT rect;
+	GetWindowRect(NULL, &rect);
+	return D3DXVECTOR2(static_cast<float>(rect.right - rect.left), static_cast<float>(rect.bottom - rect.top));
 }

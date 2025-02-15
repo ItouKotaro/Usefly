@@ -29,13 +29,13 @@ public:
 	virtual void Release() = 0;
 
 	//@brief フォーマットを取得する
-	FORMAT getFormat() { return m_format; }
+	FORMAT GetFormat() { return m_format; }
 
 	//@brief パスを設定する
-	void setPath(std::string path) { m_path = path; }
+	void SetPath(std::string path) { m_path = path; }
 
 	//@brief パスを取得する
-	std::string getPath() { return m_path; }
+	std::string GetPath() { return m_path; }
 private:
 	std::string m_path;		// パス
 	FORMAT m_format;		// フォーマット
@@ -54,7 +54,7 @@ public:
 	void Release() override;
 
 	//@brief テクスチャを取得する
-	LPDIRECT3DTEXTURE9 getTexture() { return m_texture; }
+	LPDIRECT3DTEXTURE9 GetTexture() { return m_texture; }
 private:
 	LPDIRECT3DTEXTURE9 m_texture;		// テクスチャ
 };
@@ -72,11 +72,11 @@ public:
 	void Release() override;
 
 	//@brief メッシュを取得する
-	LPD3DXMESH getMesh() { return m_mesh; }
+	LPD3DXMESH GetMesh() { return m_mesh; }
 	//@brief マテリアルデータを取得する
-	LPD3DXBUFFER getBufferMaterial() { return m_buffMat; }
+	LPD3DXBUFFER GetBufferMaterial() { return m_buffMat; }
 	//@brief マテリアル数を取得する
-	DWORD getNumMaterial() { return m_numMat; }
+	DWORD GetNumMaterial() { return m_numMat; }
 private:
 	LPD3DXMESH m_mesh;				// メッシュデータ
 	LPD3DXBUFFER m_buffMat;		// マテリアルデータ
@@ -94,9 +94,9 @@ public:
 	~ResourceDataManager() {}
 
 	//@brief テクスチャデータを参照する
-	TextureData* refTexture(std::string path);
+	TextureData* RefTexture(std::string path);
 	//@brief モデルデータを参照する
-	ModelData* refModel(std::string path);
+	ModelData* RefModel(std::string path);
 
 	//@brief すべてのリソースを解放する
 	void AllRelease();

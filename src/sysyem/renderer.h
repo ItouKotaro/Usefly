@@ -10,10 +10,10 @@
 // 設定項目
 
 // ウィンドウサイズ（横）
-#define DEFAULT_SCREEN_WIDTH					(1920)
+#define SCREEN_WIDTH					(1920)
 
 // ウィンドウサイズ（高さ）
-#define DEFAULT_SCREEN_HEIGHT				(1080)
+#define SCREEN_HEIGHT				(1080)
 
 // ウィンドウか
 #define RENDERER_WINDOWED		(TRUE)
@@ -38,7 +38,7 @@ public:
 	void Draw();
 
 	//@brief デバイスを取得する
-	LPDIRECT3DDEVICE9 getDevice() { return m_d3dDevice; }
+	LPDIRECT3DDEVICE9 GetDevice() { return m_d3dDevice; }
 private:
 	LPDIRECT3D9 m_d3d;								// Direct3Dオブジェクトへのポインタ
 	LPDIRECT3DDEVICE9 m_d3dDevice;			// Direct3Dデバイスへのポインタ

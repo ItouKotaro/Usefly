@@ -5,6 +5,7 @@
 //------------------------------------------------------------
 #include "renderer.h"
 #include "gameobject.h"
+#include "components/3d/camera.h"
 
 //=============================================================
 // 初期化
@@ -29,8 +30,8 @@ HRESULT Renderer::Init(HINSTANCE hInstance, HWND hWnd)
 
 	// デバイスのプレゼンテーションパラメータの設定
 	ZeroMemory(&d3dpp, sizeof(d3dpp));														// パラメータのゼロクリア
-	d3dpp.BackBufferWidth = DEFAULT_SCREEN_WIDTH;								// 画面サイズ（幅）
-	d3dpp.BackBufferHeight = DEFAULT_SCREEN_HEIGHT;							// 画面サイズ（高さ）
+	d3dpp.BackBufferWidth = SCREEN_WIDTH;												// 画面サイズ（幅）
+	d3dpp.BackBufferHeight = SCREEN_HEIGHT;											// 画面サイズ（高さ）
 	d3dpp.BackBufferFormat = d3ddm.Format;												// バックバッファの形式
 	d3dpp.BackBufferCount = 1;																	// バックバッファの数
 	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;									// ダブルバッファの切り替え（映像信号に同期）
@@ -105,17 +106,32 @@ void Renderer::Update()
 //=============================================================
 void Renderer::Draw()
 {
+	// カメラを取得する
+	auto& cameras = Camera::GetAllCameras();
+
 	if (SUCCEEDED(m_d3dDevice->BeginScene()))
 	{ // 描画開始が成功した場合
 
-		// 画面クリア（バッファクリア＆Zバッファクリア）
-		m_d3dDevice->Clear(0, nullptr, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL), D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f), 1.0f, 0);
+		for (auto itr = cameras.begin(); itr != cameras.end(); itr++)
+		{
+			// 非アクティブのとき
+			if (!((*itr)->gameObject->GetActive() && (*itr)->GetActive()))
+			{
+				continue;
+			}
 
-		// ゲームオブジェクトを描画する
-		GameObject::AllDraw();
+			// カメラをセットする
+			(*itr)->SetCamera();
 
-		// ゲームオブジェクトをUI描画する
-		GameObject::AllDrawUI();
+			// 画面クリア（バッファクリア＆Zバッファクリア）
+			m_d3dDevice->Clear(0, nullptr, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL), D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f), 1.0f, 0);
+
+			// ゲームオブジェクトを描画する
+			GameObject::AllDraw();
+
+			// ゲームオブジェクトをUI描画する
+			GameObject::AllDrawUI();
+		}
 
 		// 描画終了
 		m_d3dDevice->EndScene();

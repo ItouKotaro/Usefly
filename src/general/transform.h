@@ -22,32 +22,32 @@ public:
 	}
 
 	//@brief 親を設定する
-	void setParent(Transform* parent) { m_parent = parent; }
+	void SetParent(Transform* parent) { m_parent = parent; }
 	//@brief 親を取得する
-	Transform* getParent() { return m_parent; }
+	Transform* GetParent() { return m_parent; }
 
 	//@brief オイラー角で回転を取得する
-	D3DXVECTOR3 getEulerAngle();
+	D3DXVECTOR3 GetEulerAngle();
 	//@brief オイラー角で回転を設定する
-	void setEulerAngle(float x, float y, float z);
-	void setEulerAngle(D3DXVECTOR3 rotation) { setEulerAngle(rotation.x, rotation.y, rotation.z); }
-	void setEulerAngle(float fAngle) { setEulerAngle(getEulerAngle().x, getEulerAngle().y, fAngle); }
+	void SetEulerAngle(float x, float y, float z);
+	void SetEulerAngle(D3DXVECTOR3 rotation) { SetEulerAngle(rotation.x, rotation.y, rotation.z); }
+	void SetEulerAngle(float fAngle) { SetEulerAngle(GetEulerAngle().x, GetEulerAngle().y, fAngle); }
 
 	//@brief ワールド基準の位置を取得する
-	D3DXVECTOR3 getWorldPosition();
+	D3DXVECTOR3 GetWorldPosition();
 	//@brief ワールド基準の回転を取得する
-	D3DXQUATERNION getWorldRotation();
+	D3DXQUATERNION GetWorldRotation();
 	//@brief ワールド基準のオイラー角を取得する
-	D3DXVECTOR3 getWorldEulerAngle();
+	D3DXVECTOR3 GetWorldEulerAngle();
 	//@brief ワールド基準のスケールを取得する
-	D3DXVECTOR3 getWorldScale();
+	D3DXVECTOR3 GetWorldScale();
 
 	//@brief マトリックスを取得する
-	D3DXMATRIX& getMatrix();
+	D3DXMATRIX& GetMatrix();
 	//@brief 位置情報マトリックスを取得する
-	D3DXMATRIX getTranslationMatrix();
+	D3DXMATRIX GetTranslationMatrix();
 	//@brief 回転情報マトリックスを取得する
-	D3DXMATRIX getRotationMatrix();
+	D3DXMATRIX GetRotationMatrix();
 
 	D3DXVECTOR3 position;			// 位置
 	D3DXQUATERNION rotation;	// 回転

@@ -8,7 +8,7 @@
 //=============================================================
 // オイラー角で回転を取得する
 //=============================================================
-D3DXVECTOR3 Transform::getEulerAngle()
+D3DXVECTOR3 Transform::GetEulerAngle()
 {
 	return QuaternionToEulerAngle(rotation);
 }
@@ -16,7 +16,7 @@ D3DXVECTOR3 Transform::getEulerAngle()
 //=============================================================
 // オイラー角で回転を設定する
 //=============================================================
-void Transform::setEulerAngle(float x, float y, float z)
+void Transform::SetEulerAngle(float x, float y, float z)
 {
 	D3DXQUATERNION q;
 	D3DXQuaternionRotationYawPitchRoll(&q, y, x, z);
@@ -26,16 +26,16 @@ void Transform::setEulerAngle(float x, float y, float z)
 //=============================================================
 // ワールド基準の位置を取得する
 //=============================================================
-D3DXVECTOR3 Transform::getWorldPosition()
+D3DXVECTOR3 Transform::GetWorldPosition()
 {
-	D3DXMATRIX mtx = getMatrix();
+	D3DXMATRIX mtx = GetMatrix();
 	return D3DXVECTOR3(mtx._41, mtx._42, mtx._43);
 }
 
 //=============================================================
 // ワールド基準の回転を取得する
 //=============================================================
-D3DXQUATERNION Transform::getWorldRotation()
+D3DXQUATERNION Transform::GetWorldRotation()
 {
 	D3DXQUATERNION worldQuaternion;
 	D3DXQuaternionIdentity(&worldQuaternion);
@@ -47,7 +47,7 @@ D3DXQUATERNION Transform::getWorldRotation()
 		D3DXQuaternionMultiply(&worldQuaternion, &worldQuaternion, &q);
 
 		// 次の親に進む
-		worldTransform = worldTransform->getParent();
+		worldTransform = worldTransform->GetParent();
 	} while (worldTransform != nullptr);
 
 	// 正規化
@@ -59,15 +59,15 @@ D3DXQUATERNION Transform::getWorldRotation()
 //=============================================================
 // ワールド基準のオイラー角を取得する
 //=============================================================
-D3DXVECTOR3 Transform::getWorldEulerAngle()
+D3DXVECTOR3 Transform::GetWorldEulerAngle()
 {
-	return QuaternionToEulerAngle(getWorldRotation());
+	return QuaternionToEulerAngle(GetWorldRotation());
 }
 
 //=============================================================
 // ワールド基準のスケールを取得する
 //=============================================================
-D3DXVECTOR3 Transform::getWorldScale()
+D3DXVECTOR3 Transform::GetWorldScale()
 {
 	// 親のワールド座標をローカル座標に掛ける
 	D3DXVECTOR3 worldScale = { 1.0f, 1.0f, 1.0f };
@@ -80,7 +80,7 @@ D3DXVECTOR3 Transform::getWorldScale()
 		worldScale.z *= worldTransform->scale.z;
 
 		// 次の親に進む
-		worldTransform = worldTransform->getParent();
+		worldTransform = worldTransform->GetParent();
 	} while (worldTransform != nullptr);
 
 	return worldScale;
@@ -89,7 +89,7 @@ D3DXVECTOR3 Transform::getWorldScale()
 //=============================================================
 // マトリックスを取得する
 //=============================================================
-D3DXMATRIX& Transform::getMatrix()
+D3DXMATRIX& Transform::GetMatrix()
 {
 	// 変数
 	D3DXMATRIX mtxScale, mtxRot, mtxTrans;
@@ -113,7 +113,7 @@ D3DXMATRIX& Transform::getMatrix()
 	if (m_parent != nullptr)
 	{
 		D3DXMATRIX mtxParent;
-		mtxParent = m_parent->getMatrix();
+		mtxParent = m_parent->GetMatrix();
 		D3DXMatrixMultiply(&m_matrix, &m_matrix, &mtxParent);
 	}
 
@@ -123,10 +123,10 @@ D3DXMATRIX& Transform::getMatrix()
 //=============================================================
 // 位置情報マトリックスを取得する
 //=============================================================
-D3DXMATRIX Transform::getTranslationMatrix()
+D3DXMATRIX Transform::GetTranslationMatrix()
 {
 	D3DXMATRIX mtx;
-	D3DXVECTOR3 wPos = getWorldPosition();
+	D3DXVECTOR3 wPos = GetWorldPosition();
 	D3DXMatrixIdentity(&mtx);
 	D3DXMatrixTranslation(&mtx, wPos.x, wPos.y, wPos.z);
 	return mtx;
@@ -135,10 +135,10 @@ D3DXMATRIX Transform::getTranslationMatrix()
 //=============================================================
 // 回転情報マトリックスを取得する
 //=============================================================
-D3DXMATRIX Transform::getRotationMatrix()
+D3DXMATRIX Transform::GetRotationMatrix()
 {
 	D3DXMATRIX mtx;
-	D3DXQUATERNION wQuaternion = getWorldRotation();
+	D3DXQUATERNION wQuaternion = GetWorldRotation();
 	D3DXMatrixIdentity(&mtx);
 	D3DXMatrixRotationQuaternion(&mtx, &wQuaternion);
 	return mtx;

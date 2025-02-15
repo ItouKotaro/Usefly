@@ -13,6 +13,11 @@ public:
 	Object();
 	virtual ~Object();
 
+	//@brief アクティブ状態を設定する
+	void SetActive(bool value) { m_active = value; }
+	//@brief アクティブ状態を取得する
+	bool GetActive() { return m_active; }
+
 	//@brief デスフラグのオブジェクトを破棄する
 	static void ReleaseDeathFlag();
 
@@ -26,8 +31,9 @@ protected:
 	//@brief 解放処理
 	virtual void Release() = 0;
 private:
-	bool m_deathFlag;
-	static std::vector<Object*> m_objects;
+	bool m_active;										// アクティブ状態
+	bool m_deathFlag;									// デスフラグ
+	static std::vector<Object*> m_objects;	// オブジェクトリスト
 };
 
 #endif // !_OBJECT_H_

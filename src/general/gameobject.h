@@ -110,7 +110,7 @@ public:
 	void DetachComponent(Component* component);
 
 	//@brief すべてのゲームオブジェクトを取得する
-	static std::vector<GameObject*>& getAllGameObjects() { return m_gameObjects; }
+	static std::vector<GameObject*>& GetAllGameObjects() { return m_gameObjects; }
 
 	Transform* transform;	// トランスフォーム情報
 	std::string name;			// 名前

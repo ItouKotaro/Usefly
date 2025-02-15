@@ -52,13 +52,13 @@ public:
 	//@brief ログを送信する
 	//@param message: 送信するメッセージ
 	//@param type: ログの種類
-	static void sendLog(std::string message, TYPE type = TYPE_NORMAL);
+	static void SendLog(std::string message, TYPE type = TYPE_NORMAL);
 
 	//@brief ログデータからログ文を生成する
-	static std::string writeLog(LogData data);
+	static std::string WriteLog(LogData data);
 
 	//@brief ログをファイルとして出力する
-	static void outputLog();
+	static void OutputLog();
 
 private:
 	static std::vector<LogData> m_logDatas;	// ログのデータ

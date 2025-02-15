@@ -15,11 +15,11 @@
 void StartScene::Init()
 {
 	// シーンマネージャーを取得する
-	auto sceneManager = Manager::getInstance()->getSceneManager();
+	auto sceneManager = Manager::GetInstance()->GetSceneManager();
 
 	// シーンの登録
-	sceneManager->registerScene<TitleScene>();
+	sceneManager->RegisterScene<TitleScene>();
 
 	// 遷移
-	sceneManager->setScene<TitleScene>();
+	sceneManager->SetScene<TitleScene>();
 }

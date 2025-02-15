@@ -79,7 +79,10 @@ void GameObject::Update()
 {
 	for (auto itr = m_components.begin(); itr != m_components.end(); itr++)
 	{
-		(*itr)->Update();
+		if ((*itr)->GetActive())
+		{
+			(*itr)->Update();
+		}
 	}
 }
 
@@ -90,7 +93,10 @@ void GameObject::Draw()
 {
 	for (auto itr = m_components.begin(); itr != m_components.end(); itr++)
 	{
-		(*itr)->Draw();
+		if ((*itr)->GetActive())
+		{
+			(*itr)->Draw();
+		}
 	}
 }
 
@@ -101,7 +107,10 @@ void GameObject::DrawUI()
 {
 	for (auto itr = m_components.begin(); itr != m_components.end(); itr++)
 	{
-		(*itr)->DrawUI();
+		if ((*itr)->GetActive())
+		{
+			(*itr)->DrawUI();
+		}
 	}
 }
 
@@ -112,7 +121,10 @@ void GameObject::AllUpdate()
 {
 	for (auto itr = m_gameObjects.begin(); itr != m_gameObjects.end(); itr++)
 	{
-		(*itr)->Update();
+		if ((*itr)->GetActive())
+		{
+			(*itr)->Update();
+		}
 	}
 }
 
@@ -123,7 +135,10 @@ void GameObject::AllDraw()
 {
 	for (auto itr = m_gameObjects.begin(); itr != m_gameObjects.end(); itr++)
 	{
-		(*itr)->Draw();
+		if ((*itr)->GetActive())
+		{
+			(*itr)->Draw();
+		}
 	}
 }
 
@@ -134,7 +149,10 @@ void GameObject::AllDrawUI()
 {
 	for (auto itr = m_gameObjects.begin(); itr != m_gameObjects.end(); itr++)
 	{
-		(*itr)->DrawUI();
+		if ((*itr)->GetActive())
+		{
+			(*itr)->DrawUI();
+		}
 	}
 }
 
@@ -166,7 +184,7 @@ void GameObject::Release()
 	// 親子関係のあるオブジェクトを破棄する
 	for (auto itr = m_gameObjects.begin(); itr != m_gameObjects.end(); itr++)
 	{
-		(*itr)->transform->getParent();
+		(*itr)->transform->GetParent();
 	}
 
 	// コンポーネントを解放する

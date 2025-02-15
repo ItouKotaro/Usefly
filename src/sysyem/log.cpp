@@ -14,7 +14,7 @@ std::vector<Log::LogData> Log::m_logDatas;
 //=============================================================
 // ログの送信
 //=============================================================
-void Log::sendLog(std::string message, TYPE type)
+void Log::SendLog(std::string message, TYPE type)
 {
 	// ログデータを作成する
 	LogData data;
@@ -26,7 +26,7 @@ void Log::sendLog(std::string message, TYPE type)
         
 #if SHOW_LOG_TERMINAL
 	// ログをターミナルに出力する
-	OutputDebugString(writeLog(data).c_str());
+	OutputDebugString(WriteLog(data).c_str());
 #endif
 
     // データを保存する
@@ -36,7 +36,7 @@ void Log::sendLog(std::string message, TYPE type)
 //=============================================================
 // ログデータからログ文を生成する
 //=============================================================
-std::string Log::writeLog(LogData data)
+std::string Log::WriteLog(LogData data)
 {
     // ログのテンプレートを設定する
     string log_template = LOG_TEMPLATE;
@@ -77,7 +77,7 @@ std::string Log::writeLog(LogData data)
 //=============================================================
 // ログをファイルとして出力する
 //=============================================================
-void Log::outputLog()
+void Log::OutputLog()
 {
     // ログのパスを設定する
     string log_output = OUTPUT_LOG_PATH;
@@ -97,7 +97,7 @@ void Log::outputLog()
     output.open(log_output, ios::out);
     for (auto itr = m_logDatas.begin(); itr != m_logDatas.end(); itr++)
     {
-        output << writeLog(*itr);
+        output << WriteLog(*itr);
     }
     output.close();
 }

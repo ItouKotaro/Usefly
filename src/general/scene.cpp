@@ -12,10 +12,10 @@
 void SceneManager::Init()
 {
 	// 最初のシーンを登録する
-	this->registerScene<StartScene>();
+	this->RegisterScene<StartScene>();
 
 	// 最初のシーンに遷移する
-	this->setScene<StartScene>();
+	this->SetScene<StartScene>();
 }
 
 //=============================================================
@@ -24,7 +24,7 @@ void SceneManager::Init()
 void SceneManager::Update()
 {
 	// 次のシーンがあるときにシーンを変更する
-	changeScene();
+	ChangeScene();
 }
 
 //=============================================================
@@ -52,10 +52,10 @@ void SceneManager::AllRelease()
 //=============================================================
 // ゲームオブジェクトを破棄する
 //=============================================================
-void SceneManager::releaseGameObjects()
+void SceneManager::ReleaseGameObjects()
 {
 	// ゲームオブジェクトを取得する
-	auto gameObjectList = GameObject::getAllGameObjects();
+	auto gameObjectList = GameObject::GetAllGameObjects();
 
 	for (auto itr = gameObjectList.begin(); itr != gameObjectList.end(); itr++)
 	{
@@ -69,7 +69,7 @@ void SceneManager::releaseGameObjects()
 //=============================================================
 // シーンを変更する
 //=============================================================
-void SceneManager::changeScene()
+void SceneManager::ChangeScene()
 {
 	// 次のシーンが設定されていないときはスキップする
 	if (m_nextScene == nullptr)
@@ -84,7 +84,7 @@ void SceneManager::changeScene()
 		m_currentScene->Uninit();
 
 		// ログを送信する
-		Log::sendLog("シーン \"" + static_cast<std::string>(typeid(*m_currentScene).name()) + "\" を終了しました");
+		Log::SendLog("シーン \"" + static_cast<std::string>(typeid(*m_currentScene).name()) + "\" を終了しました");
 
 		// 現在のシーンを空にする
 		m_currentScene = nullptr;
@@ -93,7 +93,7 @@ void SceneManager::changeScene()
 	// オブジェクトの破棄
 	if (m_isReleaseObjects)
 	{
-		releaseGameObjects();
+		ReleaseGameObjects();
 	}
 
 	// 新しいシーンを現在のシーンにする
@@ -102,7 +102,7 @@ void SceneManager::changeScene()
 	if (m_currentScene != nullptr)
 	{
 		// ログを送信する
-		Log::sendLog("シーン \"" + static_cast<std::string>(typeid(*m_currentScene).name()) + "\" に遷移しました");
+		Log::SendLog("シーン \"" + static_cast<std::string>(typeid(*m_currentScene).name()) + "\" に遷移しました");
 
 		// 初期化処理
 		m_currentScene->Init();
@@ -111,5 +111,5 @@ void SceneManager::changeScene()
 	}
 
 	// 失敗したとき
-	Log::sendLog("シーンの遷移に失敗しました", Log::TYPE_ERROR);
+	Log::SendLog("シーンの遷移に失敗しました", Log::TYPE_ERROR);
 }

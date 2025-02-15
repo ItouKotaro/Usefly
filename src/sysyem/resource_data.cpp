@@ -9,13 +9,13 @@
 //=============================================================
 // テクスチャデータを参照する
 //=============================================================
-TextureData* ResourceDataManager::refTexture(std::string path)
+TextureData* ResourceDataManager::RefTexture(std::string path)
 {
 	// データが存在するときは返す
 	auto datas = m_resourceDatas[ResourceData::FORMAT::TEXTURE];
 	for (auto itr = datas.begin(); itr != datas.end(); itr++)
 	{
-		if (path == (*itr)->getPath())
+		if (path == (*itr)->GetPath())
 		{
 			return static_cast<TextureData*>(*itr);
 		}
@@ -23,12 +23,12 @@ TextureData* ResourceDataManager::refTexture(std::string path)
 
 	// データが存在しないときはデータを生成する
 	TextureData* data = new TextureData();
-	data->setPath(path);
+	data->SetPath(path);
 
 	// データをロードする
 	if (!data->Load(path))
 	{
-		Log::sendLog("テクスチャデータ \"" + path + "\" のロードに失敗しました！", Log::TYPE::TYPE_ERROR);
+		Log::SendLog("テクスチャデータ \"" + path + "\" のロードに失敗しました！", Log::TYPE::TYPE_ERROR);
 		delete data;
 		data = nullptr;
 		return data;
@@ -38,7 +38,7 @@ TextureData* ResourceDataManager::refTexture(std::string path)
 	m_resourceDatas->push_back(data);
 
 	// ログを送信する
-	Log::sendLog("テクスチャデータ \"" + path + "\" のロードに成功しました！");
+	Log::SendLog("テクスチャデータ \"" + path + "\" のロードに成功しました！");
 
 	// データを返す
 	return data;
@@ -47,13 +47,13 @@ TextureData* ResourceDataManager::refTexture(std::string path)
 //=============================================================
 // モデルデータを参照する
 //=============================================================
-ModelData* ResourceDataManager::refModel(std::string path)
+ModelData* ResourceDataManager::RefModel(std::string path)
 {
 	// データが存在するときは返す
 	auto datas = m_resourceDatas[ResourceData::FORMAT::MODEL];
 	for (auto itr = datas.begin(); itr != datas.end(); itr++)
 	{
-		if (path == (*itr)->getPath())
+		if (path == (*itr)->GetPath())
 		{
 			return static_cast<ModelData*>(*itr);
 		}
@@ -61,12 +61,12 @@ ModelData* ResourceDataManager::refModel(std::string path)
 
 	// データが存在しないときはデータを生成する
 	ModelData* data = new ModelData();
-	data->setPath(path);
+	data->SetPath(path);
 
 	// データをロードする
 	if (!data->Load(path))
 	{
-		Log::sendLog("モデルデータ \"" + path + "\" のロードに失敗しました！", Log::TYPE::TYPE_ERROR);
+		Log::SendLog("モデルデータ \"" + path + "\" のロードに失敗しました！", Log::TYPE::TYPE_ERROR);
 		delete data;
 		data = nullptr;
 		return data;
@@ -76,7 +76,7 @@ ModelData* ResourceDataManager::refModel(std::string path)
 	m_resourceDatas->push_back(data);
 
 	// ログを送信する
-	Log::sendLog("モデルデータ \"" + path + "\" のロードに成功しました！");
+	Log::SendLog("モデルデータ \"" + path + "\" のロードに成功しました！");
 
 	// データを返す
 	return data;
@@ -110,7 +110,7 @@ void ResourceDataManager::AllRelease()
 bool TextureData::Load(std::string path)
 {
 	// デバイスの取得
-	LPDIRECT3DDEVICE9 device = Manager::getInstance()->getDevice();
+	LPDIRECT3DDEVICE9 device = Manager::GetInstance()->GetDevice();
 
 	// テクスチャの作成
 	if (FAILED(D3DXCreateTextureFromFile(device, path.c_str(), &m_texture)))
@@ -139,7 +139,7 @@ void TextureData::Release()
 bool ModelData::Load(std::string path)
 {
 	// デバイスの取得
-	LPDIRECT3DDEVICE9 device = Manager::getInstance()->getDevice();
+	LPDIRECT3DDEVICE9 device = Manager::GetInstance()->GetDevice();
 
 	// メッシュの生成
 	if (FAILED(D3DXLoadMeshFromX(

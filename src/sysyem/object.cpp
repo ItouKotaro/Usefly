@@ -11,7 +11,7 @@ std::vector<Object*> Object::m_objects;
 //=============================================================
 // コンストラクタ
 //=============================================================
-Object::Object() : m_deathFlag(false)
+Object::Object() : m_deathFlag(false), m_active(true)
 {
 	// データを追加する
 	m_objects.push_back(this);

@@ -1,3 +1,8 @@
+//------------------------------------------------------------
+// @file		model.cpp
+// @brief	モデル
+// @detail	3Dのモデル
+//------------------------------------------------------------
 #include "model.h"
 #include "sysyem/manager.h"
 
@@ -21,7 +26,7 @@ void Model::Uninit()
 //=============================================================
 void Model::Draw()
 {
-	LPDIRECT3DDEVICE9 device = Manager::getInstance()->getDevice();
+	LPDIRECT3DDEVICE9 device = Manager::GetInstance()->GetDevice();
 	D3DMATERIAL9 matDef;					// 現在のマテリアル保存用
 	D3DXMATERIAL* pMat;					// マテリアルデータへのポインタ
 
@@ -29,15 +34,15 @@ void Model::Draw()
 		return;
 
 	// ワールドマトリックスの設定
-	device->SetTransform(D3DTS_WORLD, &transform->getMatrix());
+	device->SetTransform(D3DTS_WORLD, &transform->GetMatrix());
 
 	// 現在のマテリアルを取得
 	device->GetMaterial(&matDef);
 
 	// マテリアルデータへのポインタを取得
-	pMat = (D3DXMATERIAL*)m_modelData->getBufferMaterial()->GetBufferPointer();
+	pMat = (D3DXMATERIAL*)m_modelData->GetBufferMaterial()->GetBufferPointer();
 
-	for (int i = 0; i < static_cast<int>(m_modelData->getNumMaterial()); i++)
+	for (int i = 0; i < static_cast<int>(m_modelData->GetNumMaterial()); i++)
 	{
 		// マテリアルの設定
 		device->SetMaterial(&pMat[i].MatD3D);
@@ -46,7 +51,7 @@ void Model::Draw()
 		device->SetTexture(0, pMat[i].pTextureFilename != nullptr ? m_textures[i] : nullptr);
 
 		// モデル（パーツ）の描画
-		m_modelData->getMesh()->DrawSubset(i);
+		m_modelData->GetMesh()->DrawSubset(i);
 	}
 
 	// 保存していたマテリアルに戻す
@@ -59,18 +64,18 @@ void Model::Draw()
 void Model::Load(std::string path)
 {
 	// デバイスの取得
-	LPDIRECT3DDEVICE9 device = Manager::getInstance()->getDevice();
+	LPDIRECT3DDEVICE9 device = Manager::GetInstance()->GetDevice();
 
 	// メッシュ情報を破棄
 	Uninit();
 
 	// メッシュを読み込む
-	m_modelData = Manager::getInstance()->getResourceDataManager()->refModel(path);
+	m_modelData = Manager::GetInstance()->GetResourceDataManager()->RefModel(path);
 
 	// モデルテクスチャの読み込み
-	D3DXMATERIAL* mat = (D3DXMATERIAL*)m_modelData->getBufferMaterial()->GetBufferPointer();
-	m_textures.resize(m_modelData->getNumMaterial());
-	for (int nCntMat = 0; nCntMat < (int)m_modelData->getNumMaterial(); nCntMat++)
+	D3DXMATERIAL* mat = (D3DXMATERIAL*)m_modelData->GetBufferMaterial()->GetBufferPointer();
+	m_textures.resize(m_modelData->GetNumMaterial());
+	for (int nCntMat = 0; nCntMat < (int)m_modelData->GetNumMaterial(); nCntMat++)
 	{
 		if (mat[nCntMat].pTextureFilename != nullptr)
 		{ // テクスチャがあるとき
@@ -84,7 +89,7 @@ void Model::Load(std::string path)
 			}
 
 			// テクスチャを作成
-			m_textures[nCntMat] = Manager::getInstance()->getResourceDataManager()->refTexture(mat[nCntMat].pTextureFilename)->getTexture();
+			m_textures[nCntMat] = Manager::GetInstance()->GetResourceDataManager()->RefTexture(mat[nCntMat].pTextureFilename)->GetTexture();
 		}
 		else
 		{

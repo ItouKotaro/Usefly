@@ -17,13 +17,13 @@ public:
 	void DrawUI() override;
 
 	//@brief テクスチャを設定する
-	void setTexture(std::string path);
+	void SetTexture(std::string path);
 
 	//@brief テクスチャをバインドする
-	void bindTexture(LPDIRECT3DTEXTURE9 texture) { m_texture = texture; }
+	void BindTexture(LPDIRECT3DTEXTURE9 texture) { m_texture = texture; }
 
 	//@brief アンカーポイントを設定する
-	void setAnchorPoint(D3DXVECTOR2 anchor) { m_anchorPoint = anchor; }
+	void SetAnchorPoint(D3DXVECTOR2 anchor) { m_anchorPoint = anchor; }
 private:
 	//@brief 頂点を更新する
 	void UpdateVertex();

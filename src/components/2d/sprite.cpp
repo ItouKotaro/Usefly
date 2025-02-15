@@ -12,7 +12,7 @@
 void Sprite::Init()
 {
 	// デバイスへのポインタ
-	LPDIRECT3DDEVICE9 device = Manager::getInstance()->getDevice();
+	LPDIRECT3DDEVICE9 device = Manager::GetInstance()->GetDevice();
 
 	//頂点バッファの生成
 	device->CreateVertexBuffer(sizeof(VERTEX_2D) * 4, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_vtxBuff, nullptr);
@@ -83,7 +83,7 @@ void Sprite::Update()
 void Sprite::DrawUI()
 {
 	// デバイスへのポインタ
-	LPDIRECT3DDEVICE9 device = Manager::getInstance()->getDevice();
+	LPDIRECT3DDEVICE9 device = Manager::GetInstance()->GetDevice();
 
 	// 頂点バッファをデータストリームに設定
 	device->SetStreamSource(0, m_vtxBuff, 0, sizeof(VERTEX_2D));
@@ -103,15 +103,15 @@ void Sprite::DrawUI()
 //=============================================================
 // テクスチャを設定する
 //=============================================================
-void Sprite::setTexture(std::string path)
+void Sprite::SetTexture(std::string path)
 {
 	// データを参照する
-	TextureData* data = Manager::getInstance()->getResourceDataManager()->refTexture(path);
+	TextureData* data = Manager::GetInstance()->GetResourceDataManager()->RefTexture(path);
 
 	// テクスチャをバインドする
 	if (data != nullptr)
 	{
-		bindTexture(data->getTexture());
+		BindTexture(data->GetTexture());
 	}
 }
 
@@ -124,7 +124,7 @@ void Sprite::UpdateVertex()
 
 	D3DXMATRIX mtx;
 	D3DXMatrixIdentity(&mtx);
-	D3DXMatrixRotationZ(&mtx, transform->getWorldRotation().z);
+	D3DXMatrixRotationZ(&mtx, transform->GetWorldRotation().z);
 
 	// 頂点位置を格納する
 	D3DXVECTOR3 convPos[4] =
@@ -155,8 +155,8 @@ void Sprite::UpdateVertex()
 	// 位置
 	for (int i = 0; i < 4; i++)
 	{
-		vtx[i].pos.x += transform->getWorldPosition().x;
-		vtx[i].pos.y += transform->getWorldPosition().y;
+		vtx[i].pos.x += transform->GetWorldPosition().x;
+		vtx[i].pos.y += transform->GetWorldPosition().y;
 	}
 
 	//頂点バッファをアンロックする

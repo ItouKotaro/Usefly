@@ -24,17 +24,17 @@ public:
 	void Draw();
 
 	//@brief レンダラーを取得する
-	Renderer* getRenderer() { return m_renderer; }
+	Renderer* GetRenderer() { return m_renderer; }
 	//@brief リソースデータマネージャーを取得する
-	ResourceDataManager* getResourceDataManager() { return m_resourceDataManager; }
+	ResourceDataManager* GetResourceDataManager() { return m_resourceDataManager; }
 	//@brief シーンマネージャーを取得する
-	SceneManager* getSceneManager() { return m_sceneManager; }
+	SceneManager* GetSceneManager() { return m_sceneManager; }
 
 	//@brief デバイスを取得する
-	LPDIRECT3DDEVICE9 getDevice() { return m_renderer->getDevice(); }
+	LPDIRECT3DDEVICE9 GetDevice() { return m_renderer->GetDevice(); }
 
 	//@brief インスタンスの取得
-	static Manager* getInstance()
+	static Manager* GetInstance()
 	{
 		static Manager instance;
 		return &instance;

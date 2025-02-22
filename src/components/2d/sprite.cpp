@@ -1,60 +1,60 @@
 //------------------------------------------------------------
 // @file		sprite.cpp
-// @brief	ƒXƒvƒ‰ƒCƒg
-// @detail	2D‚Ì”Âƒ|ƒŠƒSƒ“
+// @brief	ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆ
+// @detail	2Dã®æ¿ãƒãƒªã‚´ãƒ³
 //------------------------------------------------------------
 #include "sprite.h"
 #include "sysyem/manager.h"
 
 //=============================================================
-// ‰Šú‰»
+// åˆæœŸåŒ–
 //=============================================================
 void Sprite::Init()
 {
-	// ƒfƒoƒCƒX‚Ö‚Ìƒ|ƒCƒ“ƒ^
+	// ãƒ‡ãƒã‚¤ã‚¹ã¸ã®ãƒã‚¤ãƒ³ã‚¿
 	LPDIRECT3DDEVICE9 device = Manager::GetInstance()->GetDevice();
 
-	//’¸“_ƒoƒbƒtƒ@‚Ì¶¬
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ç”Ÿæˆ
 	device->CreateVertexBuffer(sizeof(VERTEX_2D) * 4, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_vtxBuff, nullptr);
-	VERTEX_2D* vtx; //’¸“_î•ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^
+	VERTEX_2D* vtx; //é ‚ç‚¹æƒ…å ±ã¸ã®ãƒã‚¤ãƒ³ã‚¿
 
-	//’¸“_ƒoƒbƒtƒ@‚ğƒƒbƒN‚µA’¸“_î•ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^‚ğæ“¾
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ãƒ­ãƒƒã‚¯ã—ã€é ‚ç‚¹æƒ…å ±ã¸ã®ãƒã‚¤ãƒ³ã‚¿ã‚’å–å¾—
 	m_vtxBuff->Lock(0, 0, (void**)&vtx, 0);
 
-	//’¸“_À•W‚Ìİ’è
+	//é ‚ç‚¹åº§æ¨™ã®è¨­å®š
 	vtx[0].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	vtx[1].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	vtx[2].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	vtx[3].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
-	//rhw‚Ìİ’è
+	//rhwã®è¨­å®š
 	vtx[0].rhw = 1.0f;
 	vtx[1].rhw = 1.0f;
 	vtx[2].rhw = 1.0f;
 	vtx[3].rhw = 1.0f;
 
-	//’¸“_ƒJƒ‰[
+	//é ‚ç‚¹ã‚«ãƒ©ãƒ¼
 	vtx[0].col = D3DCOLOR_RGBA(255, 255, 255, 255);
 	vtx[1].col = D3DCOLOR_RGBA(255, 255, 255, 255);
 	vtx[2].col = D3DCOLOR_RGBA(255, 255, 255, 255);
 	vtx[3].col = D3DCOLOR_RGBA(255, 255, 255, 255);
 
-	//ƒeƒNƒXƒ`ƒƒÀ•W‚Ìİ’è
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£åº§æ¨™ã®è¨­å®š
 	vtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
 	vtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
 	vtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
 	vtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
 
-	//’¸“_ƒoƒbƒtƒ@‚ğƒAƒ“ƒƒbƒN‚·‚é
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ã‚¢ãƒ³ãƒ­ãƒƒã‚¯ã™ã‚‹
 	m_vtxBuff->Unlock();
 }
 
 //=============================================================
-// I—¹
+// çµ‚äº†
 //=============================================================
 void Sprite::Uninit()
 {
-	//’¸“_ƒoƒbƒtƒ@‚Ì”jŠü
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ç ´æ£„
 	if (m_vtxBuff != nullptr)
 	{
 		m_vtxBuff->Release();
@@ -63,52 +63,52 @@ void Sprite::Uninit()
 }
 
 //=============================================================
-// XV
+// æ›´æ–°
 //=============================================================
 void Sprite::Update()
 {
 	if (*transform != m_oldTransform)
 	{
-		// ’¸“_‚ğXV‚·‚é
+		// é ‚ç‚¹ã‚’æ›´æ–°ã™ã‚‹
 		UpdateVertex();
 
-		// ‘O‰ñ‚Ìƒgƒ‰ƒ“ƒXƒtƒH[ƒ€‚ğ•Û‘¶‚·‚é
+		// å‰å›ã®ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ ã‚’ä¿å­˜ã™ã‚‹
 		m_oldTransform = *transform;
 	}
 }
 
 //=============================================================
-// UI•`‰æ
+// UIæç”»
 //=============================================================
 void Sprite::DrawUI()
 {
-	// ƒfƒoƒCƒX‚Ö‚Ìƒ|ƒCƒ“ƒ^
+	// ãƒ‡ãƒã‚¤ã‚¹ã¸ã®ãƒã‚¤ãƒ³ã‚¿
 	LPDIRECT3DDEVICE9 device = Manager::GetInstance()->GetDevice();
 
-	// ’¸“_ƒoƒbƒtƒ@‚ğƒf[ƒ^ƒXƒgƒŠ[ƒ€‚Éİ’è
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ãƒ‡ãƒ¼ã‚¿ã‚¹ãƒˆãƒªãƒ¼ãƒ ã«è¨­å®š
 	device->SetStreamSource(0, m_vtxBuff, 0, sizeof(VERTEX_2D));
 
-	// ’¸“_ƒtƒH[ƒ}ƒbƒg‚Ìİ’è
+	// é ‚ç‚¹ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã®è¨­å®š
 	device->SetFVF(FVF_VERTEX_2D);
 
-	// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 	device->SetTexture(0, m_texture);
 
-	// ƒ|ƒŠƒSƒ“‚Ì•`‰æ
-	device->DrawPrimitive(D3DPT_TRIANGLESTRIP, //ƒvƒŠƒ~ƒeƒBƒu‚Ìí—Ş
-		0, //•`‰æ‚·‚éÅ‰‚Ì’¸“_ƒCƒ“ƒfƒbƒNƒX
-		2); //•`‰æ‚·‚éƒvƒŠƒ~ƒeƒBƒu”
+	// ãƒãƒªã‚´ãƒ³ã®æç”»
+	device->DrawPrimitive(D3DPT_TRIANGLESTRIP, //ãƒ—ãƒªãƒŸãƒ†ã‚£ãƒ–ã®ç¨®é¡
+		0, //æç”»ã™ã‚‹æœ€åˆã®é ‚ç‚¹ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
+		2); //æç”»ã™ã‚‹ãƒ—ãƒªãƒŸãƒ†ã‚£ãƒ–æ•°
 }
 
 //=============================================================
-// ƒeƒNƒXƒ`ƒƒ‚ğİ’è‚·‚é
+// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’è¨­å®šã™ã‚‹
 //=============================================================
 void Sprite::SetTexture(std::string path)
 {
-	// ƒf[ƒ^‚ğQÆ‚·‚é
+	// ãƒ‡ãƒ¼ã‚¿ã‚’å‚ç…§ã™ã‚‹
 	TextureData* data = Manager::GetInstance()->GetResourceDataManager()->RefTexture(path);
 
-	// ƒeƒNƒXƒ`ƒƒ‚ğƒoƒCƒ“ƒh‚·‚é
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’ãƒã‚¤ãƒ³ãƒ‰ã™ã‚‹
 	if (data != nullptr)
 	{
 		BindTexture(data->GetTexture());
@@ -116,17 +116,17 @@ void Sprite::SetTexture(std::string path)
 }
 
 //=============================================================
-// ’¸“_‚ğXV‚·‚é
+// é ‚ç‚¹ã‚’æ›´æ–°ã™ã‚‹
 //=============================================================
 void Sprite::UpdateVertex()
 {
-	VERTEX_2D* vtx; //’¸“_î•ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^
+	VERTEX_2D* vtx; //é ‚ç‚¹æƒ…å ±ã¸ã®ãƒã‚¤ãƒ³ã‚¿
 
 	D3DXMATRIX mtx;
 	D3DXMatrixIdentity(&mtx);
-	D3DXMatrixRotationZ(&mtx, transform->GetWorldRotation().z);
+	D3DXMatrixRotationZ(&mtx, transform->GetWorldEulerAngle().z);
 
-	// ’¸“_ˆÊ’u‚ğŠi”[‚·‚é
+	// é ‚ç‚¹ä½ç½®ã‚’æ ¼ç´ã™ã‚‹
 	D3DXVECTOR3 convPos[4] =
 	{
 		{0.0f, 0.0f, 0.0f},
@@ -135,7 +135,7 @@ void Sprite::UpdateVertex()
 		{transform->size.x, transform->size.y, 0.0f}
 	};
 
-	// ƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚ğ‰Á–¡‚·‚é
+	// ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã‚’åŠ å‘³ã™ã‚‹
 	for (int i = 0; i < 4; i++)
 	{
 		convPos[i].x -= m_anchorPoint.x;
@@ -143,22 +143,22 @@ void Sprite::UpdateVertex()
 	}
 
 
-	// ’¸“_ƒoƒbƒtƒ@‚ğƒƒbƒN‚µA’¸“_î•ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^‚ğæ“¾
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ãƒ­ãƒƒã‚¯ã—ã€é ‚ç‚¹æƒ…å ±ã¸ã®ãƒã‚¤ãƒ³ã‚¿ã‚’å–å¾—
 	m_vtxBuff->Lock(0, 0, (void**)&vtx, 0);
 
-	// ƒTƒCƒY‚Æ‰ñ“]
+	// ã‚µã‚¤ã‚ºã¨å›è»¢
 	D3DXVec3TransformCoord(&vtx[0].pos, &convPos[0], &mtx);
 	D3DXVec3TransformCoord(&vtx[1].pos, &convPos[1], &mtx);
 	D3DXVec3TransformCoord(&vtx[2].pos, &convPos[2], &mtx);
 	D3DXVec3TransformCoord(&vtx[3].pos, &convPos[3], &mtx);
 
-	// ˆÊ’u
+	// ä½ç½®
 	for (int i = 0; i < 4; i++)
 	{
 		vtx[i].pos.x += transform->GetWorldPosition().x;
 		vtx[i].pos.y += transform->GetWorldPosition().y;
 	}
 
-	//’¸“_ƒoƒbƒtƒ@‚ğƒAƒ“ƒƒbƒN‚·‚é
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ã‚¢ãƒ³ãƒ­ãƒƒã‚¯ã™ã‚‹
 	m_vtxBuff->Unlock();
 }

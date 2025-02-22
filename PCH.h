@@ -1,6 +1,6 @@
 //------------------------------------------------------------
 // @file		PCH.h
-// @brief	ƒvƒŠƒRƒ“ƒpƒCƒ‹Ï‚İƒwƒbƒ_[
+// @brief	ãƒ—ãƒªã‚³ãƒ³ãƒ‘ã‚¤ãƒ«æ¸ˆã¿ãƒ˜ãƒƒãƒ€ãƒ¼
 //------------------------------------------------------------
 #ifndef _PCH_H_
 #define _PCH_H_
@@ -11,62 +11,63 @@
 #include "d3d9.h"
 #include <shlwapi.h>
 
-// ƒCƒ“ƒNƒ‹[ƒh
+// ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰
 #include <iostream>
 #include <string>
 #include <vector>
 #include "sysyem/main.h"
 #include "sysyem/log.h"
+#include "sysyem/benlib.h"
 #include "gameobject.h"
 
-// ƒ‰ƒCƒuƒ‰ƒŠ‚ÌƒŠƒ“ƒN
-#pragma comment(lib, "d3d9.lib")		// •`‰æˆ—‚É•K—v
-#pragma comment(lib, "d3dx9.lib")		// Šg’£ƒ‰ƒCƒuƒ‰ƒŠ
-#pragma comment(lib, "dxguid.lib")	// DirectXƒRƒ“ƒ|[ƒlƒ“ƒg
-#pragma comment(lib, "winmm.lib")	// ƒVƒXƒeƒ€æ“¾‚É•K—v
-#pragma comment(lib, "shlwapi.lib")	// ƒtƒ@ƒCƒ‹‚Ì‘¶İŠm”F
+// ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã®ãƒªãƒ³ã‚¯
+#pragma comment(lib, "d3d9.lib")		// æç”»å‡¦ç†ã«å¿…è¦
+#pragma comment(lib, "d3dx9.lib")		// æ‹¡å¼µãƒ©ã‚¤ãƒ–ãƒ©ãƒª
+#pragma comment(lib, "dxguid.lib")	// DirectXã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ
+#pragma comment(lib, "winmm.lib")	// ã‚·ã‚¹ãƒ†ãƒ æ™‚åˆ»å–å¾—ã«å¿…è¦
+#pragma comment(lib, "shlwapi.lib")	// ãƒ•ã‚¡ã‚¤ãƒ«ã®å­˜åœ¨ç¢ºèª
 
-// ƒ}ƒNƒ’è‹`
+// ãƒã‚¯ãƒ­å®šç¾©
 #define FVF_VERTEX_2D	(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1)
 #define FVF_VERTEX_3D	(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1)
 
-//@brief ’¸“_î•ñ [2D]
+//@brief é ‚ç‚¹æƒ…å ± [2D]
 typedef struct
 {
-	D3DXVECTOR3 pos;	// ’¸“_À•W
-	float rhw;					// À•W•ÏŠ·—pŒW”i1.0f‚ÅŒÅ’èj
-	D3DCOLOR col;			// ’¸“_ƒJƒ‰[
-	D3DXVECTOR2 tex;	// ƒeƒNƒXƒ`ƒƒÀ•W
+	D3DXVECTOR3 pos;	// é ‚ç‚¹åº§æ¨™
+	float rhw;					// åº§æ¨™å¤‰æ›ç”¨ä¿‚æ•°ï¼ˆ1.0fã§å›ºå®šï¼‰
+	D3DCOLOR col;			// é ‚ç‚¹ã‚«ãƒ©ãƒ¼
+	D3DXVECTOR2 tex;	// ãƒ†ã‚¯ã‚¹ãƒãƒ£åº§æ¨™
 } VERTEX_2D;
 
-//@brief ’¸“_î•ñ [3D]
+//@brief é ‚ç‚¹æƒ…å ± [3D]
 typedef struct
 {
-	D3DXVECTOR3 pos;	// ’¸“_À•W
-	D3DXVECTOR3 nor;	// –@üƒxƒNƒgƒ‹
-	D3DCOLOR col;			// ’¸“_ƒJƒ‰[
-	D3DXVECTOR2 tex;	// ƒeƒNƒXƒ`ƒƒÀ•W
+	D3DXVECTOR3 pos;	// é ‚ç‚¹åº§æ¨™
+	D3DXVECTOR3 nor;	// æ³•ç·šãƒ™ã‚¯ãƒˆãƒ«
+	D3DCOLOR col;			// é ‚ç‚¹ã‚«ãƒ©ãƒ¼
+	D3DXVECTOR2 tex;	// ãƒ†ã‚¯ã‚¹ãƒãƒ£åº§æ¨™
 } VERTEX_3D;
 
-//@brief ”ÍˆÍ
+//@brief ç¯„å›²
 template<class T = float>
 class Range
 {
 public:
 	Range() {}
 
-	//@param vMin: Å¬’l
-	//@param vMax: Å‘å’l
+	//@param vMin: æœ€å°å€¤
+	//@param vMax: æœ€å¤§å€¤
 	Range(const T& vMin, const T& vMax)
 	{
 		min = vMin;
 		max = vMax;
 	}
 
-	T min;	// Å¬’l
-	T max;	// Å‘å’l
+	T min;	// æœ€å°å€¤
+	T max;	// æœ€å¤§å€¤
 
-	//@brief Å¬’l‚ÆÅ‘å’l‚ğ”ä‚×‚ÄA³‚µ‚­•À‚×‘Ö‚¦‚é
+	//@brief æœ€å°å€¤ã¨æœ€å¤§å€¤ã‚’æ¯”ã¹ã¦ã€æ­£ã—ãä¸¦ã¹æ›¿ãˆã‚‹
 	void Sort()
 	{
 		if (min > max)

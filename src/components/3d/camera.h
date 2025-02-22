@@ -10,7 +10,7 @@
 
 // 定義
 constexpr float CLIPPING_NEAR = 0.1f;			// 最短描画距離
-constexpr float CLIPPING_FAR = 500.0f;			// 最高描画距離
+constexpr float CLIPPING_FAR = 2000.0f;			// 最高描画距離
 constexpr float CAMERA_LENGTH = 100.0f;		// 視点と注視点の距離
 
 //@brief カメラコンポーネント

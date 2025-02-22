@@ -1,30 +1,36 @@
 //------------------------------------------------------------
 // @file		title.cpp
-// @brief	ƒ^ƒCƒgƒ‹ƒV[ƒ“
+// @brief	ã‚¿ã‚¤ãƒˆãƒ«ã‚·ãƒ¼ãƒ³
 //------------------------------------------------------------
 #include "title.h"
 
 #include "components/3d/camera.h"
 #include "components/3d/light.h"
 #include "components/3d/model.h"
+#include "components/2d/sprite.h"
 
 //=============================================================
-// ‰Šú‰»
+// åˆæœŸåŒ–
 //=============================================================
 void TitleScene::Init()
 {
-	// ƒJƒƒ‰‚ðì¬‚·‚é
-	GameObject* camera = new GameObject("Camera");
-	camera->AddComponent<Camera>();
-	camera->transform->position.y = 5.0f;
-	camera->transform->SetEulerAngle(0.1f, 0.0f, 0.0f);
+	// ãƒãƒªã‚´ãƒ³ã‚’ç”Ÿæˆã™ã‚‹
+	GameObject* poly = new GameObject("Polygon");
+	poly->AddComponent<Sprite>();
+	poly->transform->size = { 300.0f, 300.0f };
+	poly->transform->SetEulerAngle(0.2f);
 
-	// ƒ‰ƒCƒg‚ðì¬‚·‚é
+	// ãƒ©ã‚¤ãƒˆã‚’ä½œæˆã™ã‚‹
 	GameObject* light = new GameObject("Light");
 	D3DLight::SetDefaultLight(light);
 
-	// ƒ‚ƒfƒ‹‚ðì¬‚·‚é
+	// ãƒ¢ãƒ‡ãƒ«ã‚’ä½œæˆã™ã‚‹
 	GameObject* model = new GameObject("TestModel");
 	model->AddComponent<Model>()->Load("data\\MODEL\\bench.x");
 	model->transform->position = { 0.0f, 0.0f, 50.0f };
+
+	// ã‚«ãƒ¡ãƒ©ã‚’ä½œæˆã™ã‚‹
+	GameObject* camera = new GameObject("Camera");
+	camera->AddComponent<Camera>();
+	camera->transform->LookAt(model->transform->position);
 }

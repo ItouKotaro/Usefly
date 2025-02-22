@@ -102,6 +102,9 @@
     <ClInclude Include="src\components\3d\light.h">
       <Filter>ヘッダー ファイル\components\3d</Filter>
     </ClInclude>
+    <ClInclude Include="src\sysyem\benlib.h">
+      <Filter>ヘッダー ファイル\system</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\sysyem\main.cpp">
@@ -154,6 +157,9 @@
     </ClCompile>
     <ClCompile Include="src\components\3d\light.cpp">
       <Filter>ソース ファイル\components\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sysyem\benlib.cpp">
+      <Filter>ソース ファイル\system</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

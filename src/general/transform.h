@@ -1,14 +1,14 @@
 //------------------------------------------------------------
 // @file		transform.h
-// @brief	ƒgƒ‰ƒ“ƒXƒtƒH[ƒ€
-// @detail	ˆÊ’u‚â‰ñ“]‚È‚Ç‚Ìî•ñ‚ğ‚ÂƒNƒ‰ƒX
+// @brief	ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ 
+// @detail	ä½ç½®ã‚„å›è»¢ãªã©ã®æƒ…å ±ã‚’æŒã¤ã‚¯ãƒ©ã‚¹
 //------------------------------------------------------------
 #ifndef _TRANSFORM_H_
 #define _TRANSFORM_H_
 
 #include "d3dx9.h"
 
-//@brief ƒgƒ‰ƒ“ƒXƒtƒH[ƒ€ƒNƒ‰ƒX
+//@brief ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ ã‚¯ãƒ©ã‚¹
 class Transform
 {
 public:
@@ -21,54 +21,58 @@ public:
 		m_parent = nullptr;
 	}
 
-	//@brief e‚ğİ’è‚·‚é
+	//@brief è¦ªã‚’è¨­å®šã™ã‚‹
 	void SetParent(Transform* parent) { m_parent = parent; }
-	//@brief e‚ğæ“¾‚·‚é
+	//@brief è¦ªã‚’å–å¾—ã™ã‚‹
 	Transform* GetParent() { return m_parent; }
 
-	//@brief ƒIƒCƒ‰[Šp‚Å‰ñ“]‚ğæ“¾‚·‚é
+	//@brief ã‚ªã‚¤ãƒ©ãƒ¼è§’ã§å›è»¢ã‚’å–å¾—ã™ã‚‹
 	D3DXVECTOR3 GetEulerAngle();
-	//@brief ƒIƒCƒ‰[Šp‚Å‰ñ“]‚ğİ’è‚·‚é
+	//@brief ã‚ªã‚¤ãƒ©ãƒ¼è§’ã§å›è»¢ã‚’è¨­å®šã™ã‚‹
 	void SetEulerAngle(float x, float y, float z);
 	void SetEulerAngle(D3DXVECTOR3 rotation) { SetEulerAngle(rotation.x, rotation.y, rotation.z); }
 	void SetEulerAngle(float fAngle) { SetEulerAngle(GetEulerAngle().x, GetEulerAngle().y, fAngle); }
 
-	//@brief ƒ[ƒ‹ƒhŠî€‚ÌˆÊ’u‚ğæ“¾‚·‚é
+	//@brief æŒ‡å®šä½ç½®ã®æ–¹å‘ã«å›è»¢ã™ã‚‹
+	void LookAt(float x, float y, float z);
+	void LookAt(D3DXVECTOR3 at) { LookAt(at.x, at.y, at.z); }
+
+	//@brief ãƒ¯ãƒ¼ãƒ«ãƒ‰åŸºæº–ã®ä½ç½®ã‚’å–å¾—ã™ã‚‹
 	D3DXVECTOR3 GetWorldPosition();
-	//@brief ƒ[ƒ‹ƒhŠî€‚Ì‰ñ“]‚ğæ“¾‚·‚é
+	//@brief ãƒ¯ãƒ¼ãƒ«ãƒ‰åŸºæº–ã®å›è»¢ã‚’å–å¾—ã™ã‚‹
 	D3DXQUATERNION GetWorldRotation();
-	//@brief ƒ[ƒ‹ƒhŠî€‚ÌƒIƒCƒ‰[Šp‚ğæ“¾‚·‚é
+	//@brief ãƒ¯ãƒ¼ãƒ«ãƒ‰åŸºæº–ã®ã‚ªã‚¤ãƒ©ãƒ¼è§’ã‚’å–å¾—ã™ã‚‹
 	D3DXVECTOR3 GetWorldEulerAngle();
-	//@brief ƒ[ƒ‹ƒhŠî€‚ÌƒXƒP[ƒ‹‚ğæ“¾‚·‚é
+	//@brief ãƒ¯ãƒ¼ãƒ«ãƒ‰åŸºæº–ã®ã‚¹ã‚±ãƒ¼ãƒ«ã‚’å–å¾—ã™ã‚‹
 	D3DXVECTOR3 GetWorldScale();
 
-	//@brief ƒ}ƒgƒŠƒbƒNƒX‚ğæ“¾‚·‚é
+	//@brief ãƒãƒˆãƒªãƒƒã‚¯ã‚¹ã‚’å–å¾—ã™ã‚‹
 	D3DXMATRIX& GetMatrix();
-	//@brief ˆÊ’uî•ñƒ}ƒgƒŠƒbƒNƒX‚ğæ“¾‚·‚é
+	//@brief ä½ç½®æƒ…å ±ãƒãƒˆãƒªãƒƒã‚¯ã‚¹ã‚’å–å¾—ã™ã‚‹
 	D3DXMATRIX GetTranslationMatrix();
-	//@brief ‰ñ“]î•ñƒ}ƒgƒŠƒbƒNƒX‚ğæ“¾‚·‚é
+	//@brief å›è»¢æƒ…å ±ãƒãƒˆãƒªãƒƒã‚¯ã‚¹ã‚’å–å¾—ã™ã‚‹
 	D3DXMATRIX GetRotationMatrix();
 
-	D3DXVECTOR3 position;			// ˆÊ’u
-	D3DXQUATERNION rotation;	// ‰ñ“]
-	D3DXVECTOR3 scale;				// ƒXƒP[ƒ‹
-	D3DXVECTOR2 size;				// ƒTƒCƒY
+	D3DXVECTOR3 position;			// ä½ç½®
+	D3DXQUATERNION rotation;	// å›è»¢
+	D3DXVECTOR3 scale;				// ã‚¹ã‚±ãƒ¼ãƒ«
+	D3DXVECTOR2 size;				// ã‚µã‚¤ã‚º
 
-	//@brief ‰‰Zq ==
+	//@brief æ¼”ç®—å­ ==
 	bool operator==(Transform value);
 
-	//@brief ‰‰Zq !=
+	//@brief æ¼”ç®—å­ !=
 	bool operator!=(Transform value);
 
-	//@brief ‰‰Zq =
+	//@brief æ¼”ç®—å­ =
 	Transform& operator=(Transform value);
 
 private:
-	//@brief ƒNƒH[ƒ^ƒjƒIƒ“‚ğƒIƒCƒ‰[Šp‚É•ÏŠ·‚·‚é
+	//@brief ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³ã‚’ã‚ªã‚¤ãƒ©ãƒ¼è§’ã«å¤‰æ›ã™ã‚‹
 	D3DXVECTOR3 QuaternionToEulerAngle(D3DXQUATERNION q);
 
-	D3DXMATRIX m_matrix;			// ƒ}ƒgƒŠƒbƒNƒX
-	Transform* m_parent;			// e
+	D3DXMATRIX m_matrix;			// ãƒãƒˆãƒªãƒƒã‚¯ã‚¹
+	Transform* m_parent;			// è¦ª
 };
 
 #endif // !_TRANSFORM_H_

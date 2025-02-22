@@ -111,7 +111,6 @@ void Renderer::Draw()
 
 	if (SUCCEEDED(m_d3dDevice->BeginScene()))
 	{ // 描画開始が成功した場合
-
 		for (auto itr = cameras.begin(); itr != cameras.end(); itr++)
 		{
 			// 非アクティブのとき
@@ -120,11 +119,11 @@ void Renderer::Draw()
 				continue;
 			}
 
-			// カメラをセットする
-			(*itr)->SetCamera();
-
 			// 画面クリア（バッファクリア＆Zバッファクリア）
 			m_d3dDevice->Clear(0, nullptr, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL), D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f), 1.0f, 0);
+
+			// カメラをセットする
+			(*itr)->SetCamera();
 
 			// ゲームオブジェクトを描画する
 			GameObject::AllDraw();

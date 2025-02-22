@@ -1,46 +1,52 @@
 //------------------------------------------------------------
 // @file		scene.cpp
-// @brief	ƒV[ƒ“
-// @detail	ƒV[ƒ“‚ÌŠÇ—‚ğs‚¢‚Ü‚·
+// @brief	ã‚·ãƒ¼ãƒ³
+// @detail	ã‚·ãƒ¼ãƒ³ã®ç®¡ç†ã‚’è¡Œã„ã¾ã™
 //------------------------------------------------------------
 #include "scene.h"
 #include "scenes/start.h"
 
 //=============================================================
-// ‰Šú‰»
+// åˆæœŸåŒ–
 //=============================================================
 void SceneManager::Init()
 {
-	// Å‰‚ÌƒV[ƒ“‚ğ“o˜^‚·‚é
+	// æœ€åˆã®ã‚·ãƒ¼ãƒ³ã‚’ç™»éŒ²ã™ã‚‹
 	this->RegisterScene<StartScene>();
 
-	// Å‰‚ÌƒV[ƒ“‚É‘JˆÚ‚·‚é
+	// æœ€åˆã®ã‚·ãƒ¼ãƒ³ã«é·ç§»ã™ã‚‹
 	this->SetScene<StartScene>();
 }
 
 //=============================================================
-// XV
+// æ›´æ–°
 //=============================================================
 void SceneManager::Update()
 {
-	// Ÿ‚ÌƒV[ƒ“‚ª‚ ‚é‚Æ‚«‚ÉƒV[ƒ“‚ğ•ÏX‚·‚é
+	// ã‚·ãƒ¼ãƒ³ã®æ›´æ–°
+	if (m_currentScene != nullptr)
+	{
+		m_currentScene->Update();
+	}
+
+	// æ¬¡ã®ã‚·ãƒ¼ãƒ³ãŒã‚ã‚‹ã¨ãã«ã‚·ãƒ¼ãƒ³ã‚’å¤‰æ›´ã™ã‚‹
 	ChangeScene();
 }
 
 //=============================================================
-// ‚·‚×‚Ä‰ğ•ú‚·‚é
+// ã™ã¹ã¦è§£æ”¾ã™ã‚‹
 //=============================================================
 void SceneManager::AllRelease()
 {
-	// Œ»İ‚ÌƒV[ƒ“‚ğI—¹‚·‚é
+	// ç¾åœ¨ã®ã‚·ãƒ¼ãƒ³ã‚’çµ‚äº†ã™ã‚‹
 	if (m_currentScene != nullptr)
 	{
-		// I—¹ˆ—
+		// çµ‚äº†å‡¦ç†
 		m_currentScene->Uninit();
 		m_currentScene = nullptr;
 	}
 
-	// “o˜^‚³‚ê‚Ä‚¢‚éƒV[ƒ“‚ğ‚·‚×‚Ä‰ğ•ú‚·‚é
+	// ç™»éŒ²ã•ã‚Œã¦ã„ã‚‹ã‚·ãƒ¼ãƒ³ã‚’ã™ã¹ã¦è§£æ”¾ã™ã‚‹
 	for (auto itr = m_scenes.begin(); itr != m_scenes.end(); itr++)
 	{
 		delete* itr;
@@ -50,11 +56,11 @@ void SceneManager::AllRelease()
 }
 
 //=============================================================
-// ƒQ[ƒ€ƒIƒuƒWƒFƒNƒg‚ğ”jŠü‚·‚é
+// ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç ´æ£„ã™ã‚‹
 //=============================================================
 void SceneManager::ReleaseGameObjects()
 {
-	// ƒQ[ƒ€ƒIƒuƒWƒFƒNƒg‚ğæ“¾‚·‚é
+	// ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å–å¾—ã™ã‚‹
 	auto gameObjectList = GameObject::GetAllGameObjects();
 
 	for (auto itr = gameObjectList.begin(); itr != gameObjectList.end(); itr++)
@@ -67,49 +73,49 @@ void SceneManager::ReleaseGameObjects()
 }
 
 //=============================================================
-// ƒV[ƒ“‚ğ•ÏX‚·‚é
+// ã‚·ãƒ¼ãƒ³ã‚’å¤‰æ›´ã™ã‚‹
 //=============================================================
 void SceneManager::ChangeScene()
 {
-	// Ÿ‚ÌƒV[ƒ“‚ªİ’è‚³‚ê‚Ä‚¢‚È‚¢‚Æ‚«‚ÍƒXƒLƒbƒv‚·‚é
+	// æ¬¡ã®ã‚·ãƒ¼ãƒ³ãŒè¨­å®šã•ã‚Œã¦ã„ãªã„ã¨ãã¯ã‚¹ã‚­ãƒƒãƒ—ã™ã‚‹
 	if (m_nextScene == nullptr)
 	{
 		return;
 	}
 
-	// ¡‚Ü‚Å‚ÌƒV[ƒ“‚ğI—¹‚·‚é
+	// ä»Šã¾ã§ã®ã‚·ãƒ¼ãƒ³ã‚’çµ‚äº†ã™ã‚‹
 	if (m_currentScene != nullptr)
 	{
-		// I—¹ˆ—
+		// çµ‚äº†å‡¦ç†
 		m_currentScene->Uninit();
 
-		// ƒƒO‚ğ‘—M‚·‚é
-		Log::SendLog("ƒV[ƒ“ \"" + static_cast<std::string>(typeid(*m_currentScene).name()) + "\" ‚ğI—¹‚µ‚Ü‚µ‚½");
+		// ãƒ­ã‚°ã‚’é€ä¿¡ã™ã‚‹
+		Log::SendLog("ã‚·ãƒ¼ãƒ³ \"" + static_cast<std::string>(typeid(*m_currentScene).name()) + "\" ã‚’çµ‚äº†ã—ã¾ã—ãŸ");
 
-		// Œ»İ‚ÌƒV[ƒ“‚ğ‹ó‚É‚·‚é
+		// ç¾åœ¨ã®ã‚·ãƒ¼ãƒ³ã‚’ç©ºã«ã™ã‚‹
 		m_currentScene = nullptr;
 	}
 
-	// ƒIƒuƒWƒFƒNƒg‚Ì”jŠü
+	// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ç ´æ£„
 	if (m_isReleaseObjects)
 	{
 		ReleaseGameObjects();
 	}
 
-	// V‚µ‚¢ƒV[ƒ“‚ğŒ»İ‚ÌƒV[ƒ“‚É‚·‚é
+	// æ–°ã—ã„ã‚·ãƒ¼ãƒ³ã‚’ç¾åœ¨ã®ã‚·ãƒ¼ãƒ³ã«ã™ã‚‹
 	m_currentScene = m_nextScene;
 	m_nextScene = nullptr;
 	if (m_currentScene != nullptr)
 	{
-		// ƒƒO‚ğ‘—M‚·‚é
-		Log::SendLog("ƒV[ƒ“ \"" + static_cast<std::string>(typeid(*m_currentScene).name()) + "\" ‚É‘JˆÚ‚µ‚Ü‚µ‚½");
+		// ãƒ­ã‚°ã‚’é€ä¿¡ã™ã‚‹
+		Log::SendLog("ã‚·ãƒ¼ãƒ³ \"" + static_cast<std::string>(typeid(*m_currentScene).name()) + "\" ã«é·ç§»ã—ã¾ã—ãŸ");
 
-		// ‰Šú‰»ˆ—
+		// åˆæœŸåŒ–å‡¦ç†
 		m_currentScene->Init();
 
 		return;
 	}
 
-	// ¸”s‚µ‚½‚Æ‚«
-	Log::SendLog("ƒV[ƒ“‚Ì‘JˆÚ‚É¸”s‚µ‚Ü‚µ‚½", Log::TYPE_ERROR);
+	// å¤±æ•—ã—ãŸã¨ã
+	Log::SendLog("ã‚·ãƒ¼ãƒ³ã®é·ç§»ã«å¤±æ•—ã—ã¾ã—ãŸ", Log::TYPE_ERROR);
 }

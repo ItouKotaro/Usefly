@@ -1,7 +1,7 @@
 //------------------------------------------------------------
 // @file		camera.cpp
-// @brief	ƒJƒƒ‰
-// @detail	3D‹óŠÔ‚É‘¶İ‚·‚éƒIƒuƒWƒFƒNƒg‚ğ•`‰æ‚·‚é‚½‚ß‚ÌƒfƒoƒCƒX
+// @brief	ã‚«ãƒ¡ãƒ©
+// @detail	3Dç©ºé–“ã«å­˜åœ¨ã™ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æç”»ã™ã‚‹ãŸã‚ã®ãƒ‡ãƒã‚¤ã‚¹
 //------------------------------------------------------------
 #include "camera.h"
 #include "sysyem/manager.h"
@@ -9,37 +9,37 @@
 std::vector<Camera*> Camera::m_cameras;
 
 //=============================================================
-// ‰Šú‰»
+// åˆæœŸåŒ–
 //=============================================================
 void Camera::Init()
 {
-	// ‰Šúİ’è
+	// åˆæœŸè¨­å®š
 	m_vecU = { 0.0f, 1.0f, 0.0f };
 	m_posR = { 0.0f, 0.0f, 0.0f };
 	m_length = CAMERA_LENGTH;
 	m_mode = MODE::MODE_PERSPECTIVE;
 
-	// •`‰æ‹——£‚Ìİ’è
+	// æç”»è·é›¢ã®è¨­å®š
 	m_clippingPlanes.min = CLIPPING_NEAR;
 	m_clippingPlanes.max = CLIPPING_FAR;
 	m_clippingPlanes.Sort();
 
-	// ƒrƒ…[ƒ|[ƒg‚Ìİ’è
+	// ãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆã®è¨­å®š
 	m_viewport.MinZ = 0.0f;
 	m_viewport.MaxZ = 1.0f;
 	SetViewportPosition(0.0f, 0.0f);
 	SetViewportSize((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT);
 
-	// ƒJƒƒ‰ƒŠƒXƒg‚É’Ç‰Á‚·‚é
+	// ã‚«ãƒ¡ãƒ©ãƒªã‚¹ãƒˆã«è¿½åŠ ã™ã‚‹
 	m_cameras.push_back(this);
 }
 
 //=============================================================
-// I—¹
+// çµ‚äº†
 //=============================================================
 void Camera::Uninit()
 {
-	// ƒJƒƒ‰ƒŠƒXƒg‚©‚çíœ‚·‚é
+	// ã‚«ãƒ¡ãƒ©ãƒªã‚¹ãƒˆã‹ã‚‰å‰Šé™¤ã™ã‚‹
 	for (auto itr = m_cameras.begin(); itr != m_cameras.end(); itr++)
 	{
 		if (*itr == this)
@@ -51,21 +51,21 @@ void Camera::Uninit()
 }
 
 //=============================================================
-// XV
+// æ›´æ–°
 //=============================================================
 void Camera::Update()
 {
-	// ‘O•û‚©‚çw’è‚Ì’·‚³•ªL‚Î‚·
+	// å‰æ–¹ã‹ã‚‰æŒ‡å®šã®é•·ã•åˆ†ä¼¸ã°ã™
 	D3DXMATRIX rotMtx = transform->GetRotationMatrix();
 	m_posR = { 0.0f, 0.0f, m_length };
 	D3DXVec3TransformCoord(&m_posR, &m_posR, &rotMtx);
 
-	// ˆÊ’u‚ğ‰ÁZ‚·‚é
+	// ä½ç½®ã‚’åŠ ç®—ã™ã‚‹
 	m_posR += transform->GetWorldPosition();
 }
 
 //=============================================================
-// ƒrƒ…[ƒ|[ƒg‚ÌˆÊ’u‚ğİ’è‚·‚é
+// ãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆã®ä½ç½®ã‚’è¨­å®šã™ã‚‹
 //=============================================================
 void Camera::SetViewportPosition(float x, float y)
 {
@@ -74,7 +74,7 @@ void Camera::SetViewportPosition(float x, float y)
 }
 
 //=============================================================
-// ƒrƒ…[ƒ|[ƒg‚ÌƒTƒCƒY‚ğİ’è‚·‚é
+// ãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆã®ã‚µã‚¤ã‚ºã‚’è¨­å®šã™ã‚‹
 //=============================================================
 void Camera::SetViewportSize(float width, float height)
 {
@@ -83,20 +83,20 @@ void Camera::SetViewportSize(float width, float height)
 }
 
 //=============================================================
-// ƒJƒƒ‰‚Ìİ’u
+// ã‚«ãƒ¡ãƒ©ã®è¨­ç½®
 //=============================================================
 void Camera::SetCamera()
 {
-	// ƒfƒoƒCƒX‚ğæ“¾
+	// ãƒ‡ãƒã‚¤ã‚¹ã‚’å–å¾—
 	LPDIRECT3DDEVICE9 device = Manager::GetInstance()->GetDevice();
 
-	// ƒvƒƒWƒFƒNƒVƒ‡ƒ“ƒ}ƒgƒŠƒbƒNƒX‚Ì‰Šú‰»
+	// ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³ãƒãƒˆãƒªãƒƒã‚¯ã‚¹ã®åˆæœŸåŒ–
 	D3DXMatrixIdentity(&m_projMtx);
 
-	// ƒEƒBƒ“ƒhƒEƒTƒCƒY‚Ìæ“¾
+	// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚µã‚¤ã‚ºã®å–å¾—
 	D3DXVECTOR2 windowSize = Main::GetWindowSize();
 
-	// “Š‰eƒ‚[ƒh‚²‚Æ‚Éİ’è‚·‚é
+	// æŠ•å½±ãƒ¢ãƒ¼ãƒ‰ã”ã¨ã«è¨­å®šã™ã‚‹
 	switch (m_mode)
 	{
 	case Camera::MODE_PERSPECTIVE:
@@ -116,7 +116,7 @@ void Camera::SetCamera()
 			m_clippingPlanes.min,
 			m_clippingPlanes.max);
 
-		// ƒXƒP[ƒŠƒ“ƒO’²®
+		// ã‚¹ã‚±ãƒ¼ãƒªãƒ³ã‚°èª¿æ•´
 		D3DXMATRIX mtxScale;
 		D3DXMatrixIdentity(&mtxScale);
 		D3DXMatrixScaling(&mtxScale, 10.0f, 10.0f, 1.0f);
@@ -124,19 +124,19 @@ void Camera::SetCamera()
 		break;
 	}
 
-	// ƒvƒƒWƒFƒNƒVƒ‡ƒ“ƒ}ƒgƒŠƒbƒNƒX‚Ìİ’è
+	// ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³ãƒãƒˆãƒªãƒƒã‚¯ã‚¹ã®è¨­å®š
 	device->SetTransform(D3DTS_PROJECTION, &m_projMtx);
 
-	// ƒrƒ…[ƒ}ƒgƒŠƒbƒNƒX‚Ì‰Šú‰»
+	// ãƒ“ãƒ¥ãƒ¼ãƒãƒˆãƒªãƒƒã‚¯ã‚¹ã®åˆæœŸåŒ–
 	D3DXMatrixIdentity(&m_viewMtx);
 
-	// ƒrƒ…[ƒ}ƒgƒŠƒbƒNƒX‚Ìì¬
+	// ãƒ“ãƒ¥ãƒ¼ãƒãƒˆãƒªãƒƒã‚¯ã‚¹ã®ä½œæˆ
 	D3DXVECTOR3 pos = transform->GetWorldPosition();
 	D3DXMatrixLookAtLH(&m_viewMtx, &pos, &m_posR, &m_vecU);
 
-	// ƒrƒ…[ƒ}ƒgƒŠƒbƒNƒX‚Ìİ’è
+	// ãƒ“ãƒ¥ãƒ¼ãƒãƒˆãƒªãƒƒã‚¯ã‚¹ã®è¨­å®š
 	device->SetTransform(D3DTS_VIEW, &m_viewMtx);
 
-	// ƒrƒ…[ƒ|[ƒg‚Ìİ’è
+	// ãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆã®è¨­å®š
 	device->SetViewport(&m_viewport);
 }

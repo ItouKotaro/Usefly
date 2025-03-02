@@ -128,7 +128,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>PCH.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>src;src\general</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./src;./src/general</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -168,7 +168,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>PCH.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>src;src\general</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./src;./src/general</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

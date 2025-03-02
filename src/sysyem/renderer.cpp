@@ -1,53 +1,53 @@
 //------------------------------------------------------------
 // @file		renderer.cpp
-// @brief	ƒŒƒ“ƒ_ƒ‰[
-// @detail	•`‰æ‚ðs‚¤ƒVƒXƒeƒ€‚Å‚·
+// @brief	ãƒ¬ãƒ³ãƒ€ãƒ©ãƒ¼
+// @detail	æç”»ã‚’è¡Œã†ã‚·ã‚¹ãƒ†ãƒ ã§ã™
 //------------------------------------------------------------
 #include "renderer.h"
 #include "gameobject.h"
 #include "components/3d/camera.h"
 
 //=============================================================
-// ‰Šú‰»
+// åˆæœŸåŒ–
 //=============================================================
 HRESULT Renderer::Init(HINSTANCE hInstance, HWND hWnd)
 {
-	D3DDISPLAYMODE d3ddm;					// ƒfƒBƒXƒvƒŒƒCƒ‚[ƒh
-	D3DPRESENT_PARAMETERS d3dpp;	// ƒvƒŒƒ[ƒ“ƒe[ƒVƒ‡ƒ“ƒpƒ‰ƒ[ƒ^
+	D3DDISPLAYMODE d3ddm;					// ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤ãƒ¢ãƒ¼ãƒ‰
+	D3DPRESENT_PARAMETERS d3dpp;	// ãƒ—ãƒ¬ã‚¼ãƒ³ãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
 
-	// Direct3DƒIƒuƒWƒFƒNƒg‚Ì¶¬
+	// Direct3Dã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ç”Ÿæˆ
 	m_d3d = Direct3DCreate9(D3D_SDK_VERSION);
 	if (m_d3d == nullptr)
 	{
 		return E_FAIL;
 	}
 
-	// Œ»Ý‚ÌƒfƒBƒXƒvƒŒƒCƒ‚[ƒh‚ðŽæ“¾
+	// ç¾åœ¨ã®ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤ãƒ¢ãƒ¼ãƒ‰ã‚’å–å¾—
 	if (FAILED(m_d3d->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &d3ddm)))
 	{
 		return E_FAIL;
 	}
 
-	// ƒfƒoƒCƒX‚ÌƒvƒŒƒ[ƒ“ƒe[ƒVƒ‡ƒ“ƒpƒ‰ƒ[ƒ^‚ÌÝ’è
-	ZeroMemory(&d3dpp, sizeof(d3dpp));														// ƒpƒ‰ƒ[ƒ^‚Ìƒ[ƒƒNƒŠƒA
-	d3dpp.BackBufferWidth = SCREEN_WIDTH;												// ‰æ–ÊƒTƒCƒYi•j
-	d3dpp.BackBufferHeight = SCREEN_HEIGHT;											// ‰æ–ÊƒTƒCƒYi‚‚³j
-	d3dpp.BackBufferFormat = d3ddm.Format;												// ƒoƒbƒNƒoƒbƒtƒ@‚ÌŒ`Ž®
-	d3dpp.BackBufferCount = 1;																	// ƒoƒbƒNƒoƒbƒtƒ@‚Ì”
-	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;									// ƒ_ƒuƒ‹ƒoƒbƒtƒ@‚ÌØ‚è‘Ö‚¦i‰f‘œM†‚É“¯Šúj
-	d3dpp.EnableAutoDepthStencil = TRUE;													// ƒfƒvƒXƒoƒbƒtƒ@‚ÆƒXƒeƒ“ƒVƒ‹ƒoƒbƒtƒ@‚ðì¬
-	d3dpp.AutoDepthStencilFormat = D3DFMT_D24S8;									// ƒfƒvƒXƒoƒbƒtƒ@
-	d3dpp.Windowed = RENDERER_WINDOWED;											// ƒEƒBƒ“ƒhƒEƒ‚[ƒh
-	d3dpp.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;			// ƒŠƒtƒŒƒbƒVƒ…ƒŒ[ƒg
-	d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;				// ƒvƒŒƒ[ƒ“ƒe[ƒVƒ‡ƒ“ƒCƒ“ƒ^[ƒoƒ‹
+	// ãƒ‡ãƒã‚¤ã‚¹ã®ãƒ—ãƒ¬ã‚¼ãƒ³ãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã®è¨­å®š
+	ZeroMemory(&d3dpp, sizeof(d3dpp));														// ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã®ã‚¼ãƒ­ã‚¯ãƒªã‚¢
+	d3dpp.BackBufferWidth = SCREEN_WIDTH;												// ç”»é¢ã‚µã‚¤ã‚ºï¼ˆå¹…ï¼‰
+	d3dpp.BackBufferHeight = SCREEN_HEIGHT;											// ç”»é¢ã‚µã‚¤ã‚ºï¼ˆé«˜ã•ï¼‰
+	d3dpp.BackBufferFormat = d3ddm.Format;												// ãƒãƒƒã‚¯ãƒãƒƒãƒ•ã‚¡ã®å½¢å¼
+	d3dpp.BackBufferCount = 1;																	// ãƒãƒƒã‚¯ãƒãƒƒãƒ•ã‚¡ã®æ•°
+	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;									// ãƒ€ãƒ–ãƒ«ãƒãƒƒãƒ•ã‚¡ã®åˆ‡ã‚Šæ›¿ãˆï¼ˆæ˜ åƒä¿¡å·ã«åŒæœŸï¼‰
+	d3dpp.EnableAutoDepthStencil = TRUE;													// ãƒ‡ãƒ—ã‚¹ãƒãƒƒãƒ•ã‚¡ã¨ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ãƒãƒƒãƒ•ã‚¡ã‚’ä½œæˆ
+	d3dpp.AutoDepthStencilFormat = D3DFMT_D24S8;									// ãƒ‡ãƒ—ã‚¹ãƒãƒƒãƒ•ã‚¡
+	d3dpp.Windowed = RENDERER_WINDOWED;											// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãƒ¢ãƒ¼ãƒ‰
+	d3dpp.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;			// ãƒªãƒ•ãƒ¬ãƒƒã‚·ãƒ¥ãƒ¬ãƒ¼ãƒˆ
+	d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;				// ãƒ—ãƒ¬ã‚¼ãƒ³ãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ã‚¤ãƒ³ã‚¿ãƒ¼ãƒãƒ«
 
-		// Direct3DƒfƒoƒCƒX‚Ì¶¬i•`‰æˆ—‚Æ’¸“_ˆ—‚ðƒn[ƒhƒEƒFƒA‚Ås‚¤j
+		// Direct3Dãƒ‡ãƒã‚¤ã‚¹ã®ç”Ÿæˆï¼ˆæç”»å‡¦ç†ã¨é ‚ç‚¹å‡¦ç†ã‚’ãƒãƒ¼ãƒ‰ã‚¦ã‚§ã‚¢ã§è¡Œã†ï¼‰
 	if (FAILED(m_d3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &d3dpp, &m_d3dDevice)))
 	{
-		// Direct3DƒfƒoƒCƒX‚Ì¶¬i•`‰æˆ—‚Íƒn[ƒhƒEƒFƒA‚Å’¸“_ˆ—‚ÍCPU‚Ås‚¤j
+		// Direct3Dãƒ‡ãƒã‚¤ã‚¹ã®ç”Ÿæˆï¼ˆæç”»å‡¦ç†ã¯ãƒãƒ¼ãƒ‰ã‚¦ã‚§ã‚¢ã§é ‚ç‚¹å‡¦ç†ã¯CPUã§è¡Œã†ï¼‰
 		if (FAILED(m_d3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &d3dpp, &m_d3dDevice)))
 		{
-			// Direct3DƒfƒoƒCƒX‚Ì¶¬i•`‰æˆ—‚Æ’¸“_ˆ—‚ðCPU‚Ås‚¤j
+			// Direct3Dãƒ‡ãƒã‚¤ã‚¹ã®ç”Ÿæˆï¼ˆæç”»å‡¦ç†ã¨é ‚ç‚¹å‡¦ç†ã‚’CPUã§è¡Œã†ï¼‰
 			if (FAILED(m_d3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_REF, hWnd, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &d3dpp, &m_d3dDevice)))
 			{
 				return E_FAIL;
@@ -55,10 +55,10 @@ HRESULT Renderer::Init(HINSTANCE hInstance, HWND hWnd)
 		}
 	}
 
-	// ƒnƒ“ƒhƒ‹‚Ì‘ã“ü
+	// ãƒãƒ³ãƒ‰ãƒ«ã®ä»£å…¥
 	m_hwnd = hWnd;
 
-	// ƒŒƒ“ƒ_[ƒXƒe[ƒg‚ÌÝ’è
+	// ãƒ¬ãƒ³ãƒ€ãƒ¼ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
 	m_d3dDevice->SetRenderState(D3DRS_NORMALIZENORMALS, TRUE);
 	m_d3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 	m_d3dDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
@@ -69,23 +69,23 @@ HRESULT Renderer::Init(HINSTANCE hInstance, HWND hWnd)
 	m_d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
 	m_d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
 
-	// ¬Œ÷‚ð•Ô‚·
+	// æˆåŠŸã‚’è¿”ã™
 	return S_OK;
 }
 
 //=============================================================
-// I—¹
+// çµ‚äº†
 //=============================================================
 void Renderer::Uninit()
 {
-	// Direct3DƒfƒoƒCƒX‚Ì”jŠü
+	// Direct3Dãƒ‡ãƒã‚¤ã‚¹ã®ç ´æ£„
 	if (m_d3dDevice != nullptr)
 	{
 		m_d3dDevice->Release();
 		m_d3dDevice = nullptr;
 	}
 
-	// Direct3DƒIƒuƒWƒFƒNƒg‚Ì”jŠü
+	// Direct3Dã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ç ´æ£„
 	if (m_d3d != nullptr)
 	{
 		m_d3d->Release();
@@ -94,7 +94,7 @@ void Renderer::Uninit()
 }
 
 //=============================================================
-// XV
+// æ›´æ–°
 //=============================================================
 void Renderer::Update()
 {
@@ -102,40 +102,40 @@ void Renderer::Update()
 }
 
 //=============================================================
-// •`‰æ
+// æç”»
 //=============================================================
 void Renderer::Draw()
 {
-	// ƒJƒƒ‰‚ðŽæ“¾‚·‚é
+	// ã‚«ãƒ¡ãƒ©ã‚’å–å¾—ã™ã‚‹
 	auto& cameras = Camera::GetAllCameras();
 
+	// ç”»é¢ã‚¯ãƒªã‚¢ï¼ˆãƒãƒƒãƒ•ã‚¡ã‚¯ãƒªã‚¢ï¼†Zãƒãƒƒãƒ•ã‚¡ã‚¯ãƒªã‚¢ï¼‰
+	m_d3dDevice->Clear(0, nullptr, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL), D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f), 1.0f, 0);
+
 	if (SUCCEEDED(m_d3dDevice->BeginScene()))
-	{ // •`‰æŠJŽn‚ª¬Œ÷‚µ‚½ê‡
+	{ // æç”»é–‹å§‹ãŒæˆåŠŸã—ãŸå ´åˆ
 		for (auto itr = cameras.begin(); itr != cameras.end(); itr++)
 		{
-			// ”ñƒAƒNƒeƒBƒu‚Ì‚Æ‚«
+			// éžã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã®ã¨ã
 			if (!((*itr)->gameObject->GetActive() && (*itr)->GetActive()))
 			{
 				continue;
 			}
 
-			// ‰æ–ÊƒNƒŠƒAiƒoƒbƒtƒ@ƒNƒŠƒA•Zƒoƒbƒtƒ@ƒNƒŠƒAj
-			m_d3dDevice->Clear(0, nullptr, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL), D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f), 1.0f, 0);
-
-			// ƒJƒƒ‰‚ðƒZƒbƒg‚·‚é
+			// ã‚«ãƒ¡ãƒ©ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
 			(*itr)->SetCamera();
 
-			// ƒQ[ƒ€ƒIƒuƒWƒFƒNƒg‚ð•`‰æ‚·‚é
+			// ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æç”»ã™ã‚‹
 			GameObject::AllDraw();
-
-			// ƒQ[ƒ€ƒIƒuƒWƒFƒNƒg‚ðUI•`‰æ‚·‚é
-			GameObject::AllDrawUI();
 		}
 
-		// •`‰æI—¹
+		// ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’UIæç”»ã™ã‚‹
+		GameObject::AllDrawUI();
+
+		// æç”»çµ‚äº†
 		m_d3dDevice->EndScene();
 	}
 
-	// ƒoƒbƒNƒoƒbƒtƒ@‚Æƒtƒƒ“ƒgƒoƒbƒtƒ@‚Ì“ü‚ê‘Ö‚¦
+	// ãƒãƒƒã‚¯ãƒãƒƒãƒ•ã‚¡ã¨ãƒ•ãƒ­ãƒ³ãƒˆãƒãƒƒãƒ•ã‚¡ã®å…¥ã‚Œæ›¿ãˆ
 	m_d3dDevice->Present(nullptr, nullptr, nullptr, nullptr);
 }

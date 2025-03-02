@@ -14,12 +14,6 @@
 //=============================================================
 void TitleScene::Init()
 {
-	// ポリゴンを生成する
-	GameObject* poly = new GameObject("Polygon");
-	poly->AddComponent<Sprite>();
-	poly->transform->size = { 300.0f, 300.0f };
-	poly->transform->SetEulerAngle(0.2f);
-
 	// ライトを作成する
 	GameObject* light = new GameObject("Light");
 	D3DLight::SetDefaultLight(light);
@@ -27,10 +21,18 @@ void TitleScene::Init()
 	// モデルを作成する
 	GameObject* model = new GameObject("TestModel");
 	model->AddComponent<Model>()->Load("data\\MODEL\\bench.x");
-	model->transform->position = { 0.0f, 0.0f, 50.0f };
 
 	// カメラを作成する
-	GameObject* camera = new GameObject("Camera");
-	camera->AddComponent<Camera>();
-	camera->transform->LookAt(model->transform->position);
+	m_camera = new GameObject("Camera");
+	m_camera->AddComponent<Camera>();
+	m_camera->transform->position = { 0.0f, 10.0f, -30.0f };
+	//m_camera->transform->LookAt(model->transform->position);
+}
+
+//=============================================================
+// 更新
+//=============================================================
+void TitleScene::Update()
+{
+	m_camera->transform->SetEulerAngle(0.0f, m_camera->transform->GetEulerAngle().y + 0.01f, 0.0f);
 }

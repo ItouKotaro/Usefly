@@ -1,17 +1,20 @@
 //------------------------------------------------------------
 // @file		title.h
-// @brief	タイトルシーン
+// @brief	繧ｿ繧､繝医Ν繧ｷ繝ｼ繝ｳ
 //------------------------------------------------------------
 #ifndef _SCENE_TITLE_H_
 #define _SCENE_TITLE_H_
 
 #include "scene.h"
 
-//@brief タイトルシーン
+//@brief 繧ｿ繧､繝医Ν繧ｷ繝ｼ繝ｳ
 class TitleScene : public Scene
 {
 public:
 	void Init() override;
+	void Update() override;
+private:
+	GameObject* m_camera;
 };
 
 #endif // !_SCENE_TITLE_H_

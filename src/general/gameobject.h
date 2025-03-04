@@ -1,77 +1,77 @@
 //------------------------------------------------------------
 // @file		gameobject.h
-// @brief	ƒQ[ƒ€ƒIƒuƒWƒFƒNƒg
-// @detail	ƒRƒ“ƒ|[ƒlƒ“ƒg‚Ìî•ñ‚ğ‚Á‚½ƒIƒuƒWƒFƒNƒg‚Å‚·
+// @brief	ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+// @detail	ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã®æƒ…å ±ã‚’æŒã£ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã§ã™
 //------------------------------------------------------------
 #ifndef _GAMEOBJECT_H_
 #define _GAMEOBJECT_H_
 
-#include "sysyem/object.h"
+#include "system/object.h"
 #include "transform.h"
 
-// ƒ}ƒNƒ’è‹`
+// ãƒã‚¯ãƒ­å®šç¾©
 #define TAG_NODESTROY		"NO_DESTROY"
 
-// ƒRƒ“ƒ|[ƒlƒ“ƒg‚ÌéŒ¾
+// ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã®å®£è¨€
 class Component;
 
-//@brief ƒQ[ƒ€ƒIƒuƒWƒFƒNƒg
+//@brief ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 class GameObject : public Object
 {
 public:
 	GameObject(std::string vName = "", std::string vTag = "");
 	virtual ~GameObject();
 
-	//@brief ‰Šú‰»
+	//@brief åˆæœŸåŒ–
 	void Init();
-	//@brief I—¹
+	//@brief çµ‚äº†
 	void Uninit();
-	//@brief XV
+	//@brief æ›´æ–°
 	void Update();
-	//@brief •`‰æ
+	//@brief æç”»
 	void Draw();
-	//@brief UI•`‰æ
+	//@brief UIæç”»
 	void DrawUI();
 
-	//@brief ‚·‚×‚Ä‚ÌƒIƒuƒWƒFƒNƒg‚ğXV‚·‚é
+	//@brief ã™ã¹ã¦ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æ›´æ–°ã™ã‚‹
 	static void AllUpdate();
-	//@brief ‚·‚×‚Ä‚ÌƒIƒuƒWƒFƒNƒg‚ğ•`‰æ‚·‚é
+	//@brief ã™ã¹ã¦ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æç”»ã™ã‚‹
 	static void AllDraw();
-	//@brief ‚·‚×‚Ä‚ÌƒIƒuƒWƒFƒNƒg‚ğUI•`‰æ‚·‚é
+	//@brief ã™ã¹ã¦ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’UIæç”»ã™ã‚‹
 	static void AllDrawUI();
 
-	//@brief ƒRƒ“ƒ|[ƒlƒ“ƒg‚ğ’Ç‰Á‚·‚é
+	//@brief ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’è¿½åŠ ã™ã‚‹
 	template<class T, typename ...Args > inline T* AddComponent(Args... args) {
-		// ƒRƒ“ƒ|[ƒlƒ“ƒg‚ğì¬‚·‚é
+		// ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’ä½œæˆã™ã‚‹
 		T* component = new T(args...);
 
-		// ƒQ[ƒ€ƒIƒuƒWƒFƒNƒg‚ÉƒAƒ^ƒbƒ`‚·‚é
+		// ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã«ã‚¢ã‚¿ãƒƒãƒã™ã‚‹
 		component->AttachGameObject(this);
 
-		// ƒRƒ“ƒ|[ƒlƒ“ƒg‚ğ’Ç‰Á‚·‚é
+		// ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’è¿½åŠ ã™ã‚‹
 		m_components.push_back(component);
 
-		// ƒRƒ“ƒ|[ƒlƒ“ƒg‚Ì‰Šú‰»ˆ—‚ğÀs‚·‚é
+		// ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã®åˆæœŸåŒ–å‡¦ç†ã‚’å®Ÿè¡Œã™ã‚‹
 		component->Init();
 
-		// ì¬‚µ‚½ƒRƒ“ƒ|[ƒlƒ“ƒg‚ğ•Ô‚·
+		// ä½œæˆã—ãŸã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’è¿”ã™
 		return component;
 	}
 
 	/*
-	@brief ƒRƒ“ƒ|[ƒlƒ“ƒg‚ğæ“¾‚·‚é
-	@param[in] includeChild : qƒNƒ‰ƒX‚ğŠÜ‚ß‚é‚©
+	@brief ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’å–å¾—ã™ã‚‹
+	@param[in] includeChild : å­ã‚¯ãƒ©ã‚¹ã‚’å«ã‚ã‚‹ã‹
 	*/
 	template<class T> inline T* GetComponent(const bool& includeChild = false) {
 		for (auto itr = m_components.begin(); itr != m_components.end(); itr++)
 		{
 			if (includeChild)
-			{ // q‚ğŠÜ‚Ş‚Æ‚«
+			{ // å­ã‚’å«ã‚€ã¨ã
 				if (T* pComp = dynamic_cast<T*>(*itr))
 					return (T*)*itr;
 			}
 			else
-			{ // q‚ğŠÜ‚Ü‚È‚¢‚Æ‚«
+			{ // å­ã‚’å«ã¾ãªã„ã¨ã
 				if (typeid(T) == typeid(**itr))
 					return (T*)*itr;
 			}
@@ -80,20 +80,20 @@ public:
 	}
 
 	/*
-	@brief •¡”‚ÌƒRƒ“ƒ|[ƒlƒ“ƒg‚ğæ“¾‚·‚é
-	@param[in] includeChild : qƒNƒ‰ƒX‚ğŠÜ‚ß‚é‚©
+	@brief è¤‡æ•°ã®ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’å–å¾—ã™ã‚‹
+	@param[in] includeChild : å­ã‚¯ãƒ©ã‚¹ã‚’å«ã‚ã‚‹ã‹
 	*/
 	template<class T> inline std::vector<T*> GetComponents(const bool& includeChild = false) {
 		std::vector<T*> result;
 		for (auto itr = m_components.begin(); itr != m_components.end(); itr++)
 		{
 			if (includeChild)
-			{ // q‚ğŠÜ‚Ş‚Æ‚«
+			{ // å­ã‚’å«ã‚€ã¨ã
 				if (T* pComp = dynamic_cast<T*>(*itr))
 					result.push_back((T*)*itr);
 			}
 			else
-			{ // q‚ğŠÜ‚Ü‚È‚¢‚Æ‚«
+			{ // å­ã‚’å«ã¾ãªã„ã¨ã
 				if (typeid(T) == typeid(**itr))
 					result.push_back((T*)*itr);
 			}
@@ -101,26 +101,26 @@ public:
 		return result;
 	}
 
-	//@brief ‚·‚×‚Ä‚ÌƒRƒ“ƒ|[ƒlƒ“ƒg‚ğæ“¾‚·‚é
+	//@brief ã™ã¹ã¦ã®ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’å–å¾—ã™ã‚‹
 	std::vector<Component*>& GetComponents() {
 		return m_components;
 	}
 
-	//@brief ƒRƒ“ƒ|[ƒlƒ“ƒg‚ğƒfƒ^ƒbƒ`‚·‚é
+	//@brief ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’ãƒ‡ã‚¿ãƒƒãƒã™ã‚‹
 	void DetachComponent(Component* component);
 
-	//@brief ‚·‚×‚Ä‚ÌƒQ[ƒ€ƒIƒuƒWƒFƒNƒg‚ğæ“¾‚·‚é
+	//@brief ã™ã¹ã¦ã®ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å–å¾—ã™ã‚‹
 	static std::vector<GameObject*>& GetAllGameObjects() { return m_gameObjects; }
 
-	Transform* transform;	// ƒgƒ‰ƒ“ƒXƒtƒH[ƒ€î•ñ
-	std::string name;			// –¼‘O
-	std::string tag;				// ƒ^ƒO
+	Transform* transform;	// ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ æƒ…å ±
+	std::string name;			// åå‰
+	std::string tag;				// ã‚¿ã‚°
 private:
-	//@brief ‰ğ•úˆ—
+	//@brief è§£æ”¾å‡¦ç†
 	void Release() override;
 
-	std::vector<Component*> m_components;					// ƒRƒ“ƒ|[ƒlƒ“ƒg
-	static std::vector<GameObject*> m_gameObjects;		// ‚·‚×‚Ä‚ÌƒQ[ƒ€ƒIƒuƒWƒFƒNƒg
+	std::vector<Component*> m_components;					// ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ
+	static std::vector<GameObject*> m_gameObjects;		// ã™ã¹ã¦ã®ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 };
 
 #endif // !_GAMEOBJECT_H_

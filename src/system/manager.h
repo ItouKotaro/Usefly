@@ -1,7 +1,7 @@
 //------------------------------------------------------------
 // @file		manager.h
-// @brief	ƒ}ƒl[ƒWƒƒ[
-// @detail	ƒVƒXƒeƒ€‚ÌŠÇ—‚ğs‚¢‚Ü‚·
+// @brief	ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼
+// @detail	ã‚·ã‚¹ãƒ†ãƒ ã®ç®¡ç†ã‚’è¡Œã„ã¾ã™
 //------------------------------------------------------------
 #ifndef _MANAGER_H_
 #define _MANAGER_H_
@@ -9,40 +9,42 @@
 #include "renderer.h"
 #include "resource_data.h"
 #include "scene.h"
+#include "input.h"
 
-//@brief ŠÇ—ƒNƒ‰ƒX
+//@brief ç®¡ç†ã‚¯ãƒ©ã‚¹
 class Manager final
 {
 public:
-	//@brief ‰Šú‰»
+	//@brief åˆæœŸåŒ–
 	void Init(HINSTANCE hInstance, HWND hWnd);
-	//@brief I—¹
+	//@brief çµ‚äº†
 	void Uninit();
-	//@brief XV
+	//@brief æ›´æ–°
 	void Update();
-	//@brief •`‰æ
+	//@brief æç”»
 	void Draw();
 
-	//@brief ƒŒƒ“ƒ_ƒ‰[‚ğæ“¾‚·‚é
+	//@brief ãƒ¬ãƒ³ãƒ€ãƒ©ãƒ¼ã‚’å–å¾—ã™ã‚‹
 	Renderer* GetRenderer() { return m_renderer; }
-	//@brief ƒŠƒ\[ƒXƒf[ƒ^ƒ}ƒl[ƒWƒƒ[‚ğæ“¾‚·‚é
+	//@brief ãƒªã‚½ãƒ¼ã‚¹ãƒ‡ãƒ¼ã‚¿ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã‚’å–å¾—ã™ã‚‹
 	ResourceDataManager* GetResourceDataManager() { return m_resourceDataManager; }
-	//@brief ƒV[ƒ“ƒ}ƒl[ƒWƒƒ[‚ğæ“¾‚·‚é
+	//@brief ã‚·ãƒ¼ãƒ³ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã‚’å–å¾—ã™ã‚‹
 	SceneManager* GetSceneManager() { return m_sceneManager; }
 
-	//@brief ƒfƒoƒCƒX‚ğæ“¾‚·‚é
+	//@brief ãƒ‡ãƒã‚¤ã‚¹ã‚’å–å¾—ã™ã‚‹
 	LPDIRECT3DDEVICE9 GetDevice() { return m_renderer->GetDevice(); }
 
-	//@brief ƒCƒ“ƒXƒ^ƒ“ƒX‚Ìæ“¾
+	//@brief ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®å–å¾—
 	static Manager* GetInstance()
 	{
 		static Manager instance;
 		return &instance;
 	}
 private:
-	Renderer* m_renderer;											// ƒŒƒ“ƒ_ƒ‰[
-	ResourceDataManager* m_resourceDataManager;	// ƒŠƒ\[ƒXƒf[ƒ^ƒ}ƒl[ƒWƒƒ[
-	SceneManager* m_sceneManager;							// ƒV[ƒ“ƒ}ƒl[ƒWƒƒ[
+	Renderer* m_renderer;											// ãƒ¬ãƒ³ãƒ€ãƒ©ãƒ¼
+	ResourceDataManager* m_resourceDataManager;	// ãƒªã‚½ãƒ¼ã‚¹ãƒ‡ãƒ¼ã‚¿ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼
+	SceneManager* m_sceneManager;							// ã‚·ãƒ¼ãƒ³ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼
+	InputManager* m_inputManager;							// å…¥åŠ›ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼
 };
 
 #endif // !_MANAGER_H_

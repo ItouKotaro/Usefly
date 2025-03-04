@@ -51,20 +51,8 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\sysyem\main.h">
-      <Filter>ヘッダー ファイル\system</Filter>
-    </ClInclude>
-    <ClInclude Include="src\sysyem\manager.h">
-      <Filter>ヘッダー ファイル\system</Filter>
-    </ClInclude>
-    <ClInclude Include="src\sysyem\log.h">
-      <Filter>ヘッダー ファイル\system</Filter>
-    </ClInclude>
     <ClInclude Include="src\general\gameobject.h">
       <Filter>ヘッダー ファイル\general</Filter>
-    </ClInclude>
-    <ClInclude Include="src\sysyem\object.h">
-      <Filter>ヘッダー ファイル\system</Filter>
     </ClInclude>
     <ClInclude Include="src\general\component.h">
       <Filter>ヘッダー ファイル\general</Filter>
@@ -72,14 +60,8 @@
     <ClInclude Include="src\general\transform.h">
       <Filter>ヘッダー ファイル\general</Filter>
     </ClInclude>
-    <ClInclude Include="src\sysyem\renderer.h">
-      <Filter>ヘッダー ファイル\system</Filter>
-    </ClInclude>
     <ClInclude Include="src\components\2d\sprite.h">
       <Filter>ヘッダー ファイル\components\2d</Filter>
-    </ClInclude>
-    <ClInclude Include="src\sysyem\resource_data.h">
-      <Filter>ヘッダー ファイル\system</Filter>
     </ClInclude>
     <ClInclude Include="PCH.h">
       <Filter>ヘッダー ファイル\system</Filter>
@@ -102,25 +84,34 @@
     <ClInclude Include="src\components\3d\light.h">
       <Filter>ヘッダー ファイル\components\3d</Filter>
     </ClInclude>
-    <ClInclude Include="src\sysyem\benlib.h">
+    <ClInclude Include="src\system\benlib.h">
+      <Filter>ヘッダー ファイル\system</Filter>
+    </ClInclude>
+    <ClInclude Include="src\system\input.h">
+      <Filter>ヘッダー ファイル\system</Filter>
+    </ClInclude>
+    <ClInclude Include="src\system\log.h">
+      <Filter>ヘッダー ファイル\system</Filter>
+    </ClInclude>
+    <ClInclude Include="src\system\main.h">
+      <Filter>ヘッダー ファイル\system</Filter>
+    </ClInclude>
+    <ClInclude Include="src\system\manager.h">
+      <Filter>ヘッダー ファイル\system</Filter>
+    </ClInclude>
+    <ClInclude Include="src\system\object.h">
+      <Filter>ヘッダー ファイル\system</Filter>
+    </ClInclude>
+    <ClInclude Include="src\system\renderer.h">
+      <Filter>ヘッダー ファイル\system</Filter>
+    </ClInclude>
+    <ClInclude Include="src\system\resource_data.h">
       <Filter>ヘッダー ファイル\system</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\sysyem\main.cpp">
-      <Filter>ソース ファイル\system</Filter>
-    </ClCompile>
-    <ClCompile Include="src\sysyem\manager.cpp">
-      <Filter>ソース ファイル\system</Filter>
-    </ClCompile>
-    <ClCompile Include="src\sysyem\log.cpp">
-      <Filter>ソース ファイル\system</Filter>
-    </ClCompile>
     <ClCompile Include="src\general\gameobject.cpp">
       <Filter>ソース ファイル\general</Filter>
-    </ClCompile>
-    <ClCompile Include="src\sysyem\object.cpp">
-      <Filter>ソース ファイル\system</Filter>
     </ClCompile>
     <ClCompile Include="src\general\component.cpp">
       <Filter>ソース ファイル\general</Filter>
@@ -128,14 +119,8 @@
     <ClCompile Include="src\general\transform.cpp">
       <Filter>ソース ファイル\general</Filter>
     </ClCompile>
-    <ClCompile Include="src\sysyem\renderer.cpp">
-      <Filter>ソース ファイル\system</Filter>
-    </ClCompile>
     <ClCompile Include="src\components\2d\sprite.cpp">
       <Filter>ソース ファイル\components\2d</Filter>
-    </ClCompile>
-    <ClCompile Include="src\sysyem\resource_data.cpp">
-      <Filter>ソース ファイル\system</Filter>
     </ClCompile>
     <ClCompile Include="PCH.cpp">
       <Filter>ソース ファイル\system</Filter>
@@ -158,7 +143,28 @@
     <ClCompile Include="src\components\3d\light.cpp">
       <Filter>ソース ファイル\components\3d</Filter>
     </ClCompile>
-    <ClCompile Include="src\sysyem\benlib.cpp">
+    <ClCompile Include="src\system\benlib.cpp">
+      <Filter>ソース ファイル\system</Filter>
+    </ClCompile>
+    <ClCompile Include="src\system\input.cpp">
+      <Filter>ソース ファイル\system</Filter>
+    </ClCompile>
+    <ClCompile Include="src\system\log.cpp">
+      <Filter>ソース ファイル\system</Filter>
+    </ClCompile>
+    <ClCompile Include="src\system\main.cpp">
+      <Filter>ソース ファイル\system</Filter>
+    </ClCompile>
+    <ClCompile Include="src\system\manager.cpp">
+      <Filter>ソース ファイル\system</Filter>
+    </ClCompile>
+    <ClCompile Include="src\system\object.cpp">
+      <Filter>ソース ファイル\system</Filter>
+    </ClCompile>
+    <ClCompile Include="src\system\renderer.cpp">
+      <Filter>ソース ファイル\system</Filter>
+    </ClCompile>
+    <ClCompile Include="src\system\resource_data.cpp">
       <Filter>ソース ファイル\system</Filter>
     </ClCompile>
   </ItemGroup>

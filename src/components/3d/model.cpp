@@ -1,13 +1,13 @@
 //------------------------------------------------------------
 // @file		model.cpp
-// @brief	ƒ‚ƒfƒ‹
-// @detail	3D‚Ìƒ‚ƒfƒ‹
+// @brief	ãƒ¢ãƒ‡ãƒ«
+// @detail	3Dã®ãƒ¢ãƒ‡ãƒ«
 //------------------------------------------------------------
 #include "model.h"
-#include "sysyem/manager.h"
+#include "system/manager.h"
 
 //=============================================================
-// ‰Šú‰»
+// åˆæœŸåŒ–
 //=============================================================
 void Model::Init()
 {
@@ -15,80 +15,80 @@ void Model::Init()
 }
 
 //=============================================================
-// I—¹
+// çµ‚äº†
 //=============================================================
 void Model::Uninit()
 {
 }
 
 //=============================================================
-// •`‰æ
+// æç”»
 //=============================================================
 void Model::Draw()
 {
 	LPDIRECT3DDEVICE9 device = Manager::GetInstance()->GetDevice();
-	D3DMATERIAL9 matDef;					// Œ»Ý‚Ìƒ}ƒeƒŠƒAƒ‹•Û‘¶—p
-	D3DXMATERIAL* pMat;					// ƒ}ƒeƒŠƒAƒ‹ƒf[ƒ^‚Ö‚Ìƒ|ƒCƒ“ƒ^
+	D3DMATERIAL9 matDef;					// ç¾åœ¨ã®ãƒžãƒ†ãƒªã‚¢ãƒ«ä¿å­˜ç”¨
+	D3DXMATERIAL* pMat;					// ãƒžãƒ†ãƒªã‚¢ãƒ«ãƒ‡ãƒ¼ã‚¿ã¸ã®ãƒã‚¤ãƒ³ã‚¿
 
 	if (m_modelData == nullptr)
 		return;
 
-	// ƒ[ƒ‹ƒhƒ}ƒgƒŠƒbƒNƒX‚ÌÝ’è
+	// ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒžãƒˆãƒªãƒƒã‚¯ã‚¹ã®è¨­å®š
 	device->SetTransform(D3DTS_WORLD, &transform->GetMatrix());
 
-	// Œ»Ý‚Ìƒ}ƒeƒŠƒAƒ‹‚ðŽæ“¾
+	// ç¾åœ¨ã®ãƒžãƒ†ãƒªã‚¢ãƒ«ã‚’å–å¾—
 	device->GetMaterial(&matDef);
 
-	// ƒ}ƒeƒŠƒAƒ‹ƒf[ƒ^‚Ö‚Ìƒ|ƒCƒ“ƒ^‚ðŽæ“¾
+	// ãƒžãƒ†ãƒªã‚¢ãƒ«ãƒ‡ãƒ¼ã‚¿ã¸ã®ãƒã‚¤ãƒ³ã‚¿ã‚’å–å¾—
 	pMat = (D3DXMATERIAL*)m_modelData->GetBufferMaterial()->GetBufferPointer();
 
 	for (int i = 0; i < static_cast<int>(m_modelData->GetNumMaterial()); i++)
 	{
-		// ƒ}ƒeƒŠƒAƒ‹‚ÌÝ’è
+		// ãƒžãƒ†ãƒªã‚¢ãƒ«ã®è¨­å®š
 		device->SetMaterial(&pMat[i].MatD3D);
 
-		// ƒeƒNƒXƒ`ƒƒ‚ÌÝ’è
+		// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 		device->SetTexture(0, pMat[i].pTextureFilename != nullptr ? m_textures[i] : nullptr);
 
-		// ƒ‚ƒfƒ‹iƒp[ƒcj‚Ì•`‰æ
+		// ãƒ¢ãƒ‡ãƒ«ï¼ˆãƒ‘ãƒ¼ãƒ„ï¼‰ã®æç”»
 		m_modelData->GetMesh()->DrawSubset(i);
 	}
 
-	// •Û‘¶‚µ‚Ä‚¢‚½ƒ}ƒeƒŠƒAƒ‹‚É–ß‚·
+	// ä¿å­˜ã—ã¦ã„ãŸãƒžãƒ†ãƒªã‚¢ãƒ«ã«æˆ»ã™
 	device->SetMaterial(&matDef);
 }
 
 //=============================================================
-// •`‰æ
+// æç”»
 //=============================================================
 void Model::Load(std::string path)
 {
-	// ƒfƒoƒCƒX‚ÌŽæ“¾
+	// ãƒ‡ãƒã‚¤ã‚¹ã®å–å¾—
 	LPDIRECT3DDEVICE9 device = Manager::GetInstance()->GetDevice();
 
-	// ƒƒbƒVƒ…î•ñ‚ð”jŠü
+	// ãƒ¡ãƒƒã‚·ãƒ¥æƒ…å ±ã‚’ç ´æ£„
 	Uninit();
 
-	// ƒƒbƒVƒ…‚ð“Ç‚Ýž‚Þ
+	// ãƒ¡ãƒƒã‚·ãƒ¥ã‚’èª­ã¿è¾¼ã‚€
 	m_modelData = Manager::GetInstance()->GetResourceDataManager()->RefModel(path);
 
-	// ƒ‚ƒfƒ‹ƒeƒNƒXƒ`ƒƒ‚Ì“Ç‚Ýž‚Ý
+	// ãƒ¢ãƒ‡ãƒ«ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®èª­ã¿è¾¼ã¿
 	D3DXMATERIAL* mat = (D3DXMATERIAL*)m_modelData->GetBufferMaterial()->GetBufferPointer();
 	m_textures.resize(m_modelData->GetNumMaterial());
 	for (int nCntMat = 0; nCntMat < (int)m_modelData->GetNumMaterial(); nCntMat++)
 	{
 		if (mat[nCntMat].pTextureFilename != nullptr)
-		{ // ƒeƒNƒXƒ`ƒƒ‚ª‚ ‚é‚Æ‚«
+		{ // ãƒ†ã‚¯ã‚¹ãƒãƒ£ãŒã‚ã‚‹ã¨ã
 
-			// ƒeƒNƒXƒ`ƒƒ‚Ì‘¶Ýƒ`ƒFƒbƒN
+			// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®å­˜åœ¨ãƒã‚§ãƒƒã‚¯
 			if (!PathFileExistsA(mat[nCntMat].pTextureFilename))
-			{ // ‘¶Ý‚µ‚È‚¢‚Æ‚«
+			{ // å­˜åœ¨ã—ãªã„ã¨ã
 				mat[nCntMat].pTextureFilename = nullptr;
 				m_textures[nCntMat] = nullptr;
 				continue;
 			}
 
-			// ƒeƒNƒXƒ`ƒƒ‚ðì¬
+			// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’ä½œæˆ
 			m_textures[nCntMat] = Manager::GetInstance()->GetResourceDataManager()->RefTexture(mat[nCntMat].pTextureFilename)->GetTexture();
 		}
 		else

@@ -195,13 +195,14 @@
     <ClCompile Include="src\general\transform.cpp" />
     <ClCompile Include="src\scenes\start.cpp" />
     <ClCompile Include="src\scenes\title.cpp" />
-    <ClCompile Include="src\sysyem\benlib.cpp" />
-    <ClCompile Include="src\sysyem\log.cpp" />
-    <ClCompile Include="src\sysyem\main.cpp" />
-    <ClCompile Include="src\sysyem\manager.cpp" />
-    <ClCompile Include="src\sysyem\object.cpp" />
-    <ClCompile Include="src\sysyem\renderer.cpp" />
-    <ClCompile Include="src\sysyem\resource_data.cpp" />
+    <ClCompile Include="src\system\benlib.cpp" />
+    <ClCompile Include="src\system\input.cpp" />
+    <ClCompile Include="src\system\log.cpp" />
+    <ClCompile Include="src\system\main.cpp" />
+    <ClCompile Include="src\system\manager.cpp" />
+    <ClCompile Include="src\system\object.cpp" />
+    <ClCompile Include="src\system\renderer.cpp" />
+    <ClCompile Include="src\system\resource_data.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.h" />
@@ -215,13 +216,14 @@
     <ClInclude Include="src\general\transform.h" />
     <ClInclude Include="src\scenes\start.h" />
     <ClInclude Include="src\scenes\title.h" />
-    <ClInclude Include="src\sysyem\benlib.h" />
-    <ClInclude Include="src\sysyem\log.h" />
-    <ClInclude Include="src\sysyem\main.h" />
-    <ClInclude Include="src\sysyem\manager.h" />
-    <ClInclude Include="src\sysyem\object.h" />
-    <ClInclude Include="src\sysyem\renderer.h" />
-    <ClInclude Include="src\sysyem\resource_data.h" />
+    <ClInclude Include="src\system\benlib.h" />
+    <ClInclude Include="src\system\input.h" />
+    <ClInclude Include="src\system\log.h" />
+    <ClInclude Include="src\system\main.h" />
+    <ClInclude Include="src\system\manager.h" />
+    <ClInclude Include="src\system\object.h" />
+    <ClInclude Include="src\system\renderer.h" />
+    <ClInclude Include="src\system\resource_data.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

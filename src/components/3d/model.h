@@ -1,15 +1,15 @@
 //------------------------------------------------------------
 // @file		model.h
-// @brief	ƒ‚ƒfƒ‹
-// @detail	3D‚Ìƒ‚ƒfƒ‹
+// @brief	ãƒ¢ãƒ‡ãƒ«
+// @detail	3Dã®ãƒ¢ãƒ‡ãƒ«
 //------------------------------------------------------------
 #ifndef _COMP_MODEL_H_
 #define _COMP_MODEL_H_
 
 #include "component.h"
-#include "sysyem/resource_data.h"
+#include "system/resource_data.h"
 
-//@brief ƒ‚ƒfƒ‹ƒRƒ“ƒ|[ƒlƒ“ƒg
+//@brief ãƒ¢ãƒ‡ãƒ«ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ
 class Model : public Component
 {
 public:
@@ -18,8 +18,8 @@ public:
 	void Draw() override;
 	void Load(std::string path);
 private:
-	ModelData* m_modelData;											// ƒ‚ƒfƒ‹ƒf[ƒ^
-	std::vector<LPDIRECT3DTEXTURE9> m_textures;		// ƒeƒNƒXƒ`ƒƒ
+	ModelData* m_modelData;											// ãƒ¢ãƒ‡ãƒ«ãƒ‡ãƒ¼ã‚¿
+	std::vector<LPDIRECT3DTEXTURE9> m_textures;		// ãƒ†ã‚¯ã‚¹ãƒãƒ£
 };
 
 #endif // !_COMP_MODEL_H_

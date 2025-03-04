@@ -1,37 +1,41 @@
 //------------------------------------------------------------
 // @file		manager.cpp
-// @brief	ƒ}ƒl[ƒWƒƒ[
-// @detail	ƒVƒXƒeƒ€‚ÌŠÇ—‚ðs‚¢‚Ü‚·
+// @brief	ãƒžãƒãƒ¼ã‚¸ãƒ£ãƒ¼
+// @detail	ã‚·ã‚¹ãƒ†ãƒ ã®ç®¡ç†ã‚’è¡Œã„ã¾ã™
 //------------------------------------------------------------
 #include "manager.h"
 #include "components/2d/sprite.h"
 
 //=============================================================
-// ‰Šú‰»
+// åˆæœŸåŒ–
 //=============================================================
 void Manager::Init(HINSTANCE hInstance, HWND hWnd)
 {
-	// ƒŒƒ“ƒ_ƒ‰[‚ð¶¬‚·‚é
+	// ãƒ¬ãƒ³ãƒ€ãƒ©ãƒ¼ã‚’ç”Ÿæˆã™ã‚‹
 	m_renderer = new Renderer();
 	m_renderer->Init(hInstance, hWnd);
 
-	// ƒV[ƒ“ƒ}ƒl[ƒWƒƒ[‚ð¶¬‚·‚é
+	// ã‚·ãƒ¼ãƒ³ãƒžãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã‚’ç”Ÿæˆã™ã‚‹
 	m_sceneManager = new SceneManager();
 	m_sceneManager->Init();
 
-	// ƒŠƒ\[ƒXƒf[ƒ^ƒ}ƒl[ƒWƒƒ[‚ð¶¬‚·‚é
+	// å…¥åŠ›ãƒžãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã‚’ç”Ÿæˆã™ã‚‹
+	m_inputManager = new InputManager();
+	m_inputManager->Init(hInstance, hWnd);
+
+	// ãƒªã‚½ãƒ¼ã‚¹ãƒ‡ãƒ¼ã‚¿ãƒžãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã‚’ç”Ÿæˆã™ã‚‹
 	m_resourceDataManager = new ResourceDataManager();
 }
 
 //=============================================================
-// I—¹
+// çµ‚äº†
 //=============================================================
 void Manager::Uninit()
 {
-	// ‚·‚×‚Ä‚ÌƒIƒuƒWƒFƒNƒg‚ð”jŠü‚·‚é
+	// ã™ã¹ã¦ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç ´æ£„ã™ã‚‹
 	Object::AllDestroy();
 	
-	// ƒŒƒ“ƒ_ƒ‰[‚ðI—¹‚·‚é
+	// ãƒ¬ãƒ³ãƒ€ãƒ©ãƒ¼ã‚’çµ‚äº†ã™ã‚‹
 	if (m_renderer != nullptr)
 	{
 		m_renderer->Uninit();
@@ -39,7 +43,7 @@ void Manager::Uninit()
 		m_renderer = nullptr;
 	}
 
-	// ƒV[ƒ“ƒ}ƒl[ƒWƒƒ[‚ðI—¹‚·‚é
+	// ã‚·ãƒ¼ãƒ³ãƒžãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã‚’çµ‚äº†ã™ã‚‹
 	if (m_sceneManager != nullptr)
 	{
 		m_sceneManager->AllRelease();
@@ -47,7 +51,15 @@ void Manager::Uninit()
 		m_sceneManager = nullptr;
 	}
 
-	// ƒŠƒ\[ƒXƒf[ƒ^‚ð‚·‚×‚Ä”jŠü‚·‚é
+	// å…¥åŠ›ãƒžãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã‚’çµ‚äº†ã™ã‚‹
+	if (m_inputManager != nullptr)
+	{
+		m_inputManager->Uninit();
+		delete m_inputManager;
+		m_inputManager = nullptr;
+	}
+
+	// ãƒªã‚½ãƒ¼ã‚¹ãƒ‡ãƒ¼ã‚¿ã‚’ã™ã¹ã¦ç ´æ£„ã™ã‚‹
 	if (m_resourceDataManager != nullptr)
 	{
 		m_resourceDataManager->AllRelease();
@@ -56,34 +68,34 @@ void Manager::Uninit()
 	}
 
 #if OUTPUT_LOG_FILE
-	// ƒƒO‚ð‘‚«o‚·
+	// ãƒ­ã‚°ã‚’æ›¸ãå‡ºã™
 	Log::OutputLog();
 #endif
 }
 
 //=============================================================
-// XV
+// æ›´æ–°
 //=============================================================
 void Manager::Update()
 {
-	// ƒQ[ƒ€ƒIƒuƒWƒFƒNƒg‚ðXV‚·‚é
+	// ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æ›´æ–°ã™ã‚‹
 	GameObject::AllUpdate();
 
-	// ƒŒƒ“ƒ_ƒ‰[‚ðXV‚·‚é
+	// ãƒ¬ãƒ³ãƒ€ãƒ©ãƒ¼ã‚’æ›´æ–°ã™ã‚‹
 	m_renderer->Update();
 
-	// ƒV[ƒ“‚ðXV‚·‚é
+	// ã‚·ãƒ¼ãƒ³ã‚’æ›´æ–°ã™ã‚‹
 	m_sceneManager->Update();
 
-	// ƒfƒXƒtƒ‰ƒO‚ª‚Â‚¢‚Ä‚¢‚éƒIƒuƒWƒFƒNƒg‚ð”jŠü‚·‚é
+	// ãƒ‡ã‚¹ãƒ•ãƒ©ã‚°ãŒã¤ã„ã¦ã„ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç ´æ£„ã™ã‚‹
 	Object::ReleaseDeathFlag();
 }
 
 //=============================================================
-// •`‰æ
+// æç”»
 //=============================================================
 void Manager::Draw()
 {
-	// ƒŒƒ“ƒ_ƒ‰[‚ð•`‰æ‚·‚é
+	// ãƒ¬ãƒ³ãƒ€ãƒ©ãƒ¼ã‚’æç”»ã™ã‚‹
 	m_renderer->Draw();
 }

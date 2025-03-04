@@ -4,7 +4,7 @@
 // @detail	3D空間に存在するオブジェクトを描画するためのデバイス
 //------------------------------------------------------------
 #include "camera.h"
-#include "sysyem/manager.h"
+#include "system/manager.h"
 
 std::vector<Camera*> Camera::m_cameras;
 

@@ -9,15 +9,17 @@
 #include <Windows.h>
 #include "d3dx9.h"
 #include "d3d9.h"
+#include "dinput.h"
+#include "XInput.h"
 #include <shlwapi.h>
 
 // インクルード
 #include <iostream>
 #include <string>
 #include <vector>
-#include "sysyem/main.h"
-#include "sysyem/log.h"
-#include "sysyem/benlib.h"
+#include "system/main.h"
+#include "system/log.h"
+#include "system/benlib.h"
 #include "gameobject.h"
 
 // ライブラリのリンク
@@ -25,7 +27,9 @@
 #pragma comment(lib, "d3dx9.lib")		// 拡張ライブラリ
 #pragma comment(lib, "dxguid.lib")	// DirectXコンポーネント
 #pragma comment(lib, "winmm.lib")	// システム時刻取得に必要
-#pragma comment(lib, "shlwapi.lib")	// ファイルの存在確認
+#pragma comment(lib, "dinput8.lib")	// 入力処理に必要
+#pragma comment(lib, "xinput.lib")		// ジョイパッド処理に必要
+#pragma comment(lib, "Shlwapi.lib")	// ファイルの存在確認
 
 // マクロ定義
 #define FVF_VERTEX_2D	(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1)

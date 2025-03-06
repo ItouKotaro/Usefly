@@ -108,6 +108,9 @@
     <ClInclude Include="src\system\resource_data.h">
       <Filter>ヘッダー ファイル\system</Filter>
     </ClInclude>
+    <ClInclude Include="src\system\KeyTables.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\general\gameobject.cpp">

@@ -30,6 +30,8 @@ public:
 	ResourceDataManager* GetResourceDataManager() { return m_resourceDataManager; }
 	//@brief シーンマネージャーを取得する
 	SceneManager* GetSceneManager() { return m_sceneManager; }
+	//@brief 入力マネージャーを取得する
+	InputManager* GetInputManager() { return m_inputManager; }
 
 	//@brief デバイスを取得する
 	LPDIRECT3DDEVICE9 GetDevice() { return m_renderer->GetDevice(); }

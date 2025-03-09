@@ -197,6 +197,7 @@
     <ClCompile Include="src\scenes\title.cpp" />
     <ClCompile Include="src\system\benlib.cpp" />
     <ClCompile Include="src\system\input.cpp" />
+    <ClCompile Include="src\system\input_devices\keyboard.cpp" />
     <ClCompile Include="src\system\log.cpp" />
     <ClCompile Include="src\system\main.cpp" />
     <ClCompile Include="src\system\manager.cpp" />
@@ -218,6 +219,7 @@
     <ClInclude Include="src\scenes\title.h" />
     <ClInclude Include="src\system\benlib.h" />
     <ClInclude Include="src\system\input.h" />
+    <ClInclude Include="src\system\input_devices\keyboard.h" />
     <ClInclude Include="src\system\KeyTables.h" />
     <ClInclude Include="src\system\log.h" />
     <ClInclude Include="src\system\main.h" />

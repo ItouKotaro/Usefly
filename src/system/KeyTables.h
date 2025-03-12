@@ -153,6 +153,8 @@ namespace InputSystem
 		Menu,
 		Power,
 		Sleep,
+
+		MAX	// 最大
 	};
 }
 

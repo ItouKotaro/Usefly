@@ -20,6 +20,7 @@
 #include "system/main.h"
 #include "system/log.h"
 #include "system/benlib.h"
+#include "system/manager.h"
 #include "gameobject.h"
 
 // ライブラリのリンク

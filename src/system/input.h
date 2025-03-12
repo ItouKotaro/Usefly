@@ -48,6 +48,18 @@ namespace InputSystem
 		//@brief DirectInputを取得する
 		LPDIRECTINPUT8 GetInputDevice() { return m_input; }
 
+		//@brief キーが押されているか
+		//@details キーが押されている状態であれば、trueを返します
+		bool GetKey(KeyCode keycode);
+
+		//@brief キーが押されたか
+		//@details キーが押されたフレームのみ、trueを返します
+		bool GetKeyDown(KeyCode keycode);
+
+		//@brief キーが離されたか
+		//@details キーが離されたフレームのみ、trueを返します
+		bool GetKeyUp(KeyCode keycode);
+
 	private:
 		LPDIRECTINPUT8 m_input;												// 入力
 		std::vector<std::unique_ptr<InputDevice>> m_devices;	// 入力デバイス

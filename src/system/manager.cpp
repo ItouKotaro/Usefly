@@ -78,6 +78,9 @@ void Manager::Uninit()
 //=============================================================
 void Manager::Update()
 {
+	// 入力マネージャーを更新する
+	m_inputManager->Update();
+
 	// ゲームオブジェクトを更新する
 	GameObject::AllUpdate();
 

@@ -1,4 +1,4 @@
-//------------------------------------------------------------
+﻿//------------------------------------------------------------
 // @file		title.cpp
 // @brief	タイトルシーン
 //------------------------------------------------------------
@@ -35,4 +35,9 @@ void TitleScene::Init()
 void TitleScene::Update()
 {
 	m_camera->transform->SetEulerAngle(0.0f, m_camera->transform->GetEulerAngle().y + 0.01f, 0.0f);
+
+	if (Input->GetKey(KeyCode::Space))
+	{
+		Log::SendLog("スペースが押されています");
+	}
 }

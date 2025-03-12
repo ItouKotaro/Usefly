@@ -11,6 +11,8 @@
 #include "scene.h"
 #include "input.h"
 
+#define Input Manager::GetInstance()->GetInputManager()
+
 //@brief 管理クラス
 class Manager final
 {

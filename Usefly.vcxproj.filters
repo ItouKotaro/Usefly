@@ -49,6 +49,12 @@
     <Filter Include="ヘッダー ファイル\components\3d">
       <UniqueIdentifier>{a2d6fccd-3aff-4664-876f-0306b15b9138}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\system\input_devices">
+      <UniqueIdentifier>{db3f5218-cd66-4977-a2c6-22c258d6be85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\system\input_devices">
+      <UniqueIdentifier>{aee11e58-0d4b-487f-902e-cf7ebba7a282}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\general\gameobject.h">
@@ -108,8 +114,11 @@
     <ClInclude Include="src\system\resource_data.h">
       <Filter>ヘッダー ファイル\system</Filter>
     </ClInclude>
+    <ClInclude Include="src\system\input_devices\keyboard.h">
+      <Filter>ヘッダー ファイル\system\input_devices</Filter>
+    </ClInclude>
     <ClInclude Include="src\system\KeyTables.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\system</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -169,6 +178,9 @@
     </ClCompile>
     <ClCompile Include="src\system\resource_data.cpp">
       <Filter>ソース ファイル\system</Filter>
+    </ClCompile>
+    <ClCompile Include="src\system\input_devices\keyboard.cpp">
+      <Filter>ソース ファイル\system\input_devices</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

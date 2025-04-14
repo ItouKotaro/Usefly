@@ -281,3 +281,11 @@ D3DXVECTOR2 Main::GetWindowSize()
 	GetWindowRect(g_hwnd, &rect);
 	return D3DXVECTOR2(static_cast<float>(rect.right - rect.left), static_cast<float>(rect.bottom - rect.top));
 }
+
+//=============================================================
+// ウィンドウハンドルの取得
+//=============================================================
+HWND Main::GetHWND()
+{
+	return g_hwnd;
+}

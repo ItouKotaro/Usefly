@@ -46,6 +46,8 @@ public:
 	void SetShowCursor(const bool& show);
 	//@brief ウィンドウサイズを取得する
 	D3DXVECTOR2 GetWindowSize();
+	//@brief ウィンドウハンドルを取得する
+	HWND GetHWND();
 private:
 	//@brief コンストラクタ
 	Main();

@@ -25,10 +25,7 @@ bool g_isActiveWindow = true;		// ウィンドウがアクティブ状態か
 bool g_isEnded = false;					// 終了状態か
 bool g_showCursor = true;				// カーソルの表示状態
 bool g_beforeShowCursor = true;	// 前回のカーソル表示状態
-
-// 静的メンバ変数の初期化
-float Main::m_deltaTime = 0.0f;
-int Main::m_fps = 0;
+HWND g_hwnd = nullptr;				// ウィンドウハンドル（識別子）
 
  //=============================================================
  // メイン関数
@@ -57,7 +54,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 		LoadIcon(nullptr, IDI_APPLICATION)		// ファイルのアイコン
 	};
 
-	HWND hWnd;	// ウィンドウハンドル（識別子）
 	MSG msg;			// メッセージを格納する変数
 
 	// ウィンドウの座標を格納
@@ -70,33 +66,33 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);
 
 	// ウィンドウを生成
-	hWnd = CreateWindowEx(
-		0,														// 拡張ウィンドウスタイル
-		CLASS_NAME,									// ウィンドウクラスの名前
+	g_hwnd = CreateWindowEx(
+		0,															// 拡張ウィンドウスタイル
+		CLASS_NAME,										// ウィンドウクラスの名前
 		WINDOW_NAME,								// ウィンドウの名前
 		WS_OVERLAPPEDWINDOW,				// ウィンドウスタイル
 		CW_USEDEFAULT,								// ウィンドウの左上のX座標
 		CW_USEDEFAULT,								// ウィンドウの左上のY座標
 		(rect.right - rect.left),							// ウィンドウの幅
 		(rect.bottom - rect.top),						// ウィンドウの高さ
-		nullptr,												// 親ウィンドウのハンドル
-		nullptr,												// メニューハンドルまたは子ウィンドウID
+		nullptr,													// 親ウィンドウのハンドル
+		nullptr,													// メニューハンドルまたは子ウィンドウID
 		hInstance,											// インスタンスバンドル
-		nullptr												// ウィンドウ作成データ
+		nullptr													// ウィンドウ作成データ
 	);
 
 	// ウィンドウの表示
-	ShowWindow(hWnd, nCmdShow);		// ウィンドウの表示状態を設定
-	UpdateWindow(hWnd);						// クライアント領域を更新
+	ShowWindow(g_hwnd, nCmdShow);		// ウィンドウの表示状態を設定
+	UpdateWindow(g_hwnd);						// クライアント領域を更新
 
 	// マネージャーの初期化
-	Manager::GetInstance()->Init(hInstance, hWnd);
+	Manager::GetInstance()->Init(hInstance, g_hwnd);
 
-	// Mainの生成
-	Main* mainApp = new Main();
+	// Mainの取得
+	Main& mainApp = Main::GetInstance();
 
 	// スレッド開始
-	mainApp->ThreadStart();
+	mainApp.ThreadStart();
 
 	// メッセージループ
 	while (!g_isEnded)
@@ -127,17 +123,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 	}
 
 	// メインループのスレッドが終わるまで待つ
-	mainApp->ThreadJoin();
+	mainApp.ThreadJoin();
 
 	// マネージャーの終了
 	Manager::GetInstance()->Uninit();
-
-	// Mainの破棄
-	if (mainApp != nullptr)
-	{
-		delete mainApp;
-		mainApp = nullptr;
-	}
 
 	// ウィンドウクラスの登録を解除
 	UnregisterClass(CLASS_NAME, wcex.hInstance);
@@ -171,12 +160,14 @@ Main::Main()
 {
 	// 分解能を設定
 	timeBeginPeriod(1);
-	m_currentTime = 0;							// 初期化する
-	m_execLastTime = timeGetTime();		// 現在時刻を取得
+	m_currentTime = 0;
+	m_execLastTime = timeGetTime();
+	m_deltaTime = 0.0f;
 
 	// FPS計測の初期化
 	m_frameCount = 0;
 	m_fpsLastTime = timeGetTime();
+	m_fps = 0;
 }
 
 //=============================================================
@@ -287,6 +278,6 @@ void Main::SetShowCursor(const bool& show)
 D3DXVECTOR2 Main::GetWindowSize()
 {
 	RECT rect;
-	GetWindowRect(NULL, &rect);
+	GetWindowRect(g_hwnd, &rect);
 	return D3DXVECTOR2(static_cast<float>(rect.right - rect.left), static_cast<float>(rect.bottom - rect.top));
 }

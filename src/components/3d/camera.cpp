@@ -1,4 +1,4 @@
-//------------------------------------------------------------
+﻿//------------------------------------------------------------
 // @file		camera.cpp
 // @brief	カメラ
 // @detail	3D空間に存在するオブジェクトを描画するためのデバイス
@@ -94,7 +94,7 @@ void Camera::SetCamera()
 	D3DXMatrixIdentity(&m_projMtx);
 
 	// ウィンドウサイズの取得
-	D3DXVECTOR2 windowSize = Main::GetWindowSize();
+	D3DXVECTOR2 windowSize = Main::GetInstance().GetWindowSize();
 
 	// 投影モードごとに設定する
 	switch (m_mode)

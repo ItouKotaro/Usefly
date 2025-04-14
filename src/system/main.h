@@ -20,8 +20,14 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 class Main final
 {
 public:
-	Main();
 	~Main();
+
+	//@brief インスタンスを取得する
+	static Main& GetInstance()
+	{
+		static Main instance;
+		return instance;
+	}
 
 	//@brief スレッドの開始
 	void ThreadStart();
@@ -29,29 +35,32 @@ public:
 	void ThreadJoin();
 
 	//@brief デルタタイムを取得する
-	static float GetDeltaTime() { return m_deltaTime; }
+	float GetDeltaTime() { return m_deltaTime; }
 	//@brief FPS値を取得する
-	static int GetFPS() { return m_fps; }
+	int GetFPS() { return m_fps; }
 	//@brief ウィンドウのアクティブ状態を取得する
-	static bool IsActiveWindow();
+	bool IsActiveWindow();
 	//@brief アプリケーションを終了する
-	static void ExitApplication();
+	void ExitApplication();
 	//@brief カーソルの表示状態を変更する
-	static void SetShowCursor(const bool& show);
+	void SetShowCursor(const bool& show);
 	//@brief ウィンドウサイズを取得する
-	static D3DXVECTOR2 GetWindowSize();
+	D3DXVECTOR2 GetWindowSize();
 private:
+	//@brief コンストラクタ
+	Main();
+
 	//@brief メインループ
 	void MainLoop();
 
 	std::thread* m_thread;		// スレッド
-	DWORD m_currentTime;	// 現在時刻
+	DWORD m_currentTime;		// 現在時刻
 	DWORD m_execLastTime;	// 前回の更新時刻
 	DWORD m_fpsLastTime;		// 前回のFPS更新時刻
 	int m_frameCount;				// フレームのカウント
 
-	static float m_deltaTime;	// デルタタイム
-	static int m_fps;					// FPS値
+	float m_deltaTime;				// デルタタイム
+	int m_fps;							// FPS値
 };
 
 #endif // !_MAIN_H_

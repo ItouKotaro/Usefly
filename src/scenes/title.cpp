@@ -21,6 +21,7 @@ void TitleScene::Init()
 	// モデルを作成する
 	GameObject* model = new GameObject("TestModel");
 	model->AddComponent<Model>()->Load("data\\MODEL\\bench.x");
+	model->transform->scale = { 5.0f, 5.0f, 5.0f };
 
 	// カメラを作成する
 	m_camera = new GameObject("Camera");

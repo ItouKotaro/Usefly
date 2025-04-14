@@ -21,13 +21,11 @@ void TitleScene::Init()
 	// モデルを作成する
 	GameObject* model = new GameObject("TestModel");
 	model->AddComponent<Model>()->Load("data\\MODEL\\bench.x");
-	model->transform->scale = { 5.0f, 5.0f, 5.0f };
 
 	// カメラを作成する
 	m_camera = new GameObject("Camera");
 	m_camera->AddComponent<Camera>();
-	m_camera->transform->position = { 0.0f, 10.0f, -30.0f };
-	//m_camera->transform->LookAt(model->transform->position);
+	m_camera->transform->position = { 0.0f, 10.0f, -100.0f };
 }
 
 //=============================================================
@@ -35,8 +33,6 @@ void TitleScene::Init()
 //=============================================================
 void TitleScene::Update()
 {
-	m_camera->transform->SetEulerAngle(0.0f, m_camera->transform->GetEulerAngle().y + 0.01f, 0.0f);
-
 	if (Input->GetKey(KeyCode::Space))
 	{
 		Log::SendLog("スペースが押されています");

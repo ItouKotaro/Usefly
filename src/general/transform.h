@@ -16,7 +16,7 @@ public:
 	{
 		position = {0.0f, 0.0f, 0.0f};
 		D3DXQuaternionIdentity(&rotation);
-		scale = scale;
+		scale = { 1.0f, 1.0f, 1.0f };
 		size = { 1.0f, 1.0f };
 		m_parent = nullptr;
 	}

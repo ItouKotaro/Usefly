@@ -120,6 +120,9 @@
     <ClInclude Include="src\system\KeyTables.h">
       <Filter>ヘッダー ファイル\system</Filter>
     </ClInclude>
+    <ClInclude Include="src\components\3d\collision.h">
+      <Filter>ヘッダー ファイル\components\3d</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\general\gameobject.cpp">
@@ -181,6 +184,9 @@
     </ClCompile>
     <ClCompile Include="src\system\input_devices\keyboard.cpp">
       <Filter>ソース ファイル\system\input_devices</Filter>
+    </ClCompile>
+    <ClCompile Include="src\components\3d\collision.cpp">
+      <Filter>ソース ファイル\components\3d</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

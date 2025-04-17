@@ -123,6 +123,9 @@
     <ClInclude Include="src\components\3d\collision.h">
       <Filter>ヘッダー ファイル\components\3d</Filter>
     </ClInclude>
+    <ClInclude Include="src\system\physics.h">
+      <Filter>ヘッダー ファイル\system</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\general\gameobject.cpp">
@@ -187,6 +190,9 @@
     </ClCompile>
     <ClCompile Include="src\components\3d\collision.cpp">
       <Filter>ソース ファイル\components\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\system\physics.cpp">
+      <Filter>ソース ファイル\system</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -11,6 +11,9 @@
 class Component : public Object
 {
 public:
+	Component() : gameObject(nullptr), transform(nullptr) {};
+	virtual ~Component() = default;
+
 	/*
 	@brief 初期化処理
 	@details コンポーネントが追加された際に呼ばれるイベント
@@ -71,7 +74,7 @@ public:
 	void DetachGameObject();
 
 	GameObject* gameObject;	// アタッチ先のゲームオブジェクト
-	Transform* transform;		// アタッチ先のトランスフォーム
+	Transform* transform;			// アタッチ先のトランスフォーム
 private:
 	//@brief 解放処理
 	void Release() override;

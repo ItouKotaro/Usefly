@@ -1,26 +1,38 @@
 //------------------------------------------------------------
-// @file		collision.h
-// @brief	コリジョン
-// @detail	当たり判定の形状
+// @file			collision.h
+// @brief		コリジョン
+// @detail	当たり判定
 //------------------------------------------------------------
 #ifndef _COLLISION_H_
 #define _COLLISION_H_
 
 #include <component.h>
 
-////@brief リジッドボディ
-//class RigidBody : public Component
-//{
-//public:
-//	void Init() override;					// 初期化
-//	void Update() override;				// 更新
-//
-//	btRigidBody* GetRigidBody();		// リジッドボディの取得
-//	Collision* GetCollision();			// コリジョンの取得
-//	void EnableAlwayActive();
-//private:
-//};
-//
+/**
+ * @brief コリジョンコンポーネント
+ * @details 当たり判定の基盤となるコンポーネントです（形状コライダーを追加すると、自動で追加されます）
+*/
+class Collision : public Component
+{
+public:
+	void Init() override;
+	void Uninit() override;
+private:
+	btCollisionObject* m_collision;	// コリジョン
+};
+
+/**
+ * @brief リジッドボディーコンポーネント
+ * @details 物理挙動するようになります
+*/
+class RigidBody : public Component
+{
+public:
+	void Init() override;
+	void Uninit() override;
+private:
+};
+
 //// ゴーストオブジェクト
 //class CGhostObject : public Component
 //{

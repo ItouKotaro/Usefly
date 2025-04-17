@@ -90,8 +90,8 @@ private:
 class ResourceDataManager final
 {
 public:
-	ResourceDataManager() {}
-	~ResourceDataManager() {}
+	ResourceDataManager() = default;
+	~ResourceDataManager() = default;
 
 	//@brief テクスチャデータを参照する
 	TextureData* RefTexture(std::string path);

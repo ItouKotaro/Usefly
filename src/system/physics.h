@@ -9,6 +9,7 @@
 // インクルード
 #include <btBulletCollisionCommon.h>
 #include <btBulletDynamicsCommon.h>
+#include <BulletCollision/CollisionDispatch/btGhostObject.h>
 
 // ライブラリのリンク
 #pragma comment(lib, "Bullet2FileLoader.lib")
@@ -44,16 +45,21 @@
 class Physics final
 {
 public:
-	//@brief インスタンスの取得
-	static Physics& GetInstance()
-	{
-		static Physics instance;
-		return instance;
-	}
-
+	//@brief 初期化
+	void Init();
+	//@brief 終了
+	void Uninit();
+	//@brief 更新
+	void Update();
 private:
-	Physics() = default;
-	~Physics() = default;
+	btDiscreteDynamicsWorld* m_world;										// ワールド
+	std::vector<btCollisionShape*> m_collisionShapes;				// コリジョンリスト
+
+	btDefaultCollisionConfiguration* m_collisionConfiguration;	
+	btCollisionDispatcher* m_dispatcher;
+	btBroadphaseInterface* m_overlappingPairCache;
+	btSequentialImpulseConstraintSolver* m_solver;
+	btGhostPairCallback* m_ghostPairCollback;
 };
 
 

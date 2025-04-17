@@ -15,6 +15,10 @@ void Manager::Init(HINSTANCE hInstance, HWND hWnd)
 	m_renderer = new Renderer();
 	m_renderer->Init(hInstance, hWnd);
 
+	// 物理を生成する
+	m_physics = new Physics();
+	m_physics->Init();
+
 	// シーンマネージャーを生成する
 	m_sceneManager = new SceneManager();
 	m_sceneManager->Init();
@@ -35,20 +39,12 @@ void Manager::Uninit()
 	// すべてのオブジェクトを破棄する
 	Object::AllDestroy();
 	
-	// レンダラーを終了する
-	if (m_renderer != nullptr)
+	// リソースデータをすべて破棄する
+	if (m_resourceDataManager != nullptr)
 	{
-		m_renderer->Uninit();
-		delete m_renderer;
-		m_renderer = nullptr;
-	}
-
-	// シーンマネージャーを終了する
-	if (m_sceneManager != nullptr)
-	{
-		m_sceneManager->AllRelease();
-		delete m_sceneManager;
-		m_sceneManager = nullptr;
+		m_resourceDataManager->AllRelease();
+		delete m_resourceDataManager;
+		m_resourceDataManager = nullptr;
 	}
 
 	// 入力マネージャーを終了する
@@ -59,12 +55,28 @@ void Manager::Uninit()
 		m_inputManager = nullptr;
 	}
 
-	// リソースデータをすべて破棄する
-	if (m_resourceDataManager != nullptr)
+	// シーンマネージャーを終了する
+	if (m_sceneManager != nullptr)
 	{
-		m_resourceDataManager->AllRelease();
-		delete m_resourceDataManager;
-		m_resourceDataManager = nullptr;
+		m_sceneManager->AllRelease();
+		delete m_sceneManager;
+		m_sceneManager = nullptr;
+	}
+
+	// 物理を終了する
+	if (m_physics != nullptr)
+	{
+		m_physics->Uninit();
+		delete m_physics;
+		m_physics = nullptr;
+	}
+
+	// レンダラーを終了する
+	if (m_renderer != nullptr)
+	{
+		m_renderer->Uninit();
+		delete m_renderer;
+		m_renderer = nullptr;
 	}
 
 #if OUTPUT_LOG_FILE
@@ -80,6 +92,9 @@ void Manager::Update()
 {
 	// 入力マネージャーを更新する
 	m_inputManager->Update();
+
+	// 物理を更新する
+	m_physics->Update();
 
 	// ゲームオブジェクトを更新する
 	GameObject::AllUpdate();

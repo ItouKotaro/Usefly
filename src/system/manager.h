@@ -7,6 +7,7 @@
 #define _MANAGER_H_
 
 #include "renderer.h"
+#include "physics.h"
 #include "resource_data.h"
 #include "scene.h"
 #include "input.h"
@@ -28,6 +29,8 @@ public:
 
 	//@brief レンダラーを取得する
 	Renderer* GetRenderer() { return m_renderer; }
+	//@brief 物理を取得する
+	Physics* GetPhysics() { return m_physics; }
 	//@brief リソースデータマネージャーを取得する
 	ResourceDataManager* GetResourceDataManager() { return m_resourceDataManager; }
 	//@brief シーンマネージャーを取得する
@@ -45,10 +48,11 @@ public:
 		return &instance;
 	}
 private:
-	Renderer* m_renderer;											// レンダラー
+	Renderer* m_renderer;												// レンダラー
+	Physics* m_physics;													// 物理
 	ResourceDataManager* m_resourceDataManager;	// リソースデータマネージャー
 	SceneManager* m_sceneManager;							// シーンマネージャー
-	InputManager* m_inputManager;							// 入力マネージャー
+	InputManager* m_inputManager;								// 入力マネージャー
 };
 
 #endif // !_MANAGER_H_

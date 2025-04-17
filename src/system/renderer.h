@@ -26,7 +26,7 @@ class Renderer final
 {
 public:
 	Renderer() : m_d3d(nullptr), m_d3dDevice(nullptr), m_hwnd(nullptr) {}
-	~Renderer() {}
+	~Renderer() = default;
 
 	//@brief 初期化
 	HRESULT Init(HINSTANCE hInstance, HWND hWnd);
@@ -42,7 +42,7 @@ public:
 private:
 	LPDIRECT3D9 m_d3d;								// Direct3Dオブジェクトへのポインタ
 	LPDIRECT3DDEVICE9 m_d3dDevice;			// Direct3Dデバイスへのポインタ
-	HWND m_hwnd;										// ハンドル
+	HWND m_hwnd;											// ハンドル
 };
 
 #endif // !_RENDERER_H_

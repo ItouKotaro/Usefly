@@ -4,6 +4,7 @@
 // @detail	物理演算の処理
 //------------------------------------------------------------
 #include "physics.h"
+#include "components/3d/collision.h"
 
 //=============================================================
 // 初期化
@@ -105,4 +106,33 @@ void Physics::Update()
 
 	// オブジェクトのトランスフォーム情報を上書きする
 	//for (auto itr = )
+
+	// 新しく追加されたコリジョンを登録する
+	auto& gameObjects = GameObject::GetAllGameObjects();
+	for (auto itr = gameObjects.begin(); itr != gameObjects.end(); itr++)
+	{
+		Collision* collision = (*itr)->GetComponent<Collision>();
+		if (collision != nullptr && collision->GetUpdateFlag())
+		{ // 更新フラグが立っているとき
+			// 構成する
+			collision->Build();
+		}
+	}
 }
+
+////=============================================================
+//// コリジョンオブジェクトを追加する
+////=============================================================
+//void Physics::AddCollisionObject(Collision* collision)
+//{
+//	// コリジョンをワールドに追加する
+//	m_world->addCollisionObject(collision->GetCollision());
+//}
+//
+////=============================================================
+//// コリジョンオブジェクトを削除する
+////=============================================================
+//void Physics::RemoveCollisionObject(Collision* collision)
+//{
+//	// コリジョンをリストから削除
+//}

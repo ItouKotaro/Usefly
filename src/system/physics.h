@@ -38,6 +38,9 @@
 #pragma comment(lib, "LinearMath.lib")
 #pragma comment(lib, "OpenGLWindow.lib")
 
+// 前方宣言
+class Collision;
+
 /**
  * @brief 物理クラス
  * @details 物理システムの根幹
@@ -51,9 +54,17 @@ public:
 	void Uninit();
 	//@brief 更新
 	void Update();
+
+	//@brief ワールドを取得する
+	btDiscreteDynamicsWorld* GetWorld() { return m_world; }
+
+	////@brief コリジョンオブジェクトを追加する
+	//void AddCollisionObject(Collision* collision);
+	////@brief コリジョンオブジェクトを削除する
+	//void RemoveCollisionObject(Collision* collision);
 private:
-	btDiscreteDynamicsWorld* m_world;										// ワールド
-	std::vector<btCollisionShape*> m_collisionShapes;				// コリジョンリスト
+	btDiscreteDynamicsWorld* m_world;							// ワールド
+	std::vector<btCollisionShape*> m_collisionShapes;		// 形状コリジョンリスト
 
 	btDefaultCollisionConfiguration* m_collisionConfiguration;	
 	btCollisionDispatcher* m_dispatcher;

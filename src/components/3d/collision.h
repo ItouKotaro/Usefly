@@ -10,19 +10,29 @@
 
 /**
  * @brief コリジョンコンポーネント
- * @details 当たり判定の基盤となるコンポーネントです（形状コライダーを追加すると、自動で追加されます）
+ * @details 当たり判定の標準コンポーネントです（形状コライダーを追加すると、自動で追加されます）
 */
 class Collision : public Component
 {
 public:
 	void Init() override;
 	void Uninit() override;
+
+	//@brief コリジョンオブジェクトを取得する
+	btCollisionObject* GetCollision() { return m_collision; }
+
+	//@brief ビルドする
+	void Build();
+
+	//@brief 更新フラグを取得する
+	bool& GetUpdateFlag() { return m_updateFlag; }
 private:
-	btCollisionObject* m_collision;	// コリジョン
+	bool m_updateFlag;					// 更新フラグ
+	btCollisionObject* m_collision;		// コリジョン
 };
 
 /**
- * @brief リジッドボディーコンポーネント
+ * @brief リジッドボディコンポーネント
  * @details 物理挙動するようになります
 */
 class RigidBody : public Component

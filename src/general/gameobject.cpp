@@ -178,9 +178,6 @@ void GameObject::DetachComponent(Component* component)
 //=============================================================
 void GameObject::Release()
 {
-	// 終了処理を行う
-	this->Uninit();
-
 	// 親子関係のあるオブジェクトを破棄する
 	for (auto itr = m_gameObjects.begin(); itr != m_gameObjects.end(); itr++)
 	{

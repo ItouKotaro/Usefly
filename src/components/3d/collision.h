@@ -15,20 +15,20 @@
 class Collision : public Component
 {
 public:
-	void Init() override;
-	void Uninit() override;
+	virtual void Init() override;
+	virtual void Uninit() override;
 
 	//@brief コリジョンオブジェクトを取得する
 	btCollisionObject* GetCollision() { return m_collision; }
 
 	//@brief ビルドする
-	void Build();
+	virtual void Build();
 
 	//@brief 更新フラグを取得する
 	bool& GetUpdateFlag() { return m_updateFlag; }
-private:
+protected:
 	bool m_updateFlag;					// 更新フラグ
-	btCollisionObject* m_collision;		// コリジョン
+	btCollisionObject* m_collision;	// コリジョン
 };
 
 /**
@@ -40,7 +40,9 @@ class RigidBody : public Component
 public:
 	void Init() override;
 	void Uninit() override;
-private:
+
+	//@brief リジッドボディを取得する
+	btRigidBody* GetRigidBody();
 };
 
 //// ゴーストオブジェクト

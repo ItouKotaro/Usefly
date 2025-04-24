@@ -111,7 +111,7 @@ void Physics::Update()
 	auto& gameObjects = GameObject::GetAllGameObjects();
 	for (auto itr = gameObjects.begin(); itr != gameObjects.end(); itr++)
 	{
-		Collision* collision = (*itr)->GetComponent<Collision>();
+		Collision* collision = (*itr)->GetComponent<Collision>(true);
 		if (collision != nullptr && collision->GetUpdateFlag())
 		{ // 更新フラグが立っているとき
 			// 構成する

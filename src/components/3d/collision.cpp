@@ -16,9 +16,6 @@ void Collision::Init()
 		Destroy(this);
 		return;
 	}
-
-	// 構築する
-	Build();
 }
 
 //=============================================================
@@ -32,6 +29,13 @@ void Collision::Uninit()
 		Manager::GetInstance()->GetPhysics()->GetWorld()->removeCollisionObject(m_collision);
 		delete m_collision;
 		m_collision = nullptr;
+	}
+
+	// 副次的なコンポーネントを削除する
+	auto rigidBody = gameObject->GetComponent<RigidBody>();
+	if (rigidBody != nullptr)
+	{
+		Destroy(rigidBody);
 	}
 }
 
@@ -68,7 +72,8 @@ void RigidBody::Init()
 		return;
 	}
 
-	// リジッドボディを
+	// 更新対象に追加する
+	gameObject->GetComponent<Collision>()->GetUpdateFlag() = true;
 }
 
 //=============================================================
@@ -76,4 +81,6 @@ void RigidBody::Init()
 //=============================================================
 void RigidBody::Uninit()
 {
+	// 更新対象に追加する
+	gameObject->GetComponent<Collision>()->GetUpdateFlag() = true;
 }

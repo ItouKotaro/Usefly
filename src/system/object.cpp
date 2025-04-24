@@ -22,15 +22,6 @@ Object::Object() : m_deathFlag(false), m_active(true)
 //=============================================================
 Object::~Object()
 {
-	// データを削除する
-	for (auto itr = m_objects.begin(); itr != m_objects.end(); itr++)
-	{
-		if (*itr == this)
-		{
-			m_objects.erase(itr);
-			break;
-		}
-	}
 }
 
 //=============================================================
@@ -38,13 +29,19 @@ Object::~Object()
 //=============================================================
 void Object::ReleaseDeathFlag()
 {
-	int idx = static_cast<int>(m_objects.size());
-	for (int i = idx - 1; i >= 0; i--)
+	auto itr = m_objects.begin();
+	while (itr != m_objects.end())
 	{
-		if (m_objects[i]->m_deathFlag)
-		{ // 死亡フラグがついているとき
-			m_objects[i]->Release();
-			delete m_objects[i];
+		Object* obj = *itr;
+		if (obj->m_deathFlag)
+		{
+			obj->Release();
+			delete obj;
+			itr = m_objects.erase(itr);
+		}
+		else
+		{
+			itr++;
 		}
 	}
 }

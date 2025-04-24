@@ -22,9 +22,15 @@ public:
 	GameObject(std::string vName = "", std::string vTag = "");
 	virtual ~GameObject();
 
-	//@brief 初期化
+	/**
+	 * @brief 初期化
+	 * @details ゲームオブジェクトに含まれるコンポーネントを初期化します（デフォルトでは使用されません）
+	*/
 	void Init();
-	//@brief 終了
+	/**
+	 * @brief 終了
+	 * @details ゲームオブジェクトに含まれるコンポーネントを終了します（デフォルトでは使用されません）
+	*/
 	void Uninit();
 	//@brief 更新
 	void Update();

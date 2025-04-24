@@ -29,21 +29,30 @@ Object::~Object()
 //=============================================================
 void Object::ReleaseDeathFlag()
 {
-	auto itr = m_objects.begin();
-	while (itr != m_objects.end())
+	int deathCounter = 0;	// 破棄したデスフラグのカウント
+	do
 	{
-		Object* obj = *itr;
-		if (obj->m_deathFlag)
+		// デスカウンターをリセットする
+		deathCounter = 0;
+
+		auto itr = m_objects.begin();
+		while (itr != m_objects.end())
 		{
-			obj->Release();
-			delete obj;
-			itr = m_objects.erase(itr);
+			Object* obj = *itr;
+			if (obj->m_deathFlag)
+			{
+				obj->Release();
+				delete obj;
+				itr = m_objects.erase(itr);
+
+				deathCounter++;
+			}
+			else
+			{
+				itr++;
+			}
 		}
-		else
-		{
-			itr++;
-		}
-	}
+	} while (deathCounter > 0);
 }
 
 //=============================================================

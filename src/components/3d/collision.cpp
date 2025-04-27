@@ -193,6 +193,9 @@ void Collision::GenerateColliderShape()
 	{
 		(*itr)->AddShape(m_shape);
 	}
+
+	// ƒXƒP[ƒ‹‚ð’²®‚·‚é
+	m_shape->setLocalScaling(btVector3(transform->GetWorldScale().x, transform->GetWorldScale().y, transform->GetWorldScale().z));
 }
 
 //=============================================================
@@ -245,7 +248,7 @@ btRigidBody* RigidBody::GetRigidBody()
 	Collision* collision = gameObject->GetComponent<Collision>();
 	if (collision != nullptr)
 	{
-		return (btRigidBody*)collision->GetCollision();
+		return btRigidBody::upcast(collision->GetCollision());
 	}
 	return nullptr;
 }

@@ -28,7 +28,7 @@ void TitleScene::Init()
 	GameObject* judge = new GameObject("Judge");
 	judge->AddComponent<BoxCollider>()->SetSize({ 20.0f, 2.0f, 20.0f });
 	judge->GetComponent<Collision>()->SetTrigger(true);
-	judge->AddComponent<TestCollision>();
+	//judge->AddComponent<TestCollision>();
 
 	// カメラを作成する
 	m_camera = new GameObject("Camera");
@@ -49,5 +49,7 @@ void TitleScene::Update()
 		model->AddComponent<BoxCollider>()->SetSize({ 4.5f, 3.0f, 10.0f });
 		model->GetComponent<BoxCollider>()->SetOffset({ 0.0f, 1.5f, 0.0f });
 		model->AddComponent<RigidBody>();
+		model->AddComponent<TestCollision>();
+		model->transform->position.y += 50.0f;
 	}
 }

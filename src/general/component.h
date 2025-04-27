@@ -45,19 +45,34 @@ public:
 	virtual void DrawUI() {}
 
 	/*
-	@brief 他のコリジョンと重なっているときに呼ばれるイベント
+	@brief 他のコリジョンと接触しているときに呼ばれるイベント
 	*/
-	virtual void OnTriggerStay(Collision* collision) {}
+	virtual void OnCollisionStay(Collision* other) {}
 
 	/*
-	@brief 他のコリジョンが入ってきたときのイベント
+	@brief 他のコリジョンと接触したときのイベント
 	*/
-	virtual void OnTriggerEnter(Collision* collision) {}
+	virtual void OnCollisionEnter(Collision* other) {}
 
 	/*
-	@brief 他のコリジョンが出たときのイベント
+	@brief 他のコリジョンと離れたときのイベント
 	*/
-	virtual void OnTriggerExit(Collision* collision) {}
+	virtual void OnCollisionExit(Collision* other) {}
+
+	/*
+	@brief トリガーと他のコリジョンが重なっているときに呼ばれるイベント
+	*/
+	virtual void OnTriggerStay(Collision* other) {}
+
+	/*
+	@brief トリガーに他のコリジョンが入ってきたときのイベント
+	*/
+	virtual void OnTriggerEnter(Collision* other) {}
+
+	/*
+	@brief トリガーから他のコリジョンが出たときのイベント
+	*/
+	virtual void OnTriggerExit(Collision* other) {}
 
 	/*
 	@brief ゲームオブジェクトにアタッチする

@@ -10,9 +10,13 @@
 class TestCollision : public Component
 {
 public:
-	void OnTriggerStay(Collision* collision) override;
-	void OnTriggerEnter(Collision* collision) override;
-	void OnTriggerExit(Collision* collision) override;
+	void OnTriggerStay(Collision* other) override;
+	void OnTriggerEnter(Collision* other) override;
+	void OnTriggerExit(Collision* other) override;
+
+	void OnCollisionStay(Collision* other) override;
+	void OnCollisionEnter(Collision* other) override;
+	void OnCollisionExit(Collision* other) override;
 };
 
 #endif // !_COLLISION_TEST_H_

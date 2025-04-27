@@ -145,6 +145,12 @@ void Physics::Update()
 			btQuaternion quaternion(worldRot.x, worldRot.y, worldRot.z, worldRot.w);
 			changedTransform.setRotation(quaternion);
 
+			// スケールが変更されているか
+			if (collision->gameObject->transform->GetWorldScale() != collision->GetOldTransform().GetWorldScale())
+			{
+				collision->GetUpdateFlag() = true;
+			}
+
 			// 変更を適用する
 			collision->GetCollision()->setWorldTransform(changedTransform);
 		}
@@ -322,7 +328,7 @@ void Physics::DebugPhysics::Draw()
 	// デバイスを取得する
 	auto device = Manager::GetInstance()->GetRenderer()->GetDevice();
 
-	for (auto itr = m_lineData.begin(); itr != m_lineData.end(); itr++)
+	for (auto itr = m_lineData.begin(); itr != m_lineData.end();)
 	{
 		if ((*itr)->use)
 		{
@@ -344,6 +350,9 @@ void Physics::DebugPhysics::Draw()
 			device->DrawPrimitive(D3DPT_LINELIST, //プリミティブの種類
 				0, //描画する最初の頂点インデックス
 				1);				//描画するプリミティブ数
+
+			// イテレーターを進める
+			itr++;
 		}
 		else
 		{ // 未使用の場合
@@ -353,7 +362,7 @@ void Physics::DebugPhysics::Draw()
 			if ((*itr)->life <= 0)
 			{
 				LineData* data = *itr;
-				m_lineData.erase(itr);
+				itr = m_lineData.erase(itr);
 
 				data->vtxBuff->Release();
 				delete data;
@@ -385,9 +394,8 @@ void ActionInterface::updateAction(btCollisionWorld* collisionWorld, btScalar de
 		std::vector<Collision*>& overlappingCollisions = collision->GetOverlappingCollisions();			// 重なっているコリジョン
 		std::vector<Component*>& componentList = collision->gameObject->GetComponents();	// コンポーネントリスト
 
-
-		if (rigidbody == nullptr && isTrigger)
-		{ // トリガー + ゴーストオブジェクト
+		if (rigidbody == nullptr)
+		{ // ゴーストオブジェクト
 
 			btGhostObject* ghostObj = (btGhostObject*)collision->GetCollision();
 
@@ -411,7 +419,7 @@ void ActionInterface::updateAction(btCollisionWorld* collisionWorld, btScalar de
 				{
 					if (std::find(overlappingCollisions.begin(), overlappingCollisions.end(), *overlapItr) == overlappingCollisions.end())
 					{
-						(*compItr)->OnTriggerEnter(*overlapItr);
+						isTrigger ? (*compItr)->OnTriggerEnter(*overlapItr) : (*compItr)->OnCollisionEnter(*overlapItr);
 					}
 				}
 			}
@@ -421,7 +429,7 @@ void ActionInterface::updateAction(btCollisionWorld* collisionWorld, btScalar de
 			{
 				for (auto overlapItr = currentOverlapping.begin(); overlapItr != currentOverlapping.end(); overlapItr++)
 				{
-					(*compItr)->OnTriggerStay(*overlapItr);
+					isTrigger ? (*compItr)->OnTriggerStay(*overlapItr) : (*compItr)->OnCollisionStay(*overlapItr);
 				}
 			}
 
@@ -432,7 +440,7 @@ void ActionInterface::updateAction(btCollisionWorld* collisionWorld, btScalar de
 				{
 					if (std::find(currentOverlapping.begin(), currentOverlapping.end(), *overlapItr) == currentOverlapping.end())
 					{
-						(*compItr)->OnTriggerExit(*overlapItr);
+						isTrigger ? (*compItr)->OnTriggerExit(*overlapItr) : (*compItr)->OnCollisionExit(*overlapItr);
 					}
 				}
 			}

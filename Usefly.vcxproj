@@ -115,6 +115,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>libs\bullet\lib\$(PlatformTarget)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -138,6 +139,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>libs\bullet\lib\$(PlatformTarget)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -157,6 +159,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>libs\bullet\lib\$(PlatformTarget)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -180,6 +183,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>libs\bullet\lib\$(PlatformTarget)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -191,6 +195,7 @@
     </ClCompile>
     <ClCompile Include="src\components\2d\sprite.cpp" />
     <ClCompile Include="src\components\3d\camera.cpp" />
+    <ClCompile Include="src\components\3d\collider.cpp" />
     <ClCompile Include="src\components\3d\collision.cpp" />
     <ClCompile Include="src\components\3d\light.cpp" />
     <ClCompile Include="src\components\3d\model.cpp" />
@@ -200,6 +205,7 @@
     <ClCompile Include="src\general\transform.cpp" />
     <ClCompile Include="src\scenes\start.cpp" />
     <ClCompile Include="src\scenes\title.cpp" />
+    <ClCompile Include="src\scripts\collision_test.cpp" />
     <ClCompile Include="src\system\benlib.cpp" />
     <ClCompile Include="src\system\input.cpp" />
     <ClCompile Include="src\system\input_devices\keyboard.cpp" />
@@ -215,6 +221,7 @@
     <ClInclude Include="PCH.h" />
     <ClInclude Include="src\components\2d\sprite.h" />
     <ClInclude Include="src\components\3d\camera.h" />
+    <ClInclude Include="src\components\3d\collider.h" />
     <ClInclude Include="src\components\3d\collision.h" />
     <ClInclude Include="src\components\3d\light.h" />
     <ClInclude Include="src\components\3d\model.h" />
@@ -224,6 +231,7 @@
     <ClInclude Include="src\general\transform.h" />
     <ClInclude Include="src\scenes\start.h" />
     <ClInclude Include="src\scenes\title.h" />
+    <ClInclude Include="src\scripts\collision_test.h" />
     <ClInclude Include="src\system\benlib.h" />
     <ClInclude Include="src\system\input.h" />
     <ClInclude Include="src\system\input_devices\keyboard.h" />

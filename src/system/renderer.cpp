@@ -98,7 +98,10 @@ void Renderer::Uninit()
 //=============================================================
 void Renderer::Update()
 {
-
+	if (Input->GetKeyDown(KeyCode::F11))
+	{
+		SetFullScreen(!GetFullScreen());
+	}
 }
 
 //=============================================================
@@ -127,6 +130,9 @@ void Renderer::Draw()
 
 			// ゲームオブジェクトを描画する
 			GameObject::AllDraw();
+
+			// 物理のデバッグ描画
+			Manager::GetInstance()->GetPhysics()->Draw();
 		}
 
 		// ゲームオブジェクトをUI描画する
@@ -138,4 +144,37 @@ void Renderer::Draw()
 
 	// バックバッファとフロントバッファの入れ替え
 	m_d3dDevice->Present(nullptr, nullptr, nullptr, nullptr);
+}
+
+//=============================================================
+// フルスクリーン切り替え
+//=============================================================
+void Renderer::SetFullScreen(const bool& enabled)
+{
+	// 変更する
+	m_isFullScreen = enabled;
+
+	// 現在のウィンドウスタイルを取得
+	DWORD dwStyle = GetWindowLong(m_hwnd, GWL_STYLE);
+	RECT rect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT }; // ウィンドウの座標を格納
+
+	// フルスクリーンに切り替える
+	if (m_isFullScreen)
+	{
+		// フルスクリーンモードに切り替え
+		GetWindowRect(m_hwnd, &rect);
+		SetWindowLong(m_hwnd, GWL_STYLE, dwStyle & ~WS_OVERLAPPEDWINDOW);
+		SetWindowPos(m_hwnd, HWND_TOP, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN),
+			SWP_FRAMECHANGED | SWP_NOACTIVATE);
+		ShowWindow(m_hwnd, SW_MAXIMIZE);
+	}
+	else
+	{
+		// ウィンドウモードに切り替え
+		SetWindowLong(m_hwnd, GWL_STYLE, dwStyle | WS_OVERLAPPEDWINDOW);
+		SetWindowPos(m_hwnd, HWND_TOP, rect.left, rect.top,
+			rect.right - rect.left, rect.bottom - rect.top,
+			SWP_FRAMECHANGED | SWP_NOACTIVATE);
+		ShowWindow(m_hwnd, SW_NORMAL);
+	}
 }

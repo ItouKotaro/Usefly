@@ -4,6 +4,7 @@
 // @detail	オブジェクト類の基底クラス
 //------------------------------------------------------------
 #include "object.h"
+#include "component.h"
 
 // 静的メンバ変数の初期化
 std::vector<Object*> Object::m_objects;

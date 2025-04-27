@@ -47,22 +47,17 @@ public:
 	/*
 	@brief 他のコリジョンと重なっているときに呼ばれるイベント
 	*/
-	virtual void OnTriggerStay(GameObject* other) {}
+	virtual void OnTriggerStay(Collision* collision) {}
 
 	/*
 	@brief 他のコリジョンが入ってきたときのイベント
 	*/
-	virtual void OnTriggerEnter(GameObject* other) {}
+	virtual void OnTriggerEnter(Collision* collision) {}
 
 	/*
 	@brief 他のコリジョンが出たときのイベント
 	*/
-	virtual void OnTriggerExit(GameObject* other) {}
-
-	/*
-	@brief 他のオブジェクトが消されたときに呼ばれるイベント
-	*/
-	virtual void OnDestroyOtherObject(Object* other) {}
+	virtual void OnTriggerExit(Collision* collision) {}
 
 	/*
 	@brief ゲームオブジェクトにアタッチする

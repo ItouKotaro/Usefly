@@ -7,6 +7,7 @@
 #define _COLLISION_H_
 
 #include <component.h>
+#include "collider.h"
 
 /**
  * @brief コリジョンコンポーネント
@@ -15,20 +16,46 @@
 class Collision : public Component
 {
 public:
-	virtual void Init() override;
-	virtual void Uninit() override;
+	Collision() : m_updateFlag(true), m_collision(nullptr), m_shape(nullptr), m_trigger(false), m_friction(1.0f) {}
+	void Init() override;
+	void Uninit() override;
+	void Update() override;
 
 	//@brief コリジョンオブジェクトを取得する
 	btCollisionObject* GetCollision() { return m_collision; }
 
+	//@brief コライダーを取得する
+	btCompoundShape* GetShape() { return m_shape; }
+
 	//@brief ビルドする
 	virtual void Build();
 
+	//@brief トリガーを設定する
+	void SetTrigger(const bool& enabled);
+	//@brief トリガーを取得する
+	bool GetTrigger() { return m_trigger; }
+	//@brief 摩擦を取得する
+	float& GetFriction() { return m_friction; }
 	//@brief 更新フラグを取得する
 	bool& GetUpdateFlag() { return m_updateFlag; }
+	//@brief 前回のトランスフォーム情報を取得する
+	Transform GetOldTransform() { return m_oldTransform; }
+	//@brief 重なっているコリジョンを取得する
+	std::vector<Collision*>& GetOverlappingCollisions() { return m_overlapping; }
+
 protected:
 	bool m_updateFlag;					// 更新フラグ
-	btCollisionObject* m_collision;	// コリジョン
+	btCollisionObject* m_collision;		// コリジョン
+	btCompoundShape* m_shape;	// 形状
+
+private:
+	//@brief 合わせたコライダーを生成する
+	void GenerateColliderShape();
+
+	float m_friction;											// 摩擦
+	bool m_trigger;											// トリガー
+	Transform m_oldTransform;							// 前回のトランスフォーム情報
+	std::vector<Collision*> m_overlapping;		// 重なっているコリジョン
 };
 
 /**
@@ -38,11 +65,25 @@ protected:
 class RigidBody : public Component
 {
 public:
+	RigidBody() : m_mass(1.0f), m_motionState(nullptr){}
 	void Init() override;
 	void Uninit() override;
 
 	//@brief リジッドボディを取得する
 	btRigidBody* GetRigidBody();
+
+	//@brief 質量を取得する
+	float& GetMass() { return m_mass; }
+
+	//@brief モーションステートを取得する
+	void SetMotionState(btMotionState* motionState);
+
+	//@brief モーションステートを取得する
+	btMotionState* GetMotionState() { return m_motionState; }
+
+private:
+	float m_mass;							// 質量
+	btMotionState* m_motionState;	// モーションステート
 };
 
 //// ゴーストオブジェクト

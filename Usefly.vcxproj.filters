@@ -55,6 +55,12 @@
     <Filter Include="ヘッダー ファイル\system\input_devices">
       <UniqueIdentifier>{aee11e58-0d4b-487f-902e-cf7ebba7a282}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\scripts">
+      <UniqueIdentifier>{f757e4a1-799b-4802-b433-efc62133f705}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\scripts">
+      <UniqueIdentifier>{480f9837-6b11-4b0a-a505-89e6cac4cfce}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\general\gameobject.h">
@@ -126,6 +132,12 @@
     <ClInclude Include="src\system\physics.h">
       <Filter>ヘッダー ファイル\system</Filter>
     </ClInclude>
+    <ClInclude Include="src\components\3d\collider.h">
+      <Filter>ヘッダー ファイル\components\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\collision_test.h">
+      <Filter>ヘッダー ファイル\scripts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\general\gameobject.cpp">
@@ -193,6 +205,12 @@
     </ClCompile>
     <ClCompile Include="src\system\physics.cpp">
       <Filter>ソース ファイル\system</Filter>
+    </ClCompile>
+    <ClCompile Include="src\components\3d\collider.cpp">
+      <Filter>ソース ファイル\components\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scripts\collision_test.cpp">
+      <Filter>ソース ファイル\scripts</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

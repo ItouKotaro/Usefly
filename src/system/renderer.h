@@ -37,12 +37,18 @@ public:
 	//@brief 描画
 	void Draw();
 
+	//@brief フルスクリーン切り替え
+	void SetFullScreen(const bool& enabled);
+	//@brief フルスクリーン状態取得
+	bool GetFullScreen() { return m_isFullScreen; }
+
 	//@brief デバイスを取得する
 	LPDIRECT3DDEVICE9 GetDevice() { return m_d3dDevice; }
 private:
 	LPDIRECT3D9 m_d3d;								// Direct3Dオブジェクトへのポインタ
 	LPDIRECT3DDEVICE9 m_d3dDevice;			// Direct3Dデバイスへのポインタ
 	HWND m_hwnd;											// ハンドル
+	bool m_isFullScreen;									// フルスクリーン
 };
 
 #endif // !_RENDERER_H_

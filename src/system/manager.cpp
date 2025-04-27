@@ -38,7 +38,7 @@ void Manager::Uninit()
 {
 	// すべてのオブジェクトを破棄する
 	Object::AllDestroy();
-	
+
 	// リソースデータをすべて破棄する
 	if (m_resourceDataManager != nullptr)
 	{

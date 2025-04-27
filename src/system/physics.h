@@ -42,6 +42,17 @@
 class Collision;
 
 /**
+ * @brief アクションインターフェイス
+ * @details 物理イベントの通知を行います
+*/
+class ActionInterface : public btActionInterface
+{
+public:
+	void updateAction(btCollisionWorld* collisionWorld, btScalar deltaTimeStep) override;
+	void debugDraw(btIDebugDraw* debugDrawer) {}
+};
+
+/**
  * @brief 物理クラス
  * @details 物理システムの根幹
 */
@@ -54,23 +65,65 @@ public:
 	void Uninit();
 	//@brief 更新
 	void Update();
+	//@brief 描画
+	void Draw();
 
 	//@brief ワールドを取得する
 	btDiscreteDynamicsWorld* GetWorld() { return m_world; }
 
-	////@brief コリジョンオブジェクトを追加する
-	//void AddCollisionObject(Collision* collision);
-	////@brief コリジョンオブジェクトを削除する
-	//void RemoveCollisionObject(Collision* collision);
+	//@brief コリジョンを追加する
+	void AddCollision(Collision* collision);
+	//@brief コリジョンを削除する
+	void RemoveCollision(Collision* collision);
+	//@brief コリジョンを取得する
+	std::vector<Collision*>& GetCollisions() { return m_collisions; }
+	//@brief btCollisionObjectからCollisionを探す
+	Collision* FindCollision(btCollisionObject* collisionObject);
 private:
-	btDiscreteDynamicsWorld* m_world;							// ワールド
-	std::vector<btCollisionShape*> m_collisionShapes;		// 形状コリジョンリスト
+	/**
+	 * @brief 物理デバッグクラス
+	 * @details コリジョンを視覚化します
+	*/
+	class DebugPhysics : public btIDebugDraw
+	{
+	public:
+		void drawLine(const btVector3& from, const btVector3& to, const btVector3& color) override;
+		void clearLines();
+		void drawContactPoint(const btVector3& PointOnB, const btVector3& normalOnB, btScalar distance, int lifeTime, const btVector3& color) override {};
+		void reportErrorWarning(const char* warningString) override {};
+		void draw3dText(const btVector3& location, const char* textString) override {};
+		void setDebugMode(int debugMode) override { m_debugMode = debugMode; };
+		int getDebugMode() const override { return m_debugMode; };
 
+		//@brief 終了する
+		void Uninit();
+		//@brief 描画する
+		void Draw();
+	private:
+		//@brief ラインデータ
+		struct LineData
+		{
+			D3DXVECTOR3 from;
+			D3DXVECTOR3 to;
+			D3DXCOLOR color;
+			LPDIRECT3DVERTEXBUFFER9 vtxBuff;
+			bool use;
+			int life;
+		};
+
+		int m_debugMode;
+		std::vector<LineData*> m_lineData;
+	};
+
+	btDiscreteDynamicsWorld* m_world;							// ワールド
 	btDefaultCollisionConfiguration* m_collisionConfiguration;	
 	btCollisionDispatcher* m_dispatcher;
 	btBroadphaseInterface* m_overlappingPairCache;
 	btSequentialImpulseConstraintSolver* m_solver;
 	btGhostPairCallback* m_ghostPairCollback;
+	DebugPhysics* m_debugDrawer;
+	ActionInterface* m_actionInterface;
+	std::vector<Collision*> m_collisions;
 };
 
 

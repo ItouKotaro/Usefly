@@ -9,7 +9,7 @@
 #include "components/3d/model.h"
 #include "components/3d/collision.h"
 #include "scripts/collision_test.h"
-#include "system/gizmo.h"
+
 //=============================================================
 // 初期化
 //=============================================================

@@ -91,6 +91,9 @@ void Renderer::Uninit()
 		m_d3d->Release();
 		m_d3d = nullptr;
 	}
+
+	// ギズモの終了
+	Gizmo.Release();
 }
 
 //=============================================================

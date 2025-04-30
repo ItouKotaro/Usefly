@@ -22,6 +22,9 @@ public:
 		return instance;
 	}
 
+	//@brief 解放する
+	void Release();
+
 	//@brief 3Dレンダリングする
 	void Render3D();
 	//@brief 2Dレンダリングする

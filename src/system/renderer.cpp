@@ -131,12 +131,15 @@ void Renderer::Draw()
 			// ゲームオブジェクトを描画する
 			GameObject::AllDraw();
 
-			// 物理のデバッグ描画
-			Manager::GetInstance()->GetPhysics()->Draw();
+			// ギズモの3D描画
+			Gizmo.Render3D();
 		}
 
 		// ゲームオブジェクトをUI描画する
 		GameObject::AllDrawUI();
+
+		// ギズモの2D描画
+		Gizmo.Render2D();
 
 		// 描画終了
 		m_d3dDevice->EndScene();

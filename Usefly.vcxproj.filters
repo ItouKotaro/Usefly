@@ -138,6 +138,9 @@
     <ClInclude Include="src\scripts\collision_test.h">
       <Filter>ヘッダー ファイル\scripts</Filter>
     </ClInclude>
+    <ClInclude Include="src\system\gizmo.h">
+      <Filter>ヘッダー ファイル\system</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\general\gameobject.cpp">
@@ -211,6 +214,9 @@
     </ClCompile>
     <ClCompile Include="src\scripts\collision_test.cpp">
       <Filter>ソース ファイル\scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\system\gizmo.cpp">
+      <Filter>ソース ファイル\system</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

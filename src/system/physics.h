@@ -65,8 +65,6 @@ public:
 	void Uninit();
 	//@brief 更新
 	void Update();
-	//@brief 描画
-	void Draw();
 
 	//@brief ワールドを取得する
 	btDiscreteDynamicsWorld* GetWorld() { return m_world; }
@@ -88,31 +86,13 @@ private:
 	{
 	public:
 		void drawLine(const btVector3& from, const btVector3& to, const btVector3& color) override;
-		void clearLines();
 		void drawContactPoint(const btVector3& PointOnB, const btVector3& normalOnB, btScalar distance, int lifeTime, const btVector3& color) override {};
 		void reportErrorWarning(const char* warningString) override {};
 		void draw3dText(const btVector3& location, const char* textString) override {};
 		void setDebugMode(int debugMode) override { m_debugMode = debugMode; };
 		int getDebugMode() const override { return m_debugMode; };
-
-		//@brief 終了する
-		void Uninit();
-		//@brief 描画する
-		void Draw();
 	private:
-		//@brief ラインデータ
-		struct LineData
-		{
-			D3DXVECTOR3 from;
-			D3DXVECTOR3 to;
-			D3DXCOLOR color;
-			LPDIRECT3DVERTEXBUFFER9 vtxBuff;
-			bool use;
-			int life;
-		};
-
 		int m_debugMode;
-		std::vector<LineData*> m_lineData;
 	};
 
 	btDiscreteDynamicsWorld* m_world;							// ワールド

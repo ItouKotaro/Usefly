@@ -21,6 +21,7 @@
 #include "system/log.h"
 #include "system/benlib.h"
 #include "system/manager.h"
+#include "system/gizmo.h"
 #include "gameobject.h"
 
 #include "components/3d/collision.h"

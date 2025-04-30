@@ -75,7 +75,6 @@ void Physics::Uninit()
 	// デバッグ描画の破棄
 	if (m_debugDrawer != nullptr)
 	{
-		m_debugDrawer->Uninit();
 		delete m_debugDrawer;
 		m_debugDrawer = nullptr;
 	}
@@ -177,15 +176,6 @@ void Physics::Update()
 }
 
 //=============================================================
-// 描画
-//=============================================================
-void Physics::Draw()
-{
-	// デバッグの描画
-	m_debugDrawer->Draw();
-}
-
-//=============================================================
 // コリジョンを追加する
 //=============================================================
 void Physics::AddCollision(Collision* collision)
@@ -230,146 +220,7 @@ Collision* Physics::FindCollision(btCollisionObject* collisionObject)
 //=============================================================
 void Physics::DebugPhysics::drawLine(const btVector3& from, const btVector3& to, const btVector3& color)
 {
-	LineData* target = nullptr;
-
-	// 余っているラインがあるか
-	for (auto itr = m_lineData.begin(); itr != m_lineData.end(); itr++)
-	{
-		if (!(*itr)->use)
-		{ // 使われていないとき
-			(*itr)->from = { from.getX(), from.getY(), from.getZ() };
-			(*itr)->to = { to.getX(), to.getY(), to.getZ() };
-			(*itr)->color = { color.getX(), color.getY(), color.getZ(), 1.0f };
-			(*itr)->life = DEBUG_LINE_LIFE;
-			(*itr)->use = true;
-
-			target = *itr;
-			break;
-		}
-	}
-
-	// 余っていなかった場合、ラインを新規作成する
-	if (target == nullptr)
-	{
-		LineData* data = new LineData();
-		data->from = D3DXVECTOR3(from.getX(), from.getY(), from.getZ());
-		data->to = D3DXVECTOR3(to.getX(), to.getY(), to.getZ());
-		data->color = D3DXCOLOR(color.getX(), color.getY(), color.getZ(), 1.0f);
-		data->life = DEBUG_LINE_LIFE;
-		data->use = true;
-
-		// バッファを確保する
-		auto device = Manager::GetInstance()->GetRenderer()->GetDevice();
-		device->CreateVertexBuffer(sizeof(VERTEX_3D) * 2, D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &data->vtxBuff, nullptr);
-
-		// 追加する
-		m_lineData.emplace_back(data);
-		target = data;
-	}
-
-
-	// ラインの設定を行う
-	if (target != nullptr)
-	{
-		VERTEX_3D* pVtx;
-		target->vtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-
-		// 頂点座標の設定
-		pVtx[0].pos = target->from;
-		pVtx[1].pos = target->to;
-
-		// 法線ベクトルの設定
-		pVtx[0].nor = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
-		pVtx[1].nor = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
-
-		// 頂点カラー
-		pVtx[0].col = target->color;
-		pVtx[1].col = target->color;
-
-		// テクスチャ座標の設定
-		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-		pVtx[1].tex = D3DXVECTOR2(0.0f, 0.0f);
-
-		// 頂点バッファをアンロックする
-		target->vtxBuff->Unlock();
-	}
-}
-
-//=============================================================
-// デバッグ : ラインを削除する
-//=============================================================
-void Physics::DebugPhysics::clearLines()
-{
-	for (auto itr = m_lineData.begin(); itr != m_lineData.end(); itr++)
-	{
-		(*itr)->use = false;
-	}
-}
-
-//=============================================================
-// デバッグ : 終了
-//=============================================================
-void Physics::DebugPhysics::Uninit()
-{
-	for (auto itr = m_lineData.begin(); itr != m_lineData.end(); itr++)
-	{
-		(*itr)->vtxBuff->Release();
-		delete* itr;
-		*itr = nullptr;
-	}
-	m_lineData.clear();
-}
-
-//=============================================================
-// デバッグ : 描画
-//=============================================================
-void Physics::DebugPhysics::Draw()
-{
-	// デバイスを取得する
-	auto device = Manager::GetInstance()->GetRenderer()->GetDevice();
-
-	for (auto itr = m_lineData.begin(); itr != m_lineData.end();)
-	{
-		if ((*itr)->use)
-		{
-			// ワールドマトリックスの設定
-			D3DXMATRIX mtx;
-			D3DXMatrixIdentity(&mtx);
-			device->SetTransform(D3DTS_WORLD, &mtx);
-
-			// 頂点バッファをデータストリームに設定
-			device->SetStreamSource(0, (*itr)->vtxBuff, 0, sizeof(VERTEX_3D));
-
-			// 頂点フォーマットの設定
-			device->SetFVF(FVF_VERTEX_3D);
-
-			// テクスチャの設定
-			device->SetTexture(0, nullptr);
-
-			// ポリゴンの描画
-			device->DrawPrimitive(D3DPT_LINELIST, //プリミティブの種類
-				0, //描画する最初の頂点インデックス
-				1);				//描画するプリミティブ数
-
-			// イテレーターを進める
-			itr++;
-		}
-		else
-		{ // 未使用の場合
-			(*itr)->life--;
-
-			// 寿命がなくなったとき
-			if ((*itr)->life <= 0)
-			{
-				LineData* data = *itr;
-				itr = m_lineData.erase(itr);
-
-				data->vtxBuff->Release();
-				delete data;
-				data = nullptr;
-			}
-		}
-	}
+	Gizmo.DrawLine({ from.getX(), from.getY(), from.getZ() }, { to.getX(), to.getY(), to.getZ() }, { color.getX(), color.getY(), color.getZ(), 1.0f });
 }
 
 

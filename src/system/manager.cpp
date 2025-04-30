@@ -5,6 +5,7 @@
 //------------------------------------------------------------
 #include "manager.h"
 #include "components/2d/sprite.h"
+#include "components/2d/text.h"
 
 //=============================================================
 // 初期化
@@ -29,6 +30,9 @@ void Manager::Init(HINSTANCE hInstance, HWND hWnd)
 
 	// リソースデータマネージャーを生成する
 	m_resourceDataManager = new ResourceDataManager();
+
+	// フォントを読み込む
+	TextUI::InitLoadFont();
 }
 
 //=============================================================

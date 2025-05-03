@@ -319,11 +319,23 @@ void GizmoSystem::Line2D::Set(const D3DXVECTOR2& from, const D3DXVECTOR2& to, co
 	vtx[2].pos = { points[2].x, points[2].y, 0.0f };
 	vtx[3].pos = { points[3].x, points[3].y, 0.0f };
 
+	// rhw
+	vtx[0].rhw = 1.0f;
+	vtx[1].rhw = 1.0f;
+	vtx[2].rhw = 1.0f;
+	vtx[3].rhw = 1.0f;
+
 	// 頂点カラー
 	vtx[0].col = color;
 	vtx[1].col = color;
 	vtx[2].col = color;
 	vtx[3].col = color;
+
+	// テクスチャ座標
+	vtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+	vtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
+	vtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
+	vtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
 
 	// 頂点バッファをアンロックする
 	m_vtxBuff->Unlock();

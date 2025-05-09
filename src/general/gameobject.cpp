@@ -157,6 +157,51 @@ void GameObject::AllDrawUI()
 }
 
 //=============================================================
+// 名前からゲームオブジェクトを取得する
+//=============================================================
+GameObject* GameObject::FindByName(const std::string& name)
+{
+	for (auto itr = m_gameObjects.begin(); itr != m_gameObjects.end(); itr++)
+	{
+		if ((*itr)->name == name)
+		{
+			return *itr;
+		}
+	}
+	return nullptr;
+}
+
+//=============================================================
+// タグからゲームオブジェクトを取得する
+//=============================================================
+GameObject* GameObject::FindByTag(const std::string& tag)
+{
+	for (auto itr = m_gameObjects.begin(); itr != m_gameObjects.end(); itr++)
+	{
+		if ((*itr)->tag == tag)
+		{
+			return *itr;
+		}
+	}
+	return nullptr;
+}
+
+//=============================================================
+// 名前とタグからゲームオブジェクトを取得する
+//=============================================================
+GameObject* GameObject::FindByNameTag(const std::string& name, const std::string& tag)
+{
+	for (auto itr = m_gameObjects.begin(); itr != m_gameObjects.end(); itr++)
+	{
+		if ((*itr)->name == name && (*itr)->tag == tag)
+		{
+			return *itr;
+		}
+	}
+	return nullptr;
+}
+
+//=============================================================
 // コンポーネントをデタッチする
 //=============================================================
 void GameObject::DetachComponent(Component* component)

@@ -118,6 +118,24 @@ public:
 	//@brief すべてのゲームオブジェクトを取得する
 	static std::vector<GameObject*>& GetAllGameObjects() { return m_gameObjects; }
 
+	/**
+	 * @brief 名前からゲームオブジェクトを取得する
+	 * @return 見つかったゲームオブジェクト（未発見はnullptr）
+	*/
+	static GameObject* FindByName(const std::string& name);
+
+	/**
+	 * @brief タグからゲームオブジェクトを取得する
+	 * @return 見つかったゲームオブジェクト（未発見はnullptr）
+	*/
+	static GameObject* FindByTag(const std::string& tag);
+
+	/**
+	 * @brief 名前とタグからゲームオブジェクトを取得する
+	 * @return 見つかったゲームオブジェクト（未発見はnullptr）
+	*/
+	static GameObject* FindByNameTag(const std::string& name, const std::string& tag);
+
 	Transform* transform;	// トランスフォーム情報
 	std::string name;			// 名前
 	std::string tag;				// タグ

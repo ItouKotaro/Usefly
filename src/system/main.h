@@ -7,8 +7,8 @@
 #define _MAIN_H_
 
  // マクロ定義
-#define CLASS_NAME			"WindowClass"	// クラス名
-#define WINDOW_NAME	"Usefly"			// ウィンドウ名
+#define CLASS_NAME			"WindowClass"		// クラス名
+#define WINDOW_NAME	"Karate Exorcist"	// ウィンドウ名
 
 // インクルード
 #include <thread>

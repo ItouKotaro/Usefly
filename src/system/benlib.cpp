@@ -174,3 +174,72 @@ void Benlib::ReplacePathSplit(char* FilePath, const char& cSplit)
 		}
 	}
 }
+
+#ifdef CV_VERSION_MAJOR	// OpenCV用関数 --------------------------------------------------------
+
+//=============================================================
+// cv::MatをLPDIRECT3DTEXTURE9に変換する
+//=============================================================
+bool Benlib::MatToTexture(const cv::Mat& mat, LPDIRECT3DTEXTURE9* outTexture)
+{
+	if (!Manager::GetInstance()->GetDevice() || mat.empty() || !outTexture)
+	{
+		return false;
+	}
+
+	if (!(*outTexture))
+	{
+		return false;
+	}
+
+	// テクスチャをロック
+	D3DLOCKED_RECT lockedRect;
+	HRESULT hr = (*outTexture)->LockRect(0, &lockedRect, nullptr, 0);
+	if (FAILED(hr))
+	{
+		return false;
+	}
+
+	// Matのフォーマットに応じてコピー
+	if (mat.type() == CV_8UC3)
+	{
+		// BGR → ARGB に変換してコピー
+		for (int y = 0; y < mat.rows; ++y) {
+			uint8_t* dst = reinterpret_cast<uint8_t*>(static_cast<uint8_t*>(lockedRect.pBits) + lockedRect.Pitch * y);
+			const cv::Vec3b* src = mat.ptr<cv::Vec3b>(y);
+			for (int x = 0; x < mat.cols; ++x) {
+				dst[x * 4 + 0] = src[x][0]; // B
+				dst[x * 4 + 1] = src[x][1]; // G
+				dst[x * 4 + 2] = src[x][2]; // R
+				dst[x * 4 + 3] = 255;       // A
+			}
+		}
+	}
+	else if (mat.type() == CV_8UC4)
+	{
+		// BGRA → ARGB に並び替え
+		for (int y = 0; y < mat.rows; ++y) {
+			uint8_t* dst = reinterpret_cast<uint8_t*>(static_cast<uint8_t*>(lockedRect.pBits) + lockedRect.Pitch * y);
+			const cv::Vec4b* src = mat.ptr<cv::Vec4b>(y);
+			for (int x = 0; x < mat.cols; ++x) {
+				dst[x * 4 + 0] = src[x][0]; // B
+				dst[x * 4 + 1] = src[x][1]; // G
+				dst[x * 4 + 2] = src[x][2]; // R
+				dst[x * 4 + 3] = src[x][3]; // A
+			}
+		}
+	}
+	else
+	{
+		// 未対応のフォーマット
+		(*outTexture)->UnlockRect(0);
+		(*outTexture)->Release();
+		*outTexture = nullptr;
+		return false;
+	}
+
+	(*outTexture)->UnlockRect(0);
+	return true;
+}
+
+#endif

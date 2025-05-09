@@ -152,11 +152,16 @@ void Physics::Update()
 
 			// 変更を適用する
 			collision->GetCollision()->setWorldTransform(changedTransform);
-		}
 
-		// リジッドボディのトランスフォームを更新する
+			// リジッドボディの場合はアクティブにする
+			if (rigidbody != nullptr)
+			{
+				rigidbody->GetRigidBody()->activate(true);
+			}
+		}
+		
 		if (rigidbody != nullptr && collision->GetCollision() != nullptr)
-		{
+		{ // リジッドボディのトランスフォームを更新する
 			// 結果を取得する
 			btTransform result;
 			rigidbody->GetRigidBody()->getMotionState()->getWorldTransform(result);
@@ -165,6 +170,9 @@ void Physics::Update()
 			collision->transform->position = { result.getOrigin().getX(), result.getOrigin().getY(), result.getOrigin().getZ() };
 			collision->transform->rotation = { result.getRotation().getX(), result.getRotation().getY(), result.getRotation().getZ(), result.getRotation().getW() };
 		}
+
+		// 前回のトランスフォーム
+		collision->UpdateOldTransform();
 
 		// 更新フラグが立っているとき
 		if (collision->GetUpdateFlag())

@@ -48,11 +48,11 @@ public:
 		return &instance;
 	}
 private:
-	Renderer* m_renderer;												// レンダラー
-	Physics* m_physics;													// 物理
+	Renderer* m_renderer;											// レンダラー
+	Physics* m_physics;												// 物理
 	ResourceDataManager* m_resourceDataManager;	// リソースデータマネージャー
 	SceneManager* m_sceneManager;							// シーンマネージャー
-	InputManager* m_inputManager;								// 入力マネージャー
+	InputManager* m_inputManager;							// 入力マネージャー
 };
 
 #endif // !_MANAGER_H_

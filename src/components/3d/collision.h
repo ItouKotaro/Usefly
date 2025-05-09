@@ -20,6 +20,7 @@ public:
 	void Init() override;
 	void Uninit() override;
 	void Update() override;
+	void UpdateOldTransform() { m_oldTransform = *transform; }
 
 	//@brief コリジョンオブジェクトを取得する
 	btCollisionObject* GetCollision() { return m_collision; }
@@ -59,7 +60,7 @@ private:
 };
 
 /**
- * @brief リジッドボディコンポーネント
+ * @brief リジッドボディコンポーネント（コライダーを先にアタッチしてください）
  * @details 物理挙動するようになります
 */
 class RigidBody : public Component

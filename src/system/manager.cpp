@@ -109,6 +109,9 @@ void Manager::Update()
 	// シーンを更新する
 	m_sceneManager->Update();
 
+	// トランスフォーム監視の更新
+	TransformMonitor::AllUpdate();
+
 	// デスフラグがついているオブジェクトを破棄する
 	Object::ReleaseDeathFlag();
 }

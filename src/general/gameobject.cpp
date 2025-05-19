@@ -202,6 +202,17 @@ GameObject* GameObject::FindByNameTag(const std::string& name, const std::string
 }
 
 //=============================================================
+// 親を設定する
+//=============================================================
+void GameObject::SetParent(GameObject* gameObject)
+{
+	if (gameObject != nullptr)
+	{
+		transform->SetParent(gameObject->transform);
+	}
+}
+
+//=============================================================
 // コンポーネントをデタッチする
 //=============================================================
 void GameObject::DetachComponent(Component* component)

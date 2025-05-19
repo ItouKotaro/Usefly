@@ -35,8 +35,10 @@ public:
 	void SetTrigger(const bool& enabled);
 	//@brief トリガーを取得する
 	bool GetTrigger() { return m_trigger; }
+	//@brief 摩擦を設定する
+	void SetFriction(const float& friction);
 	//@brief 摩擦を取得する
-	float& GetFriction() { return m_friction; }
+	float GetFriction() { return m_friction; }
 	//@brief 更新フラグを取得する
 	bool& GetUpdateFlag() { return m_updateFlag; }
 	//@brief 前回のトランスフォーム情報を取得する
@@ -66,15 +68,22 @@ private:
 class RigidBody : public Component
 {
 public:
-	RigidBody() : m_mass(1.0f), m_motionState(nullptr){}
+	RigidBody() : m_mass(1.0f), m_motionState(nullptr), m_isAlwayActive(false){}
 	void Init() override;
 	void Uninit() override;
+	void Update() override;
 
 	//@brief リジッドボディを取得する
 	btRigidBody* GetRigidBody();
 
+	//@brief 質量を設定する
+	void SetMass(const float& mass);
 	//@brief 質量を取得する
-	float& GetMass() { return m_mass; }
+	float GetMass() { return m_mass; }
+	//@brief 常にアクティブを 有効/無効 にする
+	void SetAlwayActive(const bool& enabled);
+	//@brief 常にアクティブを取得する
+	bool GetAlwayActive() { return m_isAlwayActive; }
 
 	//@brief モーションステートを取得する
 	void SetMotionState(btMotionState* motionState);
@@ -84,6 +93,7 @@ public:
 
 private:
 	float m_mass;							// 質量
+	bool m_isAlwayActive;				// 常にアクティブ
 	btMotionState* m_motionState;	// モーションステート
 };
 

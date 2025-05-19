@@ -164,6 +164,18 @@ void Collision::SetTrigger(const bool& enabled)
 }
 
 //=============================================================
+// 摩擦を設定する
+//=============================================================
+void Collision::SetFriction(const float& friction)
+{
+	if (m_friction != friction)
+	{
+		m_friction = friction;
+		m_updateFlag = true;
+	}
+}
+
+//=============================================================
 // コライダーシェイプを生成する
 //=============================================================
 void Collision::GenerateColliderShape()
@@ -241,6 +253,28 @@ void RigidBody::Uninit()
 }
 
 //=============================================================
+// 更新
+//=============================================================
+void RigidBody::Update()
+{
+	auto rigidbody = GetRigidBody();
+	if (rigidbody != nullptr)
+	{
+		// 常にアクティブオプションが有効なのに設定されていない場合
+		if (m_isAlwayActive && rigidbody->getActivationState() != DISABLE_DEACTIVATION)
+		{
+			rigidbody->setActivationState(DISABLE_DEACTIVATION);
+		}
+
+		// 常にアクティブオプションが無効なのに設定されていない場合
+		if (!m_isAlwayActive && rigidbody->getActivationState() == DISABLE_DEACTIVATION)
+		{
+			rigidbody->setActivationState(WANTS_DEACTIVATION);
+		}
+	}
+}
+
+//=============================================================
 // リジットボディを取得する
 //=============================================================
 btRigidBody* RigidBody::GetRigidBody()
@@ -251,6 +285,27 @@ btRigidBody* RigidBody::GetRigidBody()
 		return btRigidBody::upcast(collision->GetCollision());
 	}
 	return nullptr;
+}
+
+//=============================================================
+// 質量を設定する
+//=============================================================
+void RigidBody::SetMass(const float& mass)
+{
+	Collision* collision = gameObject->GetComponent<Collision>();
+	if (collision != nullptr && m_mass != mass)
+	{
+		m_mass = mass;
+		collision->GetUpdateFlag() = true;
+	}
+}
+
+//=============================================================
+// 常にアクティブを 有効/無効 にする
+//=============================================================
+void RigidBody::SetAlwayActive(const bool& enabled)
+{
+	m_isAlwayActive = enabled;
 }
 
 //=============================================================

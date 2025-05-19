@@ -273,6 +273,56 @@ void Main::SetShowCursor(const bool& show)
 }
 
 //=============================================================
+// クライアント内のカーソルの位置を取得する
+//=============================================================
+Main::CursorPos Main::GetCursorClientPos()
+{
+	POINT points;
+	GetCursorPos(&points);
+
+	// スクリーン上で見た左上の座標を取得する
+	POINT startPos;
+	startPos.x = 0;
+	startPos.y = 0;
+	ClientToScreen(Manager::GetInstance()->GetRenderer()->GetHWND(), &startPos);
+
+	CursorPos pos;
+	pos.x = points.x - startPos.x;
+	pos.y = points.y - startPos.y;
+
+	// 画面サイズを考慮して変換する
+	D3DXVECTOR2 rect = GetWindowSize();
+	pos.x = static_cast<long>(pos.x * static_cast<float>(SCREEN_WIDTH / (float)rect.x));
+	pos.y = static_cast<long>(pos.y * static_cast<float>(SCREEN_HEIGHT / (float)rect.y));
+	return pos;
+}
+
+//=============================================================
+// クライアント内のカーソルの位置を設定する
+//=============================================================
+void Main::SetCursorClientPos(long x, long y)
+{
+	CursorPos pos;
+	pos.x = x;
+	pos.y = y;
+
+	// スクリーン上で見た左上の座標を取得する
+	POINT startPos;
+	startPos.x = 0;
+	startPos.y = 0;
+	ClientToScreen(Manager::GetInstance()->GetRenderer()->GetHWND(), &startPos);
+
+	D3DXVECTOR2 rect = GetWindowSize();
+	pos.x = static_cast<long>(pos.x	 * (rect.x / (float)SCREEN_WIDTH));
+	pos.y = static_cast<long>(pos.y * (rect.y / (float)SCREEN_HEIGHT));
+
+	pos.x += startPos.x;
+	pos.y += startPos.y;
+
+	SetCursorPos(static_cast<int>(pos.x), static_cast<int>(pos.y));
+}
+
+//=============================================================
 // ウィンドウサイズの取得
 //=============================================================
 D3DXVECTOR2 Main::GetWindowSize()

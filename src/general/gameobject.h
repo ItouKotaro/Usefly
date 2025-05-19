@@ -112,6 +112,12 @@ public:
 		return m_components;
 	}
 
+	/**
+	 * @brief 親を設定する
+	 * @param[in] gameObject : ゲームオブジェクト
+	*/
+	void SetParent(GameObject* gameObject);
+
 	//@brief コンポーネントをデタッチする
 	void DetachComponent(Component* component);
 

@@ -9,7 +9,7 @@
 #include "d3dx9.h"
 
 //@brief トランスフォームクラス
-class Transform
+class Transform final
 {
 public:
 	Transform() 
@@ -20,21 +20,35 @@ public:
 		size = { 1.0f, 1.0f };
 		m_parent = nullptr;
 	}
+	~Transform();
 
 	//@brief 親を設定する
 	void SetParent(Transform* parent) { m_parent = parent; }
 	//@brief 親を取得する
 	Transform* GetParent() { return m_parent; }
 
+	//@brief 移動する
+	void Translate(float x, float y, float z) { position += {x, y, z}; }
+	//@brief 移動する
+	void Translate(D3DXVECTOR3 add) { Translate(add.x, add.y, add.z); }
+
+	//@brief 回転する
+	void Rotate(float x, float y, float z);
+	//@brief 回転する
+	void Rotate(D3DXVECTOR3 add) { Rotate(add.x, add.y, add.z); }
+
 	//@brief オイラー角で回転を取得する
 	D3DXVECTOR3 GetEulerAngle();
 	//@brief オイラー角で回転を設定する
 	void SetEulerAngle(float x, float y, float z);
+	//@brief オイラー角で回転を設定する
 	void SetEulerAngle(D3DXVECTOR3 rotation) { SetEulerAngle(rotation.x, rotation.y, rotation.z); }
+	//@brief オイラー角で回転を設定する
 	void SetEulerAngle(float fAngle) { SetEulerAngle(GetEulerAngle().x, GetEulerAngle().y, fAngle); }
 
 	//@brief 指定位置の方向に回転する
 	void LookAt(float x, float y, float z);
+	//@brief 指定位置の方向に回転する
 	void LookAt(D3DXVECTOR3 at) { LookAt(at.x, at.y, at.z); }
 
 	//@brief ワールド基準の位置を取得する
@@ -73,6 +87,73 @@ private:
 
 	D3DXMATRIX m_matrix;			// マトリックス
 	Transform* m_parent;			// 親
+};
+
+/**
+ * @brief トランスフォーム監視
+ * @details トランスフォームの値の変更を監視します
+*/
+class TransformMonitor final
+{
+public:
+	//@brief コンストラクタ
+	TransformMonitor();
+	/**
+	 * @brief コンストラクタ
+	 * @param[in] target : 監視対象のトランスフォーム
+	*/
+	TransformMonitor(Transform* target);
+	//@brief デストラクタ
+	~TransformMonitor();
+
+	/**
+	 * @brief 監視対象を設定します
+	 * @param[in] target : 監視対象のトランスフォーム
+	*/
+	void SetTarget(Transform* target);
+
+	/**
+	 * @brief 変更されたか
+	 * @details 位置・回転・スケール・サイズのいずれかが変更されたとき
+	*/
+	bool HasChanged();
+	//@brief 位置が変更されたか
+	bool HasPositionChanged() { return m_changedPosition; }
+	//@brief 回転が変更されたか
+	bool HasRotationChanged() { return m_changedRotation; }
+	//@brief スケールが変更されたか
+	bool HasScaleChanged() { return m_changedScale; }
+	//@brief サイズが変更されたか
+	bool HasSizeChanged() { return m_changedSize; }
+
+	//@brief デタッチする
+	static void Detatch(Transform* target);
+	//@brief 更新する
+	static void AllUpdate();
+
+private:
+	//@brief 監視変数を更新する
+	void UpdateMonitorValue();
+
+	//@brief 更新する
+	void Update();
+
+	Transform* m_target;		// 監視対象
+
+	// 監視フラグ
+	bool m_changedPosition;
+	bool m_changedRotation;
+	bool m_changedScale;
+	bool m_changedSize;
+	
+	// 監視変数
+	D3DXVECTOR3 m_position;
+	D3DXVECTOR3 m_scale;
+	D3DXVECTOR2 m_size;
+	D3DXQUATERNION m_rotation;
+
+	// 一覧
+	static std::vector<TransformMonitor*> m_monitors;
 };
 
 #endif // !_TRANSFORM_H_

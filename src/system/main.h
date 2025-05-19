@@ -44,6 +44,19 @@ public:
 	void ExitApplication();
 	//@brief カーソルの表示状態を変更する
 	void SetShowCursor(const bool& show);
+
+	//@brief カーソル位置
+	struct CursorPos
+	{
+		long x;
+		long y;
+	};
+
+	//@brief クライアント内のカーソル位置を取得する
+	CursorPos GetCursorClientPos();
+	//@brief クライアント内のカーソル位置を設定する
+	void SetCursorClientPos(long x, long y);
+
 	//@brief ウィンドウサイズを取得する
 	D3DXVECTOR2 GetWindowSize();
 	//@brief ウィンドウハンドルを取得する

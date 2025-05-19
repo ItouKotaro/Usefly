@@ -5,6 +5,26 @@
 //------------------------------------------------------------
 #include "transform.h"
 
+std::vector<TransformMonitor*> TransformMonitor::m_monitors;
+
+//=============================================================
+// デストラクタ
+//=============================================================
+Transform::~Transform()
+{
+	TransformMonitor::Detatch(this);
+}
+
+//=============================================================
+// 回転する
+//=============================================================
+void Transform::Rotate(float x, float y, float z)
+{
+	D3DXQUATERNION q;
+	D3DXQuaternionRotationYawPitchRoll(&q, y, x, z);
+	D3DXQuaternionMultiply(&rotation, &rotation, &q);
+}
+
 //=============================================================
 // オイラー角で回転を取得する
 //=============================================================
@@ -202,4 +222,142 @@ D3DXVECTOR3 Transform::QuaternionToEulerAngle(D3DXQUATERNION q)
 		: std::atan2(-(2 * q.x * q.z - 2 * q.y * q.w), 2 * q.w * q.w + 2 * q.x * q.x - 1),
 		unlocked ? std::atan2(2 * q.x * q.y + 2 * q.z * q.w, 2 * q.w * q.w + 2 * q.y * q.y - 1) : 0
 	);
+}
+
+
+//=============================================================
+// コンストラクタ
+//=============================================================
+TransformMonitor::TransformMonitor() :
+	m_target(nullptr),
+	m_position(D3DXVECTOR3(0.0f, 0.0f, 0.0f)),
+	m_rotation(D3DXQUATERNION(0.0f, 0.0f, 0.0f, 0.0f)),
+	m_scale(D3DXVECTOR3(0.0f, 0.0f, 0.0f)),
+	m_size(D3DXVECTOR2(0.0f, 0.0f)),
+	m_changedPosition(false),
+	m_changedRotation(false),
+	m_changedScale(false),
+	m_changedSize(false)
+{
+	// リストに追加する
+	m_monitors.emplace_back(this);
+}
+
+//=============================================================
+// コンストラクタ
+//=============================================================
+TransformMonitor::TransformMonitor(Transform* target) :
+	m_target(nullptr),
+	m_position(D3DXVECTOR3(0.0f, 0.0f, 0.0f)),
+	m_rotation(D3DXQUATERNION(0.0f, 0.0f, 0.0f, 0.0f)),
+	m_scale(D3DXVECTOR3(0.0f, 0.0f, 0.0f)),
+	m_size(D3DXVECTOR2(0.0f, 0.0f)),
+	m_changedPosition(false),
+	m_changedRotation(false),
+	m_changedScale(false),
+	m_changedSize(false)
+{
+	// 監視対象を設定する
+	SetTarget(target);
+
+	// リストに追加する
+	m_monitors.emplace_back(this);
+}
+
+//=============================================================
+// デストラクタ
+//=============================================================
+TransformMonitor::~TransformMonitor()
+{
+	auto itr = std::find(m_monitors.begin(), m_monitors.end(), this);
+	if (itr != m_monitors.end())
+	{
+		(*itr)->m_target = nullptr;
+		m_monitors.erase(itr);
+	}
+}
+
+//=============================================================
+// 監視変数を更新する
+//=============================================================
+void TransformMonitor::UpdateMonitorValue()
+{
+	m_position = m_target->GetWorldPosition();
+	m_rotation = m_target->GetWorldRotation();
+	m_scale = m_target->GetWorldScale();
+	m_size = m_target->size;
+}
+
+//=============================================================
+// 更新する
+//=============================================================
+void TransformMonitor::Update()
+{
+	// 変更フラグをリセットする
+	m_changedPosition = false;
+	m_changedRotation = false;
+	m_changedScale = false;
+	m_changedSize = false;
+
+	if (m_target != nullptr)
+	{
+		// 変更があればフラグを立てる
+		m_changedPosition = (m_target->GetWorldPosition() != m_position);
+		m_changedRotation = (m_target->GetWorldRotation() != m_rotation);
+		m_changedScale = (m_target->GetWorldScale() != m_scale);
+		m_changedSize = (m_target->size != m_size);
+
+		// 最新状態に更新する
+		UpdateMonitorValue();
+	}
+}
+
+//=============================================================
+// 監視対象を設定する
+//=============================================================
+void TransformMonitor::SetTarget(Transform* target)
+{
+	// 監視対象を設定する
+	m_target = target;
+
+	// 監視変数を設定する
+	UpdateMonitorValue();
+}
+
+//=============================================================
+// 変更されたか
+//=============================================================
+bool TransformMonitor::HasChanged()
+{
+	return (m_changedPosition || m_changedRotation || m_changedScale || m_changedSize);
+}
+
+//=============================================================
+// デタッチする
+//=============================================================
+void TransformMonitor::Detatch(Transform* target)
+{
+	for (auto itr = m_monitors.begin(); itr != m_monitors.end(); itr++)
+	{
+		if ((*itr)->m_target == target)
+		{
+			delete* itr;
+			itr = m_monitors.begin();
+			if (itr == m_monitors.end())
+			{
+				return;
+			}
+		}
+	}
+}
+
+//=============================================================
+// すべて更新する
+//=============================================================
+void TransformMonitor::AllUpdate()
+{
+	for (auto itr = m_monitors.begin(); itr != m_monitors.end(); itr++)
+	{
+		(*itr)->Update();
+	}
 }

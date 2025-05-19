@@ -13,9 +13,15 @@
 class Model : public Component
 {
 public:
+	Model() : m_modelData(nullptr) {}
 	void Init() override;
 	void Uninit() override;
 	void Draw() override;
+
+	/**
+	 * @brief モデルを読み込みます
+	 * @param[in] path : Xファイルのパス
+	*/
 	void Load(std::string path);
 private:
 	ModelData* m_modelData;											// モデルデータ

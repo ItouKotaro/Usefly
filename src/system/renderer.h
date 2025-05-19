@@ -44,6 +44,8 @@ public:
 
 	//@brief デバイスを取得する
 	LPDIRECT3DDEVICE9 GetDevice() { return m_d3dDevice; }
+	//@brief ハンドルを取得する
+	HWND GetHWND() { return m_hwnd; }
 private:
 	LPDIRECT3D9 m_d3d;								// Direct3Dオブジェクトへのポインタ
 	LPDIRECT3DDEVICE9 m_d3dDevice;			// Direct3Dデバイスへのポインタ

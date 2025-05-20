@@ -119,11 +119,11 @@ void GameObject::DrawUI()
 //=============================================================
 void GameObject::AllUpdate()
 {
-	for (auto itr = m_gameObjects.begin(); itr != m_gameObjects.end(); itr++)
+	for (UINT i = 0; i < static_cast<UINT>(m_gameObjects.size()); i++)
 	{
-		if ((*itr)->GetActive())
+		if (m_gameObjects[i]->GetActive())
 		{
-			(*itr)->Update();
+			m_gameObjects[i]->Update();
 		}
 	}
 }

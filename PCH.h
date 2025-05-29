@@ -13,6 +13,10 @@
 #include "XInput.h"
 #include <shlwapi.h>
 
+// JSON
+#include "json.hpp"
+using json = nlohmann::json;
+
 // インクルード
 #include <iostream>
 #include <string>

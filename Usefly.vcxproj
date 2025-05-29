@@ -108,7 +108,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>PCH.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>src;src\general;libs\bullet\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;src\general;libs\bullet\include;libs\json</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -130,7 +130,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>PCH.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>src;src\general;libs\bullet\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;src\general;libs\bullet\include;libs\json</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -152,7 +152,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>PCH.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>src;src\general;libs\bullet\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;src\general;libs\bullet\include;libs\json</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -174,7 +174,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>PCH.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>src;src\general;libs\bullet\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;src\general;libs\bullet\include;libs\json</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>

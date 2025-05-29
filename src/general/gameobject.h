@@ -142,6 +142,14 @@ public:
 	*/
 	static GameObject* FindByNameTag(const std::string& name, const std::string& tag);
 
+	/**
+	 * @brief OBUSファイルからオブジェクトを生成する
+	 * @param[in] path : パス（.obus）
+	 * @param[in] transform : トランスフォーム
+	 * @return プレハブのゲームオブジェクト
+	*/
+	static GameObject* CreateObuseObject(const std::string& path, const Transform& transform = Transform());
+
 	Transform* transform;	// トランスフォーム情報
 	std::string name;			// 名前
 	std::string tag;				// タグ

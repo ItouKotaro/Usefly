@@ -292,8 +292,8 @@ Main::CursorPos Main::GetCursorClientPos()
 
 	// 画面サイズを考慮して変換する
 	D3DXVECTOR2 rect = GetWindowSize();
-	pos.x = static_cast<long>(pos.x * static_cast<float>(SCREEN_WIDTH / (float)rect.x));
-	pos.y = static_cast<long>(pos.y * static_cast<float>(SCREEN_HEIGHT / (float)rect.y));
+	pos.x *= static_cast<float>(SCREEN_WIDTH / (float)rect.x);
+	pos.y *= static_cast<float>(SCREEN_HEIGHT / (float)rect.y);
 	return pos;
 }
 
@@ -313,8 +313,8 @@ void Main::SetCursorClientPos(long x, long y)
 	ClientToScreen(Manager::GetInstance()->GetRenderer()->GetHWND(), &startPos);
 
 	D3DXVECTOR2 rect = GetWindowSize();
-	pos.x = static_cast<long>(pos.x	 * (rect.x / (float)SCREEN_WIDTH));
-	pos.y = static_cast<long>(pos.y * (rect.y / (float)SCREEN_HEIGHT));
+	pos.x *= rect.x / (float)SCREEN_WIDTH;
+	pos.y *= rect.y / (float)SCREEN_HEIGHT;
 
 	pos.x += startPos.x;
 	pos.y += startPos.y;

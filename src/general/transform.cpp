@@ -16,6 +16,33 @@ Transform::~Transform()
 }
 
 //=============================================================
+// 親を設定する
+//=============================================================
+void Transform::SetParent(Transform* parent)
+{
+	bool isSuccess = true;
+	Transform* par = parent;
+	while (par != nullptr)
+	{
+		// 親が自分に設定されていないかを確認する
+		if (par->m_parent == this)
+		{
+			isSuccess = false;
+			break;
+		}
+
+		// 次の親
+		par = par->m_parent;
+	}
+
+	// 成功時
+	if (isSuccess)
+	{
+		m_parent = parent;
+	}
+}
+
+//=============================================================
 // 回転する
 //=============================================================
 void Transform::Rotate(float x, float y, float z)

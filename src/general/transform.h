@@ -23,7 +23,7 @@ public:
 	~Transform();
 
 	//@brief 親を設定する
-	void SetParent(Transform* parent) { m_parent = parent; }
+	void SetParent(Transform* parent);
 	//@brief 親を取得する
 	Transform* GetParent() { return m_parent; }
 

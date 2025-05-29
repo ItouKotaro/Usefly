@@ -87,14 +87,14 @@ float Benlib::RandomFloat(const float& min, const float& max)
 	return static_cast<float>(dist(gen));
 }
 
-float Benlib::DegreeToRadian(const int& nDegree)
+float Benlib::DegreeToRadian(const float& degree)
 {
-	return nDegree * D3DX_PI / (float)180.0f;
+	return degree * D3DX_PI / (float)180.0f;
 }
 
-int Benlib::RadianToDegree(const float& fRadian)
+float Benlib::RadianToDegree(const float& radian)
 {
-	return static_cast<int>(fRadian * 180.0f / D3DX_PI);
+	return radian * 180.0f / D3DX_PI;
 }
 
 D3DXVECTOR3 Benlib::QuaternionToEuler(D3DXQUATERNION q)

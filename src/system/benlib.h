@@ -89,14 +89,14 @@ namespace Benlib
 	 * @param[in] degree : 角度
 	 * @return ラジアン (float)
 	*/
-	float DegreeToRadian(const int& degree);
+	float DegreeToRadian(const float& degree);
 
 	/**
 	@brief ラジアンから角度に変換します
 	@param[in] radian : ラジアン
-	@return 角度 (int)
+	@return 角度 (float)
 	*/
-	int RadianToDegree(const float& radian);
+	float RadianToDegree(const float& radian);
 
 	/**
 	 * @brief クォータニオンからYXZオイラー角に変換します

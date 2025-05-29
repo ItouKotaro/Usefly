@@ -20,7 +20,7 @@ public:
 	void Init() override;
 	void Uninit() override;
 	void Update() override;
-	void UpdateOldTransform() { m_oldTransform = *transform; }
+	void UpdateOldTransform();
 
 	//@brief コリジョンオブジェクトを取得する
 	btCollisionObject* GetCollision() { return m_collision; }

@@ -67,6 +67,16 @@ void Collision::Update()
 }
 
 //=============================================================
+// 前回のトランスフォームを保存する
+//=============================================================
+void Collision::UpdateOldTransform()
+{
+	m_oldTransform.position = transform->GetWorldPosition();
+	m_oldTransform.rotation = transform->GetWorldRotation();
+	m_oldTransform.scale = transform->GetWorldScale();
+}
+
+//=============================================================
 // ビルドする
 //=============================================================
 void Collision::Build()

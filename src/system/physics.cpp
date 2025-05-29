@@ -131,7 +131,10 @@ void Physics::Update()
 		RigidBody* rigidbody = collision->gameObject->GetComponent<RigidBody>();
 
 		// トランスフォームが変更されていた場合
-		if (*collision->gameObject->transform != collision->GetOldTransform() && collision->GetCollision() != nullptr)
+		if ((collision->gameObject->transform->GetWorldPosition() != collision->GetOldTransform().position ||
+			collision->gameObject->transform->GetWorldRotation() != collision->GetOldTransform().rotation ||
+			collision->gameObject->transform->GetWorldScale() != collision->GetOldTransform().scale) &&
+			collision->GetCollision() != nullptr)
 		{
 			// 位置を設定
 			btTransform changedTransform;
@@ -210,7 +213,7 @@ void Physics::RemoveCollision(Collision* collision)
 //=============================================================
 // btCollisionObjectからCollisionを探す
 //=============================================================
-Collision* Physics::FindCollision(btCollisionObject* collisionObject)
+Collision* Physics::FindCollision(const btCollisionObject* collisionObject)
 {
 	for (auto itr = m_collisions.begin(); itr != m_collisions.end(); itr++)
 	{

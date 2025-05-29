@@ -76,7 +76,7 @@ public:
 	//@brief コリジョンを取得する
 	std::vector<Collision*>& GetCollisions() { return m_collisions; }
 	//@brief btCollisionObjectからCollisionを探す
-	Collision* FindCollision(btCollisionObject* collisionObject);
+	Collision* FindCollision(const btCollisionObject* collisionObject);
 private:
 	/**
 	 * @brief 物理デバッグクラス

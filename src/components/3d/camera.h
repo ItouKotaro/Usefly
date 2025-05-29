@@ -52,6 +52,10 @@ public:
 	float GetClippingPlaneFar() { return m_clippingPlanes.max; }
 	//@brief 投影モードを取得する
 	MODE GetMode() { return m_mode; }
+	//@brief プロジェクションマトリックスを取得する
+	D3DXMATRIX GetProjectionMatrix() { return m_projMtx; }
+	//@brief ビューマトリックスを取得する
+	D3DXMATRIX GetViewMatrix() { return m_viewMtx; }
 
 	//@brief ビューポートの位置を設定する
 	void SetViewportPosition(float x, float y);

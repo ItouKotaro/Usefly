@@ -323,6 +323,16 @@ GameObject* GameObject::CreateObuseObject(const std::string& path, const Transfo
 			}
 		}
 
+		// プレハブのみトランスフォームを適用する
+		if (id == "prefab")
+		{
+			prefab->transform->position += transform.position;
+			prefab->transform->rotation *= transform.rotation;
+			prefab->transform->scale.x *= transform.scale.x;
+			prefab->transform->scale.y *= transform.scale.y;
+			prefab->transform->scale.z *= transform.scale.z;
+		}
+
 		// モデル情報
 		if (j["objects"][id].contains("model"))
 		{

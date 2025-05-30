@@ -400,3 +400,4 @@ FodyWeavers.xsd
 *.sln.iml
 /temp
 /data/obuse.ini
+/data/placer.ini

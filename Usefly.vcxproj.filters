@@ -144,6 +144,9 @@
     <ClInclude Include="src\components\2d\text.h">
       <Filter>ヘッダー ファイル\components\2d</Filter>
     </ClInclude>
+    <ClInclude Include="src\general\world.h">
+      <Filter>ヘッダー ファイル\general</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\general\gameobject.cpp">
@@ -223,6 +226,9 @@
     </ClCompile>
     <ClCompile Include="src\components\2d\text.cpp">
       <Filter>ソース ファイル\components\2d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\general\world.cpp">
+      <Filter>ソース ファイル\general</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

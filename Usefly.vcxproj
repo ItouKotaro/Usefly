@@ -204,6 +204,7 @@
     <ClCompile Include="src\general\gameobject.cpp" />
     <ClCompile Include="src\general\scene.cpp" />
     <ClCompile Include="src\general\transform.cpp" />
+    <ClCompile Include="src\general\world.cpp" />
     <ClCompile Include="src\scenes\start.cpp" />
     <ClCompile Include="src\scenes\title.cpp" />
     <ClCompile Include="src\scripts\collision_test.cpp" />
@@ -232,6 +233,7 @@
     <ClInclude Include="src\general\gameobject.h" />
     <ClInclude Include="src\general\scene.h" />
     <ClInclude Include="src\general\transform.h" />
+    <ClInclude Include="src\general\world.h" />
     <ClInclude Include="src\scenes\start.h" />
     <ClInclude Include="src\scenes\title.h" />
     <ClInclude Include="src\scripts\collision_test.h" />

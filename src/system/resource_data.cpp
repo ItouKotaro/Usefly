@@ -35,7 +35,7 @@ TextureData* ResourceDataManager::RefTexture(std::string path)
 	}
 	
 	// データを登録する
-	m_resourceDatas->push_back(data);
+	m_resourceDatas[ResourceData::FORMAT::TEXTURE].push_back(data);
 
 	// ログを送信する
 	Log::SendLog("テクスチャデータ \"" + path + "\" のロードに成功しました！");
@@ -73,10 +73,48 @@ ModelData* ResourceDataManager::RefModel(std::string path)
 	}
 
 	// データを登録する
-	m_resourceDatas->push_back(data);
+	m_resourceDatas[ResourceData::FORMAT::MODEL].push_back(data);
 
 	// ログを送信する
 	Log::SendLog("モデルデータ \"" + path + "\" のロードに成功しました！");
+
+	// データを返す
+	return data;
+}
+
+//=============================================================
+// シェーダーデータを参照する
+//=============================================================
+ShaderData* ResourceDataManager::RefShader(std::string path)
+{
+	// データが存在するときは返す
+	auto datas = m_resourceDatas[ResourceData::FORMAT::SHADER];
+	for (auto itr = datas.begin(); itr != datas.end(); itr++)
+	{
+		if (path == (*itr)->GetPath())
+		{
+			return static_cast<ShaderData*>(*itr);
+		}
+	}
+
+	// データが存在しないときはデータを生成する
+	ShaderData* data = new ShaderData();
+	data->SetPath(path);
+
+	// データをロードする
+	if (!data->Load(path))
+	{
+		Log::SendLog("シェーダーデータ \"" + path + "\" のロードに失敗しました！", Log::TYPE::TYPE_ERROR);
+		delete data;
+		data = nullptr;
+		return data;
+	}
+
+	// データを登録する
+	m_resourceDatas[ResourceData::FORMAT::SHADER].push_back(data);
+
+	// ログを送信する
+	Log::SendLog("シェーダーデータ \"" + path + "\" のロードに成功しました！");
 
 	// データを返す
 	return data;
@@ -156,6 +194,9 @@ bool ModelData::Load(std::string path)
 		return false;
 	}
 
+	// 範囲を計算する
+	CalcVertexRange();
+
 	// 成功
 	return true;
 }
@@ -177,5 +218,101 @@ void ModelData::Release()
 	{
 		m_buffMat->Release();
 		m_buffMat = nullptr;
+	}
+}
+
+//=============================================================
+// 範囲を計算する
+//=============================================================
+void ModelData::CalcVertexRange()
+{
+	int numVtx;			// 頂点数
+	DWORD sizeFVF;		// 頂点フォーマットのサイズ
+	BYTE* vtxBuff;		// 頂点バッファへのポインタ
+
+	// 頂点数の取得
+	numVtx = m_mesh->GetNumVertices();
+
+	// 頂点フォーマットのサイズを取得
+	sizeFVF = D3DXGetFVFVertexSize(m_mesh->GetFVF());
+
+	// 頂点バッファのロック
+	m_mesh->LockVertexBuffer(D3DLOCK_READONLY, (void**)&vtxBuff);
+
+	for (int nCntVtx = 0; nCntVtx < numVtx; nCntVtx++)
+	{
+		// 頂点座標の代入
+		D3DXVECTOR3 vtx = *(D3DXVECTOR3*)vtxBuff;
+
+		// 最大値を取得する
+		if (vtx.x > m_maxRange.x)
+		{
+			m_maxRange.x = vtx.x;
+		}
+		if (vtx.y > m_maxRange.y)
+		{
+			m_maxRange.y = vtx.y;
+		}
+		if (vtx.z > m_maxRange.z)
+		{
+			m_maxRange.z = vtx.z;
+		}
+
+		// 最小値を取得する
+		if (vtx.x < m_minRange.x)
+		{
+			m_minRange.x = vtx.x;
+		}
+		if (vtx.y < m_minRange.y)
+		{
+			m_minRange.y = vtx.y;
+		}
+		if (vtx.z < m_minRange.z)
+		{
+			m_minRange.z = vtx.z;
+		}
+
+		// 頂点フォーマットのサイズ分ポインタを進める
+		vtxBuff += sizeFVF;
+	}
+
+	// 頂点バッファのアンロック
+	m_mesh->UnlockVertexBuffer();
+}
+
+//=============================================================
+// 読み込み
+//=============================================================
+bool ShaderData::Load(std::string path)
+{
+	auto device = Manager::GetInstance()->GetDevice();
+
+	// シェーダーを読み込む
+	if (FAILED(D3DXCreateEffectFromFile(
+		device,
+		path.c_str(),
+		NULL,
+		NULL,
+		0,
+		NULL,
+		&m_effect,
+		NULL
+	)))
+	{
+		return false;
+	}
+
+	return true;
+}
+
+//=============================================================
+// 解放
+//=============================================================
+void ShaderData::Release()
+{
+	if (m_effect != nullptr)
+	{
+		m_effect->Release();
+		m_effect = nullptr;
 	}
 }

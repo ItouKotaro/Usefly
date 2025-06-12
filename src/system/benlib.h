@@ -6,6 +6,8 @@
 #ifndef _BENLIB_H_
 #define _BENLIB_H_
 
+#define D3DXMATRIX_IDENTITY (D3DXMATRIX(1.0f, 0.0f, 0.0f, 0.0f,0.0f, 1.0f, 0.0f, 0.0f,0.0f, 0.0f, 1.0f, 0.0f,0.0f, 0.0f, 0.0f, 1.0f))
+
 //@brief 便利な機能を提供します
 namespace Benlib
 {
@@ -137,6 +139,13 @@ namespace Benlib
 	bool MatToTexture(const cv::Mat& mat, LPDIRECT3DTEXTURE9* outTexture);
 #endif
 
+
+#ifdef BULLET_COLLISION_COMMON_H
+	/**
+	 * @brief D3DXVECTOR3をbtVector3に変換します
+	*/
+	btVector3 ToBtVector3(const D3DXVECTOR3& value);
+#endif
 }
 
 #endif

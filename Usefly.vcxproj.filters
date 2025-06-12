@@ -61,6 +61,12 @@
     <Filter Include="ヘッダー ファイル\scripts">
       <UniqueIdentifier>{480f9837-6b11-4b0a-a505-89e6cac4cfce}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\components\other">
+      <UniqueIdentifier>{801a49fc-74b0-4aa6-a31e-936908d139b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\components\other">
+      <UniqueIdentifier>{7a0c8e91-c5b3-46aa-9cc7-af7be92e2662}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\general\gameobject.h">
@@ -147,6 +153,18 @@
     <ClInclude Include="src\general\world.h">
       <Filter>ヘッダー ファイル\general</Filter>
     </ClInclude>
+    <ClInclude Include="src\system\input_devices\mouse.h">
+      <Filter>ヘッダー ファイル\system\input_devices</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\other\camera_options.h">
+      <Filter>ヘッダー ファイル\components\other</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\other\render_texture.h">
+      <Filter>ヘッダー ファイル\components\other</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\other\shader.h">
+      <Filter>ヘッダー ファイル\components\other</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\general\gameobject.cpp">
@@ -229,6 +247,18 @@
     </ClCompile>
     <ClCompile Include="src\general\world.cpp">
       <Filter>ソース ファイル\general</Filter>
+    </ClCompile>
+    <ClCompile Include="src\system\input_devices\mouse.cpp">
+      <Filter>ソース ファイル\system\input_devices</Filter>
+    </ClCompile>
+    <ClCompile Include="src\components\other\camera_options.cpp">
+      <Filter>ソース ファイル\components\other</Filter>
+    </ClCompile>
+    <ClCompile Include="src\components\other\render_texture.cpp">
+      <Filter>ソース ファイル\components\other</Filter>
+    </ClCompile>
+    <ClCompile Include="src\components\other\shader.cpp">
+      <Filter>ソース ファイル\components\other</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

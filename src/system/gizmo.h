@@ -36,7 +36,8 @@ public:
 	void DrawLine2D(const D3DXVECTOR2& from, const D3DXVECTOR2& to, const float& bold = 1.0f, const D3DXCOLOR& color = { 1.0f, 1.0f, 1.0f, 1.0f });
 	//@brief 長方形の2Dラインを描画する
 	void DrawRectangle(const D3DXVECTOR2& start, const D3DXVECTOR2& size, const float& bold = 1.0f, const D3DXCOLOR& color = { 1.0f, 1.0f, 1.0f, 1.0f }, const float& angle = 0.0f);
-
+	//@brief ボックスの3Dラインを描画する
+	void DrawBox(const D3DXVECTOR3& start, const D3DXVECTOR3& end, const D3DXCOLOR& color = { 1.0f, 1.0f, 1.0f, 1.0f }, const D3DXMATRIX& matrix = D3DXMATRIX_IDENTITY);
 private:
 	//@brief ギズモオブジェクト
 	template<class T> class GizmoObject

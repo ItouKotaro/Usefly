@@ -16,6 +16,9 @@ public:
 	void Update() override;
 	void DrawUI() override;
 
+	//@brief 色を設定する
+	void SetColor(const D3DXCOLOR& color);
+
 	//@brief テクスチャを設定する
 	void SetTexture(std::string path);
 

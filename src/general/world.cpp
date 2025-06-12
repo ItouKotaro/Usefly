@@ -9,7 +9,7 @@
 //=============================================================
 // ワールドを読み込む
 //=============================================================
-void LoadWorld(const std::string& path)
+void LoadWorld(const std::string& path, const bool& isDestroy)
 {
 	// jsonファイルを読み込む
 	std::ifstream ifs(path.c_str());
@@ -19,9 +19,28 @@ void LoadWorld(const std::string& path)
 		return;
 	}
 
+	// 他オブジェクトの破棄
+	if (isDestroy)
+	{
+		GameObject::AllDestroy();
+	}
+
 	// json形式に変換
 	std::string inputData((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
 	auto j = json::parse(inputData);
+
+	// トランスフォームを構築するラムダ関数
+	auto transformStructure = [](json& data, Transform& trans) {
+		trans.position = {
+			data["transform"]["position"][0], data["transform"]["position"][1], data["transform"]["position"][2]
+		};
+		trans.rotation = {
+			data["transform"]["rotation"][0], data["transform"]["rotation"][1], data["transform"]["rotation"][2], data["transform"]["rotation"][3]
+		};
+		trans.scale = {
+			data["transform"]["scale"][0], data["transform"]["scale"][1], data["transform"]["scale"][2]
+		};
+	};
 
 	// オブジェクト情報を取得する
 	if (j.contains("x-objects"))
@@ -36,15 +55,7 @@ void LoadWorld(const std::string& path)
 			{
 				// トランスフォームを構築する
 				Transform trans;
-				trans.position = {
-					(*itr)["transform"]["position"][0], (*itr)["transform"]["position"][1], (*itr)["transform"]["position"][2]
-				};
-				trans.rotation = {
-					(*itr)["transform"]["rotation"][0], (*itr)["transform"]["rotation"][1], (*itr)["transform"]["rotation"][2], (*itr)["transform"]["rotation"][3]
-				};
-				trans.scale = {
-					(*itr)["transform"]["scale"][0], (*itr)["transform"]["scale"][1], (*itr)["transform"]["scale"][2]
-				};
+				transformStructure(*itr, trans);
 
 				// 設置する
 				GameObject* placeObj = new GameObject();
@@ -69,15 +80,7 @@ void LoadWorld(const std::string& path)
 			{
 				// トランスフォームを構築する
 				Transform trans;
-				trans.position = {
-					(*itr)["transform"]["position"][0], (*itr)["transform"]["position"][1], (*itr)["transform"]["position"][2]
-				};
-				trans.rotation = {
-					(*itr)["transform"]["rotation"][0], (*itr)["transform"]["rotation"][1], (*itr)["transform"]["rotation"][2], (*itr)["transform"]["rotation"][3]
-				};
-				trans.scale = {
-					(*itr)["transform"]["scale"][0], (*itr)["transform"]["scale"][1], (*itr)["transform"]["scale"][2]
-				};
+				transformStructure(*itr, trans);
 
 				// 設置する
 				GameObject* placeObj = GameObject::CreateObuseObject(path, trans);

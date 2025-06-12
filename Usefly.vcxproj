@@ -200,6 +200,9 @@
     <ClCompile Include="src\components\3d\collision.cpp" />
     <ClCompile Include="src\components\3d\light.cpp" />
     <ClCompile Include="src\components\3d\model.cpp" />
+    <ClCompile Include="src\components\other\camera_options.cpp" />
+    <ClCompile Include="src\components\other\render_texture.cpp" />
+    <ClCompile Include="src\components\other\shader.cpp" />
     <ClCompile Include="src\general\component.cpp" />
     <ClCompile Include="src\general\gameobject.cpp" />
     <ClCompile Include="src\general\scene.cpp" />
@@ -212,6 +215,7 @@
     <ClCompile Include="src\system\gizmo.cpp" />
     <ClCompile Include="src\system\input.cpp" />
     <ClCompile Include="src\system\input_devices\keyboard.cpp" />
+    <ClCompile Include="src\system\input_devices\mouse.cpp" />
     <ClCompile Include="src\system\log.cpp" />
     <ClCompile Include="src\system\main.cpp" />
     <ClCompile Include="src\system\manager.cpp" />
@@ -229,6 +233,9 @@
     <ClInclude Include="src\components\3d\collision.h" />
     <ClInclude Include="src\components\3d\light.h" />
     <ClInclude Include="src\components\3d\model.h" />
+    <ClInclude Include="src\components\other\camera_options.h" />
+    <ClInclude Include="src\components\other\render_texture.h" />
+    <ClInclude Include="src\components\other\shader.h" />
     <ClInclude Include="src\general\component.h" />
     <ClInclude Include="src\general\gameobject.h" />
     <ClInclude Include="src\general\scene.h" />
@@ -241,6 +248,7 @@
     <ClInclude Include="src\system\gizmo.h" />
     <ClInclude Include="src\system\input.h" />
     <ClInclude Include="src\system\input_devices\keyboard.h" />
+    <ClInclude Include="src\system\input_devices\mouse.h" />
     <ClInclude Include="src\system\KeyTables.h" />
     <ClInclude Include="src\system\log.h" />
     <ClInclude Include="src\system\main.h" />

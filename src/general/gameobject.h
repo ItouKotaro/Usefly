@@ -19,7 +19,11 @@ class Component;
 class GameObject : public Object
 {
 public:
-	GameObject(std::string vName = "", std::string vTag = "");
+	static const int DEFAULT_PRIORITY = 6;
+public:
+	GameObject(std::string vName, std::string vTag, int priority = DEFAULT_PRIORITY);
+	GameObject(std::string vName, int priority = DEFAULT_PRIORITY) : GameObject(vName, "", priority) {}
+	GameObject(int priority = DEFAULT_PRIORITY) : GameObject("", "", priority) {}
 	virtual ~GameObject();
 
 	/**
@@ -118,11 +122,20 @@ public:
 	*/
 	void SetParent(GameObject* gameObject);
 
+	/**
+	 * @brief 優先順位を設定する
+	 * @param[in] priority : 優先順位 (処理順 小 -> 大)
+	*/
+	void SetPriority(const int& priority);
+
+	//@brief アクティブ状態を取得する
+	bool GetActive() override;
+
 	//@brief コンポーネントをデタッチする
 	void DetachComponent(Component* component);
 
 	//@brief すべてのゲームオブジェクトを取得する
-	static std::vector<GameObject*>& GetAllGameObjects() { return m_gameObjects; }
+	static std::list<GameObject*>& GetAllGameObjects() { return m_gameObjects; }
 
 	/**
 	 * @brief 名前からゲームオブジェクトを取得する
@@ -157,8 +170,9 @@ private:
 	//@brief 解放処理
 	void Release() override;
 
-	std::vector<Component*> m_components;					// コンポーネント
-	static std::vector<GameObject*> m_gameObjects;		// すべてのゲームオブジェクト
+	int m_priority;														// 優先順位
+	std::vector<Component*> m_components;				// コンポーネント
+	static std::list<GameObject*> m_gameObjects;		// すべてのゲームオブジェクト
 };
 
 #endif // !_GAMEOBJECT_H_

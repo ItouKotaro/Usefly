@@ -38,10 +38,9 @@ void TextUI::Init()
     }
 
     // 初期設定
-    m_fontName = "MS ゴシック";
+    m_fontName = loadFonts[0].name;
     m_fontSize = 100;
     m_outlineSize = 0;
-    m_maxHeight = 0.0f;
     m_outlineColor = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
     m_fillColor = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
     m_align = ALIGN::LEFT;
@@ -87,12 +86,16 @@ void TextUI::DrawUI()
 
     // スプライトにマトリックスを適用する
     m_sprite->SetTransform(&mtx);
-
     m_sprite->Begin(D3DXSPRITE_ALPHABLEND);
 
     for (auto itr = m_textInfos.begin(); itr != m_textInfos.end(); itr++)
     {
-        D3DXVECTOR3 pos = { transform->GetWorldPosition().x + (*itr).pos.x, transform->GetWorldPosition().y - (*itr).pos.y + m_maxHeight * (*itr).line, 0.0f };
+        D3DXVECTOR3 pos = {
+            transform->GetWorldPosition().x + (*itr).pos.x,
+            transform->GetWorldPosition().y - (*itr).pos.y,
+            0.0f
+        };
+
         m_sprite->Draw((*itr).texture, 0, 0, &pos, D3DXCOLOR(1.0f, 1.0f, 1.0f, m_alpha));
     }
 
@@ -100,13 +103,115 @@ void TextUI::DrawUI()
 }
 
 //=============================================================
+// UTF-8かを判別する
+//=============================================================
+bool IsUtf8(const std::string& str)
+{
+    // BOM (Byte Order Mark) のチェック
+    // UTF-8 BOM: EF BB BF
+    if (str.length() >= 3 &&
+        (unsigned char)str[0] == 0xEF &&
+        (unsigned char)str[1] == 0xBB &&
+        (unsigned char)str[2] == 0xBF)
+    {
+        return true; // BOMがあればUTF-8とみなす
+    }
+
+    // UTF-8バイトシーケンスの基本的な妥当性チェック
+    size_t i = 0;
+    while (i < str.length())
+    {
+        unsigned char c = (unsigned char)str[i];
+
+        if (c <= 0x7F) // 1バイト文字 (ASCII)
+        {
+            i++;
+            continue;
+        }
+        else if ((c & 0xE0) == 0xC0) // 2バイト文字: 110xxxxx 10xxxxxx
+        {
+            if (i + 1 >= str.length() || ((unsigned char)str[i + 1] & 0xC0) != 0x80)
+                return false; // 不正な継続バイト
+            i += 2;
+        }
+        else if ((c & 0xF0) == 0xE0) // 3バイト文字: 1110xxxx 10xxxxxx 10xxxxxx
+        {
+            if (i + 2 >= str.length() ||
+                ((unsigned char)str[i + 1] & 0xC0) != 0x80 ||
+                ((unsigned char)str[i + 2] & 0xC0) != 0x80)
+                return false; // 不正な継続バイト
+            i += 3;
+        }
+        else if ((c & 0xF8) == 0xF0) // 4バイト文字: 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+        {
+            if (i + 3 >= str.length() ||
+                ((unsigned char)str[i + 1] & 0xC0) != 0x80 ||
+                ((unsigned char)str[i + 2] & 0xC0) != 0x80 ||
+                ((unsigned char)str[i + 3] & 0xC0) != 0x80)
+                return false; // 不正な継続バイト
+            i += 4;
+        }
+        else
+        {
+            return false; // 不正な開始バイト
+        }
+    }
+
+    return true; // 上記のチェックを通過すればUTF-8
+}
+
+//=============================================================
 // テキストの設定
 //=============================================================
 void TextUI::SetText(const std::string& text)
 {
-    if (m_text != text)
+    if (m_oldText != text)
     {
-        m_text = text;
+        // 変換前のテキストを保存しておく
+        m_oldText = text;
+
+        if (IsUtf8(text))
+        {
+            m_text = text;
+        }
+        else
+        {
+            int wideCharLen = MultiByteToWideChar(CP_ACP, 0, text.c_str(), -1, NULL, 0);
+            if (wideCharLen == 0)
+            {
+                Log::SendLog("SetTextでANSIテキストをワイド文字に変換できませんでした", Log::TYPE_ERROR);
+                m_text = "";
+                return;
+            }
+
+            std::vector<wchar_t> wTextBuf(wideCharLen);
+            if (MultiByteToWideChar(CP_ACP, 0, text.c_str(), -1, wTextBuf.data(), wideCharLen) == 0)
+            {
+                Log::SendLog("SetTextでANSIテキストをワイド文字に変換できませんでした", Log::TYPE_ERROR);
+                m_text = "";
+                return;
+            }
+            std::wstring wText(wTextBuf.data());
+
+            int utf8Len = WideCharToMultiByte(CP_UTF8, 0, wText.c_str(), -1, NULL, 0, NULL, NULL);
+            if (utf8Len == 0)
+            {
+                Log::SendLog("SetTextでワイド文字をUTF-8に変換できませんでした", Log::TYPE_ERROR);
+                m_text = "";
+                return;
+            }
+
+            std::vector<char> utf8TextBuf(utf8Len);
+            if (WideCharToMultiByte(CP_UTF8, 0, wText.c_str(), -1, utf8TextBuf.data(), utf8Len, NULL, NULL) == 0)
+            {
+                Log::SendLog("SetTextでワイド文字をUTF-8に変換できませんでした", Log::TYPE_ERROR);
+                m_text = "";
+                return;
+            }
+
+            // 変換されたUTF-8文字列
+            m_text = utf8TextBuf.data();
+        }
 
         // テキストの更新
         UpdateText();
@@ -236,25 +341,38 @@ void TextUI::UpdateText()
         }
     }
     m_textInfos.clear();
-    m_maxHeight = 0.0f;
 
-    // 表示テキスト
-    std::string showText = m_text;
+    // タグを処理した後の文字列をUTF-16 (wchar_t) に変換する
+    int wideCharLen = MultiByteToWideChar(CP_UTF8, 0, m_text.c_str(), -1, NULL, 0);
+    if (wideCharLen == 0)
+    {
+        Log::SendLog("処理されたテキストをワイド文字に変換できませんでした", Log::TYPE_ERROR);
+        return;
+    }
+    std::vector<wchar_t> wTextBuf(wideCharLen);
+    if (MultiByteToWideChar(CP_UTF8, 0, m_text.c_str(), -1, wTextBuf.data(), wideCharLen) == 0)
+    {
+        Log::SendLog("処理されたテキストをワイド文字に変換できませんでした", Log::TYPE_ERROR);
+        return;
+    }
+    std::wstring showWText(wTextBuf.data());
+
+    // 表示テキスト (タグを処理するための一時的なコピー)
+    //std::wstring processedText = showWText;
 
     // テキストタグ
     std::vector<TextTag*> vecTextTag;
 
     // サイズタグ
-    std::regex sizeTag(R"(<size=(\d+)>)");
-    std::smatch match;
-    auto it = showText.cbegin();
-    while (std::regex_search(it, showText.cend(), match, sizeTag))
+    std::wsmatch match;
+    auto it = showWText.cbegin();
+    while (std::regex_search(it, showWText.cend(), match, std::regex(R"(<size=(\d+)>)")))
     {
         SizeTextTag* pSizeTag = new SizeTextTag();
-        pSizeTag->SetSize(atoi(match.str(1).c_str()));
+        pSizeTag->SetSize(_wtoi(match.str(1).c_str()));
 
         pSizeTag->SetIdx(static_cast<int>(match.position(0)));
-        showText.erase(match.position(0), match.length());
+        showWText.erase(match.position(0), match.length());
         vecTextTag.push_back(pSizeTag);
 
         // タグの位置調整
@@ -265,18 +383,40 @@ void TextUI::UpdateText()
                 vecTextTag[i]->SetIdx(vecTextTag[i]->GetIdx() - static_cast<int>(match.length()));
             }
         }
+        it = showWText.cbegin(); // 削除後にイテレータを再設定
+    }
+
+    // サイズタグ（リセット）
+    it = showWText.cbegin();
+    while (std::regex_search(it, showWText.cend(), match, std::regex(R"(<size=reset>)")))
+    {
+        SizeTextTag* pSizeTag = new SizeTextTag();
+        pSizeTag->SetSize(m_fontSize);
+
+        pSizeTag->SetIdx(static_cast<int>(match.position(0)));
+        showWText.erase(match.position(0), match.length());
+        vecTextTag.push_back(pSizeTag);
+
+        // タグの位置調整
+        for (int i = 0; i < (int)vecTextTag.size(); i++)
+        {
+            if (vecTextTag[i]->GetIdx() > match.position(0))
+            {
+                vecTextTag[i]->SetIdx(vecTextTag[i]->GetIdx() - static_cast<int>(match.length()));
+            }
+        }
+        it = showWText.cbegin(); // 削除後にイテレータを再設定
     }
 
     // カラータグ
-    std::regex colorTag(R"(<color=(\d+),\s?(\d+),\s?(\d+)>)");
-    it = showText.cbegin();
-    while (std::regex_search(it, showText.cend(), match, colorTag))
+    it = showWText.cbegin();
+    while (std::regex_search(it, showWText.cend(), match, std::regex(R"(<color=(\d+),\s?(\d+),\s?(\d+)>)")))
     {
         ColorTextTag* pColorTag = new ColorTextTag();
-        pColorTag->SetColor(D3DCOLOR_RGBA( atoi(match.str(1).c_str()), atoi(match.str(2).c_str()), atoi(match.str(3).c_str()), 255));
+        pColorTag->SetColor(D3DCOLOR_RGBA(_wtoi(match.str(1).c_str()), _wtoi(match.str(2).c_str()), _wtoi(match.str(3).c_str()), 255));
 
         pColorTag->SetIdx(static_cast<int>(match.position(0)));
-        showText.erase(match.position(0), match.length());
+        showWText.erase(match.position(0), match.length());
         vecTextTag.push_back(pColorTag);
 
         // タグの位置調整
@@ -287,19 +427,19 @@ void TextUI::UpdateText()
                 vecTextTag[i]->SetIdx(vecTextTag[i]->GetIdx() - static_cast<int>(match.length()));
             }
         }
+        it = showWText.cbegin();
     }
 
     // カラータグ（リセット）
-    std::regex colorResetTag(R"(<color=reset>)");
-    it = showText.cbegin();
-    while (std::regex_search(it, showText.cend(), match, colorResetTag))
+    it = showWText.cbegin();
+    while (std::regex_search(it, showWText.cend(), match, std::regex(R"(<color=reset>)")))
     {
         ColorTextTag* pColorTag = new ColorTextTag();
         pColorTag->SetFillColor(m_fillColor);
         pColorTag->SetEdgeColor(m_outlineColor);
 
         pColorTag->SetIdx(static_cast<int>(match.position(0)));
-        showText.erase(match.position(0), match.length());
+        showWText.erase(match.position(0), match.length());
         vecTextTag.push_back(pColorTag);
 
         // タグの位置調整
@@ -310,18 +450,18 @@ void TextUI::UpdateText()
                 vecTextTag[i]->SetIdx(vecTextTag[i]->GetIdx() - static_cast<int>(match.length()));
             }
         }
+        it = showWText.cbegin();
     }
 
     // フォントカラータグ
-    std::regex fontColorTag(R"(<font-color=(\d+),\s?(\d+),\s?(\d+)>)");
-    it = showText.cbegin();
-    while (std::regex_search(it, showText.cend(), match, fontColorTag))
+    it = showWText.cbegin();
+    while (std::regex_search(it, showWText.cend(), match, std::regex(R"(<font-color=(\d+),\s?(\d+),\s?(\d+)>)")))
     {
         FontColorTextTag* pFontColorTag = new FontColorTextTag();
-        pFontColorTag->SetColor(D3DCOLOR_RGBA(atoi(match.str(1).c_str()), atoi(match.str(2).c_str()), atoi(match.str(3).c_str()), 255));
+        pFontColorTag->SetColor(D3DCOLOR_RGBA(_wtoi(match.str(1).c_str()), _wtoi(match.str(2).c_str()), _wtoi(match.str(3).c_str()), 255));
 
         pFontColorTag->SetIdx(static_cast<int>(match.position(0)));
-        showText.erase(match.position(0), match.length());
+        showWText.erase(match.position(0), match.length());
         vecTextTag.push_back(pFontColorTag);
 
         // タグの位置調整
@@ -332,18 +472,18 @@ void TextUI::UpdateText()
                 vecTextTag[i]->SetIdx(vecTextTag[i]->GetIdx() - static_cast<int>(match.length()));
             }
         }
+        it = showWText.cbegin();
     }
 
     // フォントカラータグ（リセット）
-    std::regex fontColorResetTag(R"(<font-color=reset>)");
-    it = showText.cbegin();
-    while (std::regex_search(it, showText.cend(), match, fontColorResetTag))
+    it = showWText.cbegin();
+    while (std::regex_search(it, showWText.cend(), match, std::regex(R"(<font-color=reset>)")))
     {
         FontColorTextTag* pFontColorTag = new FontColorTextTag();
         pFontColorTag->SetColor(m_fillColor);
 
         pFontColorTag->SetIdx(static_cast<int>(match.position(0)));
-        showText.erase(match.position(0), match.length());
+        showWText.erase(match.position(0), match.length());
         vecTextTag.push_back(pFontColorTag);
 
         // タグの位置調整
@@ -354,18 +494,18 @@ void TextUI::UpdateText()
                 vecTextTag[i]->SetIdx(vecTextTag[i]->GetIdx() - static_cast<int>(match.length()));
             }
         }
+        it = showWText.cbegin();
     }
 
     // エッジカラータグ
-    std::regex edgeColorTag(R"(<edge-color=(\d+),\s?(\d+),\s?(\d+)>)");
-    it = showText.cbegin();
-    while (std::regex_search(it, showText.cend(), match, edgeColorTag))
+    it = showWText.cbegin();
+    while (std::regex_search(it, showWText.cend(), match, std::regex(R"(<edge-color=(\d+),\s?(\d+),\s?(\d+)>)")))
     {
         EdgeColorTextTag* pEdgeColorTag = new EdgeColorTextTag();
-        pEdgeColorTag->SetColor(D3DCOLOR_RGBA(atoi(match.str(1).c_str()), atoi(match.str(2).c_str()), atoi(match.str(3).c_str()), 255));
+        pEdgeColorTag->SetColor(D3DCOLOR_RGBA(_wtoi(match.str(1).c_str()), _wtoi(match.str(2).c_str()), _wtoi(match.str(3).c_str()), 255));
 
         pEdgeColorTag->SetIdx(static_cast<int>(match.position(0)));
-        showText.erase(match.position(0), match.length());
+        showWText.erase(match.position(0), match.length());
         vecTextTag.push_back(pEdgeColorTag);
 
         // タグの位置調整
@@ -376,18 +516,18 @@ void TextUI::UpdateText()
                 vecTextTag[i]->SetIdx(vecTextTag[i]->GetIdx() - static_cast<int>(match.length()));
             }
         }
+        it = showWText.cbegin();
     }
 
     // エッジカラータグ（リセット）
-    std::regex edgeColorResetTag(R"(<edge-color=reset>)");
-    it = showText.cbegin();
-    while (std::regex_search(it, showText.cend(), match, edgeColorResetTag))
+    it = showWText.cbegin();
+    while (std::regex_search(it, showWText.cend(), match, std::regex(R"(<edge-color=reset>)")))
     {
         EdgeColorTextTag* pEdgeColorTag = new EdgeColorTextTag();
         pEdgeColorTag->SetColor(m_outlineColor);
 
         pEdgeColorTag->SetIdx(static_cast<int>(match.position(0)));
-        showText.erase(match.position(0), match.length());
+        showWText.erase(match.position(0), match.length());
         vecTextTag.push_back(pEdgeColorTag);
 
         // タグの位置調整
@@ -398,18 +538,23 @@ void TextUI::UpdateText()
                 vecTextTag[i]->SetIdx(vecTextTag[i]->GetIdx() - static_cast<int>(match.length()));
             }
         }
+        it = showWText.cbegin();
     }
 
-    int nTextLength = static_cast<int>(showText.length());     // 文字数
+    int nTextLength = static_cast<int>(showWText.length());
     float fTextWidth = 0.0f;
+    float fTextHeight = 0.0f;
     int fontSize = m_fontSize;
     D3DXCOLOR fillColor = m_fillColor;
     D3DXCOLOR edgeColor = m_outlineColor;
-    int lineCounter = 1;
+    int lineCounter = 0;
+    std::vector<float> lineHeights;
+    std::vector<float> lineLengths;
+
     for (int i = 0; i < nTextLength; i++)
     {
         TextInfo textInfo;
-        RECT strInfo;
+        RECT strInfo = { 0, 0, 0, 0 }; // strInfo を初期化
 
         // テキストタグ
         for (int n = 0; n < (int)vecTextTag.size(); n++)
@@ -440,34 +585,27 @@ void TextUI::UpdateText()
             }
         }
 
-        // 文字
-        const char* pChar = nullptr;
-        std::string text;
-        if (IsDBCSLeadByte(showText[i]))
-        { // 2バイト文字
-            text = showText.substr(i, 2);
-            pChar = text.c_str();
-            i++;
-        }
-        else
-        { // 1バイト文字
-            text = showText.substr(i, 1);
-            pChar = text.c_str();
-        }
+        // 現在の文字
+        wchar_t currentChar[2] = { showWText[i], L'\0' };
 
-        // 改行
-        if (strcmp(&pChar[0], "\n") == 0)
+        // 改行文字の処理
+        if (currentChar[0] == L'\n')
         {
+            // 現在の行の長さを記録する
+            lineLengths.push_back(fTextWidth);
+            lineHeights.push_back(fTextHeight);
+
             lineCounter++;
-            fTextWidth = 0.0f;
+            fTextWidth = 0.0f; // 次の行に移るので幅をリセット
+            fTextHeight = 0.0f;
             continue;
         }
 
         // フォントテクスチャの生成
         textInfo.texture = CreateFontTexture(
             m_fontName.c_str(),
-            SHIFTJIS_CHARSET,
-            pChar,
+            DEFAULT_CHARSET,
+            currentChar,
             fontSize,
             0,
             m_outlineSize,
@@ -477,30 +615,51 @@ void TextUI::UpdateText()
             &strInfo
         );
 
-        // 描画位置を決める
-        textInfo.pos = { fTextWidth, (float)strInfo.bottom - (float)strInfo.top, 0.0f };
-        textInfo.line = lineCounter;
-        fTextWidth += strInfo.right;
-
-        if (m_maxHeight < textInfo.pos.y)
+        if (textInfo.texture == nullptr)
         {
-            m_maxHeight = textInfo.pos.y;
+            Log::SendLog("フォントテクスチャの生成に失敗しました", Log::TYPE_ERROR);
+            continue;
         }
 
+        // 描画位置を決める
+        textInfo.pos = { fTextWidth, (float)strInfo.bottom - (float)strInfo.top, 0.0f };
+
+        // 現在の行の最大高さを更新
+        if (fTextHeight < (float)strInfo.bottom - (float)strInfo.top)
+        {
+            fTextHeight = (float)strInfo.bottom - (float)strInfo.top;
+        }
+
+        textInfo.line = lineCounter;
+        fTextWidth += strInfo.right; // 現在の行の幅を加算
         m_textInfos.push_back(textInfo);
+
+        // 最後の処理
+        if (i == nTextLength - 1)
+        {
+            lineLengths.push_back(fTextWidth);
+            lineHeights.push_back(fTextHeight);
+        }
     }
 
-    // 整列
     for (int i = 0; i < (int)m_textInfos.size(); i++)
     {
         if (m_align == ALIGN::CENTER)
         { // 中央揃え
-            m_textInfos[i].pos.x -= fTextWidth / 2;
+            m_textInfos[i].pos.x -= lineLengths[m_textInfos[i].line] * 0.5f;
         }
         else if (m_align == ALIGN::RIGHT)
         { // 右揃え
-            m_textInfos[i].pos.x -= fTextWidth;
+            m_textInfos[i].pos.x -= lineLengths[m_textInfos[i].line];
         }
+
+        // 高さ
+        float height = 0.0f;
+        for (int n = 0; n < m_textInfos[i].line + 1; n++)
+        {
+            height += lineHeights[n];
+        }
+        m_textInfos[i].pos.y -= height;
     }
 
     // テキストタグを破棄する
@@ -512,6 +671,7 @@ void TextUI::UpdateText()
             vecTextTag[i] = nullptr;
         }
     }
+    vecTextTag.clear(); // vectorもクリア
 }
 
 //=============================================================
@@ -520,7 +680,7 @@ void TextUI::UpdateText()
 IDirect3DTexture9* TextUI::CreateFontTexture(
     const char* faceName,
     unsigned char charSet,
-    const char* str,
+    const wchar_t* wstr,
     unsigned fontHeight,
     unsigned weight,
     int penSize,
@@ -555,10 +715,10 @@ IDirect3DTexture9* TextUI::CreateFontTexture(
     TEXTMETRICA tm;
     GLYPHMETRICS gm;
     MAT2 mat = { {0,1}, {0,0}, {0,0}, {0,1} };
-    int len = IsDBCSLeadByte(str[0]) ? 2 : 1;
-    UINT code = (len == 2 ? (unsigned char)str[0] << 8 | (unsigned char)str[1] : (unsigned char)str[0]);
+
+    UINT code = wstr[0];
     GetTextMetricsA(memDC, &tm);
-    GetGlyphOutlineA(memDC, code, GGO_METRICS, &gm, 0, 0, &mat);
+    GetGlyphOutlineW(memDC, code, GGO_METRICS, &gm, 0, 0, &mat);
 
     RECT charRegion =
     {
@@ -595,7 +755,7 @@ IDirect3DTexture9* TextUI::CreateFontTexture(
 
     SetBkMode(memDC, TRANSPARENT);
     BeginPath(memDC);
-    TextOutA(memDC, -charRegion.left, -charRegion.top, str, len);
+    TextOutW(memDC, -charRegion.left, -charRegion.top, wstr, 1);
     EndPath(memDC);
     StrokeAndFillPath(memDC);
 
@@ -616,18 +776,23 @@ IDirect3DTexture9* TextUI::CreateFontTexture(
         return nullptr;
     }
     D3DLOCKED_RECT lockR;
-    if (SUCCEEDED(tex->LockRect(0, &lockR, 0, 0))) {
+    if (SUCCEEDED(tex->LockRect(0, &lockR, 0, 0)))
+    {
         char* d = (char*)lockR.pBits;
         unsigned BMPPitch = (charWH.right * 3 + 3) / 4 * 4;
-        for (int y = 0; y < texH; y++) {
-            for (int x = 0; x < texW; x++) {
+        for (int y = 0; y < texH; y++) 
+        {
+            for (int x = 0; x < texW; x++) 
+            {
                 unsigned& v = *((unsigned*)d + x + y * texW);   // テクスチャのピクセル位置
                 unsigned alph = 0;
                 unsigned edge = 0;
                 unsigned fill = 0;
                 // quality倍率分点を平均化
-                for (int i = 0; i < quality; i++) {
-                    for (int j = 0; j < quality; j++) {
+                for (int i = 0; i < quality; i++) 
+                {
+                    for (int j = 0; j < quality; j++)
+                    {
                         alph += p[(y * quality + i) * BMPPitch + (x * quality + j) * 3 + 0];
                         edge += p[(y * quality + i) * BMPPitch + (x * quality + j) * 3 + 1];
                         fill += p[(y * quality + i) * BMPPitch + (x * quality + j) * 3 + 2];
@@ -643,7 +808,8 @@ IDirect3DTexture9* TextUI::CreateFontTexture(
 
                 // 不透明の場合はブレンド色を採用
                 unsigned a = 0xff - alph;
-                if (a < 0xff) {
+                if (a < 0xff) 
+                {
                     // 半透明
                     unsigned r = colEdge[0];
                     unsigned g = colEdge[1];
@@ -651,7 +817,8 @@ IDirect3DTexture9* TextUI::CreateFontTexture(
                     a = (a * colEdge[3]) >> 8;
                     v = a << 24 | r << 16 | g << 8 | b;
                 }
-                else {
+                else 
+                {
                     // 不透明
                     unsigned r = ((colEdge[0] * edge) >> 8) + ((colFill[0] * fill) >> 8);
                     unsigned g = ((colEdge[1] * edge) >> 8) + ((colFill[1] * fill) >> 8);
@@ -667,7 +834,8 @@ IDirect3DTexture9* TextUI::CreateFontTexture(
     DeleteObject(hBitMap);
     DeleteDC(memDC);
 
-    if (info) {
+    if (info) 
+    {
         info->left = charRegion.left / quality;
         info->top = charRegion.top / quality;
         info->right = (gm.gmCellIncX + penSize) / quality;
@@ -714,7 +882,11 @@ void TypingTextUI::DrawUI()
     {
         if (i < m_typingNum)
         {
-            D3DXVECTOR3 pos = { transform->GetWorldPosition().x + m_textInfos[i].pos.x, transform->GetWorldPosition().y - m_textInfos[i].pos.y + m_maxHeight, 0.0f };
+            D3DXVECTOR3 pos = {
+                transform->GetWorldPosition().x + m_textInfos[i].pos.x,
+                transform->GetWorldPosition().y - m_textInfos[i].pos.y,
+                0.0f
+            };            
             m_sprite->Draw(m_textInfos[i].texture, 0, 0, &pos, D3DXCOLOR(1.0f, 1.0f, 1.0f, m_alpha));
         }
     }

@@ -12,21 +12,32 @@ using namespace std;
 #include <vector>
 
 // 静的メンバ変数の初期化
-std::vector<GameObject*> GameObject::m_gameObjects;
+std::list<GameObject*> GameObject::m_gameObjects;
 
 //=============================================================
 // コンストラクタ
 //=============================================================
-GameObject::GameObject(std::string vName, std::string vTag)
+GameObject::GameObject(std::string vName, std::string vTag, int priority)
 {
 	// 基本情報
 	this->name = vName;
 	this->tag = vTag;
+	this->m_priority = priority;
 
 	// トランスフォームを作成する
-	transform = new Transform();
+	transform = new Transform(this);
 
-	// リストに追加する
+	// 優先順位で挿入する
+	int idx = static_cast<int>(m_gameObjects.size());
+	for (auto itr = m_gameObjects.rbegin(); itr != m_gameObjects.rend(); itr++, idx--)
+	{
+		if ((*itr)->m_priority <= priority)
+		{
+			m_gameObjects.insert(std::next(m_gameObjects.begin(), idx), this);
+			return;
+		}
+	}
+
 	m_gameObjects.push_back(this);
 }
 
@@ -122,11 +133,11 @@ void GameObject::DrawUI()
 //=============================================================
 void GameObject::AllUpdate()
 {
-	for (UINT i = 0; i < static_cast<UINT>(m_gameObjects.size()); i++)
+	for (auto itr = m_gameObjects.begin(); itr != m_gameObjects.end(); itr++)
 	{
-		if (m_gameObjects[i]->GetActive())
+		if ((*itr)->GetActive())
 		{
-			m_gameObjects[i]->Update();
+			(*itr)->Update();
 		}
 	}
 }
@@ -213,6 +224,40 @@ void GameObject::SetParent(GameObject* gameObject)
 	{
 		transform->SetParent(gameObject->transform);
 	}
+}
+
+//=============================================================
+// 優先順位を設定する
+//=============================================================
+void GameObject::SetPriority(const int& priority)
+{
+	if (m_priority != priority)
+	{
+		m_priority = priority;
+
+		// 優先順位で移動する
+		int idx = static_cast<int>(m_gameObjects.size());
+		for (auto itr = m_gameObjects.rbegin(); itr != m_gameObjects.rend(); itr++, idx--)
+		{
+			if ((*itr)->m_priority <= priority)
+			{
+				m_gameObjects.splice(std::next(m_gameObjects.begin(), idx), m_gameObjects, std::find(m_gameObjects.begin(), m_gameObjects.end(), this));
+				return;
+			}
+		}
+	}
+}
+
+//=============================================================
+// アクティブ状態を取得する
+//=============================================================
+bool GameObject::GetActive()
+{
+	if (transform->GetParent() != nullptr)
+	{
+		return transform->GetParent()->GetAttachObject()->GetActive();
+	}
+	return Object::GetActive();
 }
 
 //=============================================================
@@ -492,7 +537,10 @@ void GameObject::Release()
 	// 親子関係のあるオブジェクトを破棄する
 	for (auto itr = m_gameObjects.begin(); itr != m_gameObjects.end(); itr++)
 	{
-		(*itr)->transform->GetParent();
+		if (this->transform == (*itr)->transform->GetParent())
+		{
+			Destroy(*itr);
+		}
 	}
 
 	// コンポーネントを解放する

@@ -8,6 +8,8 @@
 
 #include "d3dx9.h"
 
+class GameObject;
+
 //@brief トランスフォームクラス
 class Transform final
 {
@@ -19,13 +21,18 @@ public:
 		scale = { 1.0f, 1.0f, 1.0f };
 		size = { 1.0f, 1.0f };
 		m_parent = nullptr;
+		m_attachObject = nullptr;
 	}
+	Transform(GameObject* attach);
 	~Transform();
 
 	//@brief 親を設定する
 	void SetParent(Transform* parent);
 	//@brief 親を取得する
 	Transform* GetParent() { return m_parent; }
+
+	//@brief アタッチされているゲームオブジェクトを取得する
+	GameObject* GetAttachObject() { return m_attachObject; }
 
 	//@brief 移動する
 	void Translate(float x, float y, float z) { position += {x, y, z}; }
@@ -85,8 +92,9 @@ private:
 	//@brief クォータニオンをオイラー角に変換する
 	D3DXVECTOR3 QuaternionToEulerAngle(D3DXQUATERNION q);
 
-	D3DXMATRIX m_matrix;			// マトリックス
-	Transform* m_parent;			// 親
+	D3DXMATRIX m_matrix;				// マトリックス
+	Transform* m_parent;				// 親
+	GameObject* m_attachObject;	// アタッチオブジェクト
 };
 
 /**

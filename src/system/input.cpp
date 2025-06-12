@@ -6,6 +6,7 @@
 #include "input.h"
 
 #include "input_devices/keyboard.h"
+#include "input_devices/mouse.h"
 
 //=============================================================
 // コンストラクタ
@@ -14,6 +15,7 @@ InputManager::InputManager()
 	: m_input(nullptr)
 {
 	m_devices.emplace_back(new InputKeyboard());
+	m_devices.emplace_back(new InputMouse());
 }
 
 //=============================================================

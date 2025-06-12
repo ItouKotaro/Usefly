@@ -8,6 +8,22 @@
 std::vector<TransformMonitor*> TransformMonitor::m_monitors;
 
 //=============================================================
+// ゲームオブジェクト付きコンストラクタ
+//=============================================================
+Transform::Transform(GameObject* attach)
+{
+	// 初期化
+	position = { 0.0f, 0.0f, 0.0f };
+	D3DXQuaternionIdentity(&rotation);
+	scale = { 1.0f, 1.0f, 1.0f };
+	size = { 1.0f, 1.0f };
+	m_parent = nullptr;
+
+	// ゲームオブジェクトをアタッチする
+	m_attachObject = attach;
+}
+
+//=============================================================
 // デストラクタ
 //=============================================================
 Transform::~Transform()

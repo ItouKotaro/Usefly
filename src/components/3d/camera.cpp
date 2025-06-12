@@ -7,6 +7,7 @@
 #include "system/manager.h"
 
 std::vector<Camera*> Camera::m_cameras;
+Camera* Camera::m_currentCamera = nullptr;
 
 //=============================================================
 // 初期化
@@ -18,6 +19,7 @@ void Camera::Init()
 	m_posR = { 0.0f, 0.0f, 0.0f };
 	m_length = CAMERA_LENGTH;
 	m_mode = MODE::MODE_PERSPECTIVE;
+	m_clearColor = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 	// 描画距離の設定
 	m_clippingPlanes.min = CLIPPING_NEAR;
@@ -29,6 +31,7 @@ void Camera::Init()
 	m_viewport.MaxZ = 1.0f;
 	SetViewportPosition(0.0f, 0.0f);
 	SetViewportSize((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT);
+	m_visible = true;
 
 	// カメラリストに追加する
 	m_cameras.push_back(this);
@@ -139,4 +142,7 @@ void Camera::SetCamera()
 
 	// ビューポートの設定
 	device->SetViewport(&m_viewport);
+
+	// 現在のカメラを設定する
+	m_currentCamera = this;
 }

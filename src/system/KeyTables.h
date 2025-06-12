@@ -11,6 +11,8 @@ namespace InputSystem
 	enum KeyCode
 	{
 		None,
+
+		// キーボード
 		Backspace,
 		Delete,
 		Tab,
@@ -153,6 +155,11 @@ namespace InputSystem
 		Menu,
 		Power,
 		Sleep,
+
+		// マウス
+		LeftClick,
+		RightClick,
+		WheelClick,
 
 		MAX	// 最大
 	};

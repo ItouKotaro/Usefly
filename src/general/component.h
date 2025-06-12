@@ -74,6 +74,54 @@ public:
 	*/
 	virtual void OnTriggerExit(Collision* other) {}
 
+	/**
+	 * @brief 全コンポーネントを取得する
+	 * @param[in] onlyActive : アクティブ状態のみ
+	*/
+	static std::vector<Component*> GetComponents(bool onlyActive = false) {
+		std::vector<Component*> result;
+		auto gameObjects = GameObject::GetAllGameObjects();
+		for (auto objItr = gameObjects.begin(); objItr != gameObjects.end(); objItr++)
+		{
+			auto components = (*objItr)->GetComponents();
+			for (auto itr = components.begin(); itr != components.end(); itr++)
+			{
+				if (!onlyActive || (onlyActive && (*itr)->GetActive() && (*itr)->gameObject->GetActive()))
+					result.push_back(*itr);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * @brief 全コンポーネントから複数の特定コンポーネントを取得する
+	 * @param[in] includeChild : 子クラスを含めるか
+	 * @param[in] onlyActive : アクティブ状態のみ
+	*/
+	template<class T> static std::vector<T*> GetComponents(const bool& includeChild = false, const bool& onlyActive = false) {
+		std::vector<T*> result;
+		auto components = Component::GetComponents();
+		for (auto itr = components.begin(); itr != components.end(); itr++)
+		{
+			if (includeChild)
+			{ // 子を含むとき
+				if (T* pComp = dynamic_cast<T*>(*itr))
+				{
+					if (!onlyActive || (onlyActive && (*itr)->GetActive() && (*itr)->gameObject->GetActive()))
+						result.push_back((T*)*itr);
+				}
+			}
+			else
+			{ // 子を含まないとき
+				if (typeid(T) == typeid(**itr))
+				{
+					if (!onlyActive || (onlyActive && (*itr)->GetActive() && (*itr)->gameObject->GetActive()))
+						result.push_back((T*)*itr);
+				}
+			}
+		}
+		return result;
+	}
 
 	/**
 	 * @brief ゲームオブジェクトにアタッチする

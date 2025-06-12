@@ -158,6 +158,43 @@ void GizmoSystem::DrawRectangle(const D3DXVECTOR2& start, const D3DXVECTOR2& siz
 	DrawLine2D(point[3], point[0], bold, color);
 }
 
+//=============================================================
+// ボックスの3Dラインの描画
+//=============================================================
+void GizmoSystem::DrawBox(const D3DXVECTOR3& start, const D3DXVECTOR3& end, const D3DXCOLOR& color, const D3DXMATRIX& matrix)
+{
+	D3DXVECTOR3 point[8] =
+	{
+		{start.x, start.y, start.z},
+		{end.x, start.y, start.z},
+		{end.x, start.y, end.z},
+		{start.x, start.y, end.z},
+		{start.x, end.y, start.z},
+		{end.x, end.y, start.z},
+		{end.x, end.y, end.z},
+		{start.x, end.y, end.z}
+	};
+
+	// マトリックスをかける
+	D3DXVec3TransformCoordArray(&point[0], sizeof(D3DXVECTOR3), &point[0], sizeof(D3DXVECTOR3), &matrix, 8);
+
+	// 線を描画する
+	DrawLine(point[0], point[1], color);
+	DrawLine(point[1], point[2], color);
+	DrawLine(point[2], point[3], color);
+	DrawLine(point[3], point[0], color);
+
+	DrawLine(point[0], point[4], color);
+	DrawLine(point[1], point[5], color);
+	DrawLine(point[2], point[6], color);
+	DrawLine(point[3], point[7], color);
+
+	DrawLine(point[4], point[5], color);
+	DrawLine(point[5], point[6], color);
+	DrawLine(point[6], point[7], color);
+	DrawLine(point[7], point[4], color);
+}
+
 
 //=============================================================
 // 3Dライン : 初期化

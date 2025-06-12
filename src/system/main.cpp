@@ -110,15 +110,17 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 				DispatchMessage(&msg);
 			}
 		}
-
-		// アクティブ情報の更新
-		g_isActiveWindow = GetActiveWindow() != NULL;
-
-		// カーソルの表示設定の更新
-		if (g_showCursor != g_beforeShowCursor)
+		else
 		{
-			ShowCursor(g_showCursor ? TRUE : FALSE);
-			g_beforeShowCursor = g_showCursor;
+			// アクティブ情報の更新
+			g_isActiveWindow = GetActiveWindow() != NULL;
+
+			// カーソルの表示設定の更新
+			if (g_showCursor != g_beforeShowCursor)
+			{
+				ShowCursor(g_showCursor ? TRUE : FALSE);
+				g_beforeShowCursor = g_showCursor;
+			}
 		}
 	}
 
@@ -193,6 +195,7 @@ void Main::ThreadStart()
 {
 	// スレッドを作成する
 	m_thread = new std::thread(&Main::MainLoop, this);
+	m_startupTime = timeGetTime();
 	Log::SendLog("メインループのスレッドを開始しました");
 }
 

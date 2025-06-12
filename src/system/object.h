@@ -16,7 +16,7 @@ public:
 	//@brief アクティブ状態を設定する
 	void SetActive(bool value) { m_active = value; }
 	//@brief アクティブ状態を取得する
-	bool GetActive() { return m_active; }
+	virtual bool GetActive() { return m_active; }
 
 	//@brief デスフラグのオブジェクトを破棄する
 	static void ReleaseDeathFlag();

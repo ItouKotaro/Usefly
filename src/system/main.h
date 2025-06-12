@@ -8,7 +8,7 @@
 
  // マクロ定義
 #define CLASS_NAME			"WindowClass"		// クラス名
-#define WINDOW_NAME	"Usefly"					// ウィンドウ名
+#define WINDOW_NAME	"Usefly"	// ウィンドウ名
 
 // インクルード
 #include <thread>
@@ -34,6 +34,10 @@ public:
 	//@brief スレッドの終了を待つ
 	void ThreadJoin();
 
+	//@brief 起動時刻を取得する
+	DWORD GetStartupTime() { return m_startupTime; }
+	//@brief 経過時間を取得する
+	DWORD GetElapsedTime() { return m_currentTime - m_startupTime; }
 	//@brief デルタタイムを取得する
 	float GetDeltaTime() { return m_deltaTime; }
 	//@brief FPS値を取得する
@@ -69,9 +73,10 @@ private:
 	void MainLoop();
 
 	std::thread* m_thread;		// スレッド
-	DWORD m_currentTime;		// 現在時刻
+	DWORD m_currentTime;	// 現在時刻
 	DWORD m_execLastTime;	// 前回の更新時刻
 	DWORD m_fpsLastTime;		// 前回のFPS更新時刻
+	DWORD m_startupTime;		// 起動時刻
 	int m_frameCount;				// フレームのカウント
 
 	float m_deltaTime;				// デルタタイム

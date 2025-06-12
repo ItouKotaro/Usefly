@@ -61,7 +61,7 @@ void SceneManager::AllRelease()
 void SceneManager::ReleaseGameObjects()
 {
 	// ゲームオブジェクトを取得する
-	std::vector<GameObject*>& gameObjectList = GameObject::GetAllGameObjects();
+	std::list<GameObject*>& gameObjectList = GameObject::GetAllGameObjects();
 
 	for (auto itr = gameObjectList.begin(); itr != gameObjectList.end(); itr++)
 	{

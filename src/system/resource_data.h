@@ -16,6 +16,7 @@ public:
 		TEXTURE,		// テクスチャ
 		MODEL,			// モデル
 		AUDIO,			// オーディオ
+		SHADER,		// シェーダー
 		MAX
 	};
 
@@ -77,13 +78,40 @@ public:
 	LPD3DXBUFFER GetBufferMaterial() { return m_buffMat; }
 	//@brief マテリアル数を取得する
 	DWORD GetNumMaterial() { return m_numMat; }
+
+	//@brief 最小範囲を取得する
+	D3DXVECTOR3 GetMinRange() { return m_minRange; }
+	//@brief 最大範囲を取得する
+	D3DXVECTOR3 GetMaxRange() { return m_maxRange; }
 private:
+	//@brief 範囲を計算する
+	void CalcVertexRange();
+
 	LPD3DXMESH m_mesh;				// メッシュデータ
 	LPD3DXBUFFER m_buffMat;		// マテリアルデータ
 	DWORD m_numMat;					// マテリアル数
+	D3DXVECTOR3 m_minRange;		// 最小範囲
+	D3DXVECTOR3 m_maxRange;		// 最大範囲
 };
 
 
+//@brief シェーダーデータ
+class ShaderData : public ResourceData
+{
+public:
+	ShaderData() : ResourceData(FORMAT::SHADER) {}
+
+	//@brief ロードする
+	bool Load(std::string path) override;
+
+	//@brief 解放する
+	void Release() override;
+
+	//@brief エフェクトを取得する
+	LPD3DXEFFECT GetEffect() { return m_effect; }
+private:
+	LPD3DXEFFECT m_effect;		// エフェクト
+};
 
 
 //@brief リソースデータ管理クラス
@@ -97,6 +125,8 @@ public:
 	TextureData* RefTexture(std::string path);
 	//@brief モデルデータを参照する
 	ModelData* RefModel(std::string path);
+	//@brief シェーダーデータを参照する
+	ShaderData* RefShader(std::string path);
 
 	//@brief すべてのリソースを解放する
 	void AllRelease();

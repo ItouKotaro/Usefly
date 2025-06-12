@@ -6,6 +6,8 @@
 #include "renderer.h"
 #include "gameobject.h"
 #include "components/3d/camera.h"
+#include "components/other/render_texture.h"
+#include "components/other/camera_options.h"
 
 //=============================================================
 // 初期化
@@ -113,7 +115,7 @@ void Renderer::Update()
 void Renderer::Draw()
 {
 	// カメラを取得する
-	auto& cameras = Camera::GetAllCameras();
+	auto cameras = Component::GetComponents<Camera>();
 
 	// 画面クリア（バッファクリア＆Zバッファクリア）
 	m_d3dDevice->Clear(0, nullptr, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL), D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f), 1.0f, 0);
@@ -128,15 +130,42 @@ void Renderer::Draw()
 				continue;
 			}
 
+			// 表示設定
+			if (!(*itr)->GetVisible())
+			{
+				continue;
+			}
+
 			// カメラをセットする
 			(*itr)->SetCamera();
 
+			// 画面クリア（バッファクリア＆Zバッファクリア）
+			m_d3dDevice->Clear(0, nullptr, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER), (*itr)->GetClearColor(), 1.0f, 0);
+
 			// ゲームオブジェクトを描画する
-			GameObject::AllDraw();
+			LimitObjects* limitObjects = (*itr)->gameObject->GetComponent<LimitObjects>();
+			if (limitObjects != nullptr)
+			{
+				limitObjects->LimitDraw();
+			}
+			else
+			{
+				GameObject::AllDraw();
+			}
 
 			// ギズモの3D描画
 			Gizmo.Render3D();
 		}
+
+		// 画面全体のビューポートを設定する
+		D3DVIEWPORT9 viewport;
+		viewport.MinZ = 0.0f;
+		viewport.MaxZ = 1.0f;
+		viewport.X = 0;
+		viewport.Y = 0;
+		viewport.Width = SCREEN_WIDTH;
+		viewport.Height = SCREEN_HEIGHT;
+		m_d3dDevice->SetViewport(&viewport);
 
 		// ゲームオブジェクトをUI描画する
 		GameObject::AllDrawUI();
@@ -147,6 +176,56 @@ void Renderer::Draw()
 		// 描画終了
 		m_d3dDevice->EndScene();
 	}
+
+	//--- レンダーテクスチャの書き込み ---
+
+	// 前回の設定として保存しておく
+	LPDIRECT3DSURFACE9 beforeBufferSurface;
+	LPDIRECT3DSURFACE9 beforeDepthSurface;
+	m_d3dDevice->GetRenderTarget(0, &beforeBufferSurface);
+	m_d3dDevice->GetDepthStencilSurface(&beforeDepthSurface);
+
+	for (auto itr = cameras.begin(); itr != cameras.end(); itr++)
+	{
+		Camera* renderCamera = *itr;
+		RenderTexture* renderTexture = renderCamera->gameObject->GetComponent<RenderTexture>();
+		if (renderCamera != nullptr && renderTexture != nullptr)
+		{
+			// 非アクティブのとき
+			if (!renderCamera->gameObject->GetActive() && !renderTexture->GetActive())
+			{
+				continue;
+			}
+
+			// 描画開始
+			if (renderTexture->Begin())
+			{
+				// 画面クリア（バッファクリア＆Zバッファクリア）
+				m_d3dDevice->Clear(0, nullptr, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER), (*itr)->GetClearColor(), 1.0f, 0);
+
+				// カメラをセットする
+				renderCamera->SetCamera();
+
+				// ゲームオブジェクトを描画する
+				LimitObjects* limitObjects = renderCamera->gameObject->GetComponent<LimitObjects>();
+				if (limitObjects != nullptr)
+				{
+					limitObjects->LimitDraw();
+				}
+				else
+				{
+					GameObject::AllDraw();
+				}
+
+				// 終了
+				renderTexture->End();
+			}
+		}
+	}
+
+	// 元の設定に戻す
+	m_d3dDevice->SetDepthStencilSurface(beforeDepthSurface);
+	m_d3dDevice->SetRenderTarget(0, beforeBufferSurface);
 
 	// バックバッファとフロントバッファの入れ替え
 	m_d3dDevice->Present(nullptr, nullptr, nullptr, nullptr);

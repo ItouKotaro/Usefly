@@ -61,24 +61,39 @@ public:
 	void SetViewportPosition(float x, float y);
 	//@brief ビューポートのサイズを設定する
 	void SetViewportSize(float width, float height);
+	//@brief 表示設定
+	void SetVisible(const bool& visible) { m_visible = visible; }
+	//@brief 表示設定を取得する
+	bool GetVisible() { return m_visible; }
+
+	//@brief クリア時のカラーを設定する
+	void SetClearColor(const D3DXCOLOR& color) { m_clearColor = color; }
+	//@brief クリア時のカラーを取得する
+	D3DXCOLOR GetClearColor() { return m_clearColor; }
 
 	//@brief カメラの設置
 	void SetCamera();
 
 	//@brief すべてのカメラを取得する
 	static const std::vector<Camera*>& GetAllCameras() { return m_cameras; }
+	//@brief 現在のカメラを取得する
+	static const Camera* GetCurrentCamera() { return m_currentCamera; }
+
 private:
 	D3DXVECTOR3 m_posR;				// 注視点
 	D3DXVECTOR3 m_vecU;				// 上向きベクトル
 	float m_length;							// 視点と注視点の距離
 	Range<float> m_clippingPlanes;	// 描画範囲
 	MODE m_mode;							// 投影モード
+	D3DXCOLOR m_clearColor;			// クリア時のカラー
 
 	D3DXMATRIX m_projMtx;			// プロジェクションマトリックス
 	D3DXMATRIX m_viewMtx;			// ビューマトリックス
 	D3DVIEWPORT9 m_viewport;		// ビューポート
+	bool m_visible;							// 表示するか
 
 	static std::vector<Camera*> m_cameras;
+	static Camera* m_currentCamera;	// 現在のカメラ
 };
 
 #endif // !_COMP_CAMERA_H_

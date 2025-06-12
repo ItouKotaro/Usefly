@@ -5,13 +5,15 @@
 //------------------------------------------------------------
 #include "model.h"
 #include "system/manager.h"
+#include "camera.h"
+#include "components/other/shader.h"
 
 //=============================================================
 // 初期化
 //=============================================================
 void Model::Init()
 {
-
+	gameObject->AddComponent<Shader>();
 }
 
 //=============================================================
@@ -42,16 +44,37 @@ void Model::Draw()
 	// マテリアルデータへのポインタを取得
 	pMat = (D3DXMATERIAL*)m_modelData->GetBufferMaterial()->GetBufferPointer();
 
-	for (int i = 0; i < static_cast<int>(m_modelData->GetNumMaterial()); i++)
+	// シェーダーの取得
+	auto shaders = gameObject->GetComponents<Shader>();
+
+	for (auto itr = shaders.begin(); itr != shaders.end(); itr++)
 	{
-		// マテリアルの設定
-		device->SetMaterial(&pMat[i].MatD3D);
+		// シェーダー開始
+		if ((*itr)->Begin())
+		{
+			for (UINT pass = 0; pass < (*itr)->GetPassNum(); pass++)
+			{
+				// パス描画開始
+				if ((*itr)->BeginPass(pass))
+				{
+					for (int i = 0; i < static_cast<int>(m_modelData->GetNumMaterial()); i++)
+					{
+						// マテリアルの設定
+						device->SetMaterial(&pMat[i].MatD3D);
+						// テクスチャの設定
+						device->SetTexture(0, pMat[i].pTextureFilename != nullptr ? m_textures[i] : nullptr);
 
-		// テクスチャの設定
-		device->SetTexture(0, pMat[i].pTextureFilename != nullptr ? m_textures[i] : nullptr);
+						// モデル（パーツ）の描画
+						m_modelData->GetMesh()->DrawSubset(i);
+					}
 
-		// モデル（パーツ）の描画
-		m_modelData->GetMesh()->DrawSubset(i);
+					// パス描画終了
+					(*itr)->EndPass();
+				}
+			}
+			// シェーダー終了
+			(*itr)->End();
+		}
 	}
 
 	// 保存していたマテリアルに戻す

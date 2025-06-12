@@ -34,6 +34,7 @@ public:
 		IDirect3DTexture9* texture;	// 文字のテクスチャ
 		D3DXVECTOR3 pos;				// 文字位置
 		int line;									// 行数
+		RECT rect;								// 文字のサイズ情報を保存
 	};
 
 	//@brief フォントデータ
@@ -76,17 +77,16 @@ public:
 	static const FontData loadFonts[FontType::MAX];
 protected:
 	LPD3DXSPRITE m_sprite;					// スプライト
-	std::vector<TextInfo> m_textInfos;	// 文字管理
-	float m_maxHeight;								// 文字の中でも最大サイズ
-	float m_alpha;										// 不透明度
+	std::vector<TextInfo> m_textInfos;		// 文字管理
+	float m_alpha;									// 不透明度
 private:
 	void UpdateText();
 
 	//@brief 1文字のテクスチャを生成する
 	IDirect3DTexture9* CreateFontTexture(
 		const char* faceName = "MS ゴシック",
-		unsigned char charSet = SHIFTJIS_CHARSET,
-		const char* str = "T",
+		unsigned char charSet = DEFAULT_CHARSET,
+		const wchar_t* wstr = L"T",
 		unsigned fontHeight = 450,
 		unsigned weight = 0,
 		int penSize = 5,
@@ -97,6 +97,7 @@ private:
 
 	// 情報
 	std::string m_text;					// 文字
+	std::string m_oldText;				// 前回のテキスト
 	unsigned char m_charSet;		// 文字セット
 	int m_fontSize;						// フォントサイズ
 	float m_weight;						// フォントの太さ

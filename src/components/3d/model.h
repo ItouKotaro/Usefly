@@ -18,6 +18,11 @@ public:
 	void Uninit() override;
 	void Draw() override;
 
+	//@brief モデルデータを取得します
+	ModelData* GetModelData() const { return m_modelData; }
+	//@brief モデルデータを設定します
+	void SetModelData(ModelData* modelData) { m_modelData = modelData; }
+
 	/**
 	 * @brief モデルを読み込みます
 	 * @param[in] path : Xファイルのパス

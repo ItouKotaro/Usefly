@@ -7,7 +7,7 @@
 #include "components/3d/collision.h"
 
 // 定数
-constexpr bool DEBUG_LINE_VISIBLE = true;	// ラインを表示するか
+constexpr bool DEBUG_LINE_VISIBLE = false;	// ラインを表示するか
 constexpr int DEBUG_LINE_LIFE = 30;				// ラインの寿命
 
 //=============================================================
@@ -131,6 +131,7 @@ void Physics::Update()
 		RigidBody* rigidbody = collision->gameObject->GetComponent<RigidBody>();
 
 		// トランスフォームが変更されていた場合
+		bool isChanged = false;
 		if ((collision->gameObject->transform->GetWorldPosition() != collision->GetOldTransform().position ||
 			collision->gameObject->transform->GetWorldRotation() != collision->GetOldTransform().rotation ||
 			collision->gameObject->transform->GetWorldScale() != collision->GetOldTransform().scale) &&
@@ -153,14 +154,16 @@ void Physics::Update()
 				collision->GetUpdateFlag() = true;
 			}
 
-			// 変更を適用する
-			collision->GetCollision()->setWorldTransform(changedTransform);
 
 			// リジッドボディの場合はアクティブにする
 			if (rigidbody != nullptr)
 			{
 				rigidbody->GetRigidBody()->activate(true);
 			}
+
+			// 変更を適用する
+			collision->GetCollision()->setWorldTransform(changedTransform);
+			isChanged = true;
 		}
 		
 		if (rigidbody != nullptr && collision->GetCollision() != nullptr)
@@ -168,6 +171,12 @@ void Physics::Update()
 			// 結果を取得する
 			btTransform result;
 			rigidbody->GetRigidBody()->getMotionState()->getWorldTransform(result);
+
+			// トランスフォームに変更があったとき
+			if (isChanged)
+			{
+				result = collision->GetCollision()->getWorldTransform();
+			}
 
 			// 更新する
 			collision->transform->position = { result.getOrigin().getX(), result.getOrigin().getY(), result.getOrigin().getZ() };

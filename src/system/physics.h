@@ -77,6 +77,9 @@ public:
 	std::vector<Collision*>& GetCollisions() { return m_collisions; }
 	//@brief btCollisionObjectからCollisionを探す
 	Collision* FindCollision(const btCollisionObject* collisionObject);
+
+	//@brief 強制的に構築する
+	//void ForceBuild(GameObject* object);
 private:
 	/**
 	 * @brief 物理デバッグクラス

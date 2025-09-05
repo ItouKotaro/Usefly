@@ -84,6 +84,19 @@ void Collision::Build()
 	// リジッドボディを取得する
 	auto rigidbody = gameObject->GetComponent<RigidBody>();
 
+	// ベロシティーを保存しておく
+	btVector3 linerVelocity = btVector3(0.0f, 0.0f, 0.0f);
+	btVector3 angularVelocity = btVector3(0.0f, 0.0f, 0.0f);
+	if (rigidbody != nullptr)
+	{
+		btRigidBody* coreRigidbody = rigidbody->GetRigidBody();
+		if (coreRigidbody != nullptr)
+		{
+			linerVelocity = rigidbody->GetRigidBody()->getLinearVelocity();
+			angularVelocity = rigidbody->GetRigidBody()->getAngularVelocity();
+		}
+	}
+
 	// コリジョンを破棄する
 	if (m_collision != nullptr)
 	{
@@ -130,6 +143,10 @@ void Collision::Build()
 
 		// 摩擦設定
 		m_collision->setFriction(m_friction);
+
+		// ベロシティを引き継ぐ
+		btRigidBody::upcast(m_collision)->setLinearVelocity(linerVelocity);
+		btRigidBody::upcast(m_collision)->setAngularVelocity(angularVelocity);
 
 		// 物理ワールドに追加する
 		Manager::GetInstance()->GetPhysics()->GetWorld()->addRigidBody((btRigidBody*)m_collision);
@@ -239,8 +256,9 @@ void RigidBody::Init()
 		return;
 	}
 
-	// 更新対象に追加する
-	gameObject->GetComponent<Collision>()->GetUpdateFlag() = true;
+	// コリジョンを構築する
+	gameObject->GetComponent<Collision>()->UpdateOldTransform();
+	gameObject->GetComponent<Collision>()->Build();
 }
 
 //=============================================================
@@ -290,7 +308,7 @@ void RigidBody::Update()
 btRigidBody* RigidBody::GetRigidBody()
 {
 	Collision* collision = gameObject->GetComponent<Collision>();
-	if (collision != nullptr)
+	if (collision != nullptr && collision->GetCollision() != nullptr)
 	{
 		return btRigidBody::upcast(collision->GetCollision());
 	}

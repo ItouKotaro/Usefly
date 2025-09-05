@@ -159,11 +159,26 @@
     <ClInclude Include="src\components\other\camera_options.h">
       <Filter>ヘッダー ファイル\components\other</Filter>
     </ClInclude>
-    <ClInclude Include="src\components\other\render_texture.h">
-      <Filter>ヘッダー ファイル\components\other</Filter>
-    </ClInclude>
     <ClInclude Include="src\components\other\shader.h">
       <Filter>ヘッダー ファイル\components\other</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\3d\sky.h">
+      <Filter>ヘッダー ファイル\components\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\3d\culling.h">
+      <Filter>ヘッダー ファイル\components\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\3d\lod.h">
+      <Filter>ヘッダー ファイル\components\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\3d\motion.h">
+      <Filter>ヘッダー ファイル\components\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\other\post_effect.h">
+      <Filter>ヘッダー ファイル\components\other</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scripts\PostEffectCollection.h">
+      <Filter>ヘッダー ファイル\scripts</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -254,11 +269,26 @@
     <ClCompile Include="src\components\other\camera_options.cpp">
       <Filter>ソース ファイル\components\other</Filter>
     </ClCompile>
-    <ClCompile Include="src\components\other\render_texture.cpp">
-      <Filter>ソース ファイル\components\other</Filter>
-    </ClCompile>
     <ClCompile Include="src\components\other\shader.cpp">
       <Filter>ソース ファイル\components\other</Filter>
+    </ClCompile>
+    <ClCompile Include="src\components\3d\culling.cpp">
+      <Filter>ソース ファイル\components\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\components\3d\lod.cpp">
+      <Filter>ソース ファイル\components\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\components\3d\motion.cpp">
+      <Filter>ソース ファイル\components\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\components\3d\sky.cpp">
+      <Filter>ソース ファイル\components\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\components\other\post_effect.cpp">
+      <Filter>ソース ファイル\components\other</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scripts\PostEffectCollection.cpp">
+      <Filter>ソース ファイル\scripts</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

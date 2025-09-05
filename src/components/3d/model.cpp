@@ -6,14 +6,23 @@
 #include "model.h"
 #include "system/manager.h"
 #include "camera.h"
+#include "components/other/camera_options.h"
+#include "components/3d/culling.h"
+#include "components/3d/lod.h"
 #include "components/other/shader.h"
+#include <filesystem>
 
 //=============================================================
 // 初期化
 //=============================================================
 void Model::Init()
 {
-	gameObject->AddComponent<Shader>();
+	// シェーダー設定
+	if (gameObject->GetComponent<Shader>() == nullptr)
+	{
+		gameObject->AddComponent<Shader>();
+		gameObject->GetComponent<Shader>()->AddShader("");
+	}
 }
 
 //=============================================================
@@ -28,57 +37,65 @@ void Model::Uninit()
 //=============================================================
 void Model::Draw()
 {
-	LPDIRECT3DDEVICE9 device = Manager::GetInstance()->GetDevice();
-	D3DMATERIAL9 matDef;					// 現在のマテリアル保存用
-	D3DXMATERIAL* pMat;					// マテリアルデータへのポインタ
-
-	if (m_modelData == nullptr)
-		return;
-
-	// ワールドマトリックスの設定
-	device->SetTransform(D3DTS_WORLD, &transform->GetMatrix());
-
-	// 現在のマテリアルを取得
-	device->GetMaterial(&matDef);
-
-	// マテリアルデータへのポインタを取得
-	pMat = (D3DXMATERIAL*)m_modelData->GetBufferMaterial()->GetBufferPointer();
-
 	// シェーダーの取得
-	auto shaders = gameObject->GetComponents<Shader>();
-
-	for (auto itr = shaders.begin(); itr != shaders.end(); itr++)
+	Shader* shader = gameObject->GetComponent<Shader>();
+	if (shader != nullptr && shader->IsDrawCall())
 	{
-		// シェーダー開始
-		if ((*itr)->Begin())
+		LPDIRECT3DDEVICE9 device = Manager::GetInstance()->GetDevice();
+		D3DMATERIAL9 matDef;					// 現在のマテリアル保存用
+		D3DXMATERIAL* pMat;					// マテリアルデータへのポインタ
+		ModelData* modelData = m_modelData;
+
+		// LOD
+		LOD* lod = gameObject->GetComponent<LOD>();
+		if (lod != nullptr)
 		{
-			for (UINT pass = 0; pass < (*itr)->GetPassNum(); pass++)
-			{
-				// パス描画開始
-				if ((*itr)->BeginPass(pass))
-				{
-					for (int i = 0; i < static_cast<int>(m_modelData->GetNumMaterial()); i++)
-					{
-						// マテリアルの設定
-						device->SetMaterial(&pMat[i].MatD3D);
-						// テクスチャの設定
-						device->SetTexture(0, pMat[i].pTextureFilename != nullptr ? m_textures[i] : nullptr);
-
-						// モデル（パーツ）の描画
-						m_modelData->GetMesh()->DrawSubset(i);
-					}
-
-					// パス描画終了
-					(*itr)->EndPass();
-				}
-			}
-			// シェーダー終了
-			(*itr)->End();
+			modelData = lod->GetLODModel();
 		}
-	}
 
-	// 保存していたマテリアルに戻す
-	device->SetMaterial(&matDef);
+		// モデルデータ無し
+		if (modelData == nullptr)
+			return;
+
+		// ワールドマトリックスの設定
+		device->SetTransform(D3DTS_WORLD, &transform->GetMatrix());
+
+		// 現在のマテリアルを取得
+		device->GetMaterial(&matDef);
+
+		// マテリアルデータへのポインタを取得
+		pMat = (D3DXMATERIAL*)modelData->GetBufferMaterial()->GetBufferPointer();
+
+
+		// セット
+		shader->Set();
+
+		while (shader->Begin())
+		{
+			while (shader->BeginPass())
+			{
+				for (int i = 0; i < static_cast<int>(modelData->GetNumMaterial()); i++)
+				{
+					// マテリアルの設定
+					device->SetMaterial(&pMat[i].MatD3D);
+
+					// テクスチャの設定
+					device->SetTexture(0, pMat[i].pTextureFilename != nullptr ? m_textures[i] : nullptr);
+
+					// シェーダーにマテリアル情報を渡す
+					shader->SetMaterial(pMat[i].MatD3D, m_textures[i]);
+
+					// モデル（パーツ）の描画
+					modelData->GetMesh()->DrawSubset(i);
+				}
+				shader->EndPass();
+			}
+			shader->End();
+		}
+
+		// 保存していたマテリアルに戻す
+		device->SetMaterial(&matDef);
+	}
 }
 
 //=============================================================

@@ -41,7 +41,7 @@ void TitleScene::Init()
 //=============================================================
 void TitleScene::Update()
 {
-	if (Input->GetKeyDown(KeyCode::Space))
+	if (AppInput->GetKeyDown(KeyCode::Space))
 	{
 		// モデルを作成する
 		GameObject* model = new GameObject("TestModel");

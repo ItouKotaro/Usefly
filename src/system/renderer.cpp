@@ -6,8 +6,8 @@
 #include "renderer.h"
 #include "gameobject.h"
 #include "components/3d/camera.h"
-#include "components/other/render_texture.h"
 #include "components/other/camera_options.h"
+#include "components/3d/culling.h"
 
 //=============================================================
 // 初期化
@@ -44,13 +44,13 @@ HRESULT Renderer::Init(HINSTANCE hInstance, HWND hWnd)
 	d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;				// プレゼンテーションインターバル
 
 		// Direct3Dデバイスの生成（描画処理と頂点処理をハードウェアで行う）
-	if (FAILED(m_d3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &d3dpp, &m_d3dDevice)))
+	if (FAILED(m_d3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd, D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &d3dpp, &m_d3dDevice)))
 	{
 		// Direct3Dデバイスの生成（描画処理はハードウェアで頂点処理はCPUで行う）
-		if (FAILED(m_d3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &d3dpp, &m_d3dDevice)))
+		if (FAILED(m_d3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd, D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &d3dpp, &m_d3dDevice)))
 		{
 			// Direct3Dデバイスの生成（描画処理と頂点処理をCPUで行う）
-			if (FAILED(m_d3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_REF, hWnd, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &d3dpp, &m_d3dDevice)))
+			if (FAILED(m_d3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_REF, hWnd, D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &d3dpp, &m_d3dDevice)))
 			{
 				return E_FAIL;
 			}
@@ -103,7 +103,7 @@ void Renderer::Uninit()
 //=============================================================
 void Renderer::Update()
 {
-	if (Input->GetKeyDown(KeyCode::F11))
+	if (AppInput->GetKeyDown(KeyCode::F11))
 	{
 		SetFullScreen(!GetFullScreen());
 	}
@@ -122,6 +122,7 @@ void Renderer::Draw()
 
 	if (SUCCEEDED(m_d3dDevice->BeginScene()))
 	{ // 描画開始が成功した場合
+
 		for (auto itr = cameras.begin(); itr != cameras.end(); itr++)
 		{
 			// 非アクティブのとき
@@ -130,31 +131,47 @@ void Renderer::Draw()
 				continue;
 			}
 
-			// 表示設定
-			if (!(*itr)->GetVisible())
+			if ((*itr)->Begin())
 			{
-				continue;
+				// 画面クリア（バッファクリア＆Zバッファクリア）
+				m_d3dDevice->Clear(0, nullptr, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER), (*itr)->GetClearColor(), 1.0f, 0);
+
+				// カメラをセットする
+				(*itr)->SetCamera();
+
+				// カリングの判定処理
+				CullingManager::GetInstance().Update(*itr);
+
+				// シェーダー描画
+				for (int renderLayer = 0; renderLayer < Shader::RenderLayer::MAX; renderLayer++)
+				{
+					// レンダーレイヤを設定する
+					Shader::SetRenderLayer((Shader::RenderLayer)renderLayer);
+
+					// ゲームオブジェクトを描画する
+					LimitObjects* limitObjects = (*itr)->gameObject->GetComponent<LimitObjects>();
+					if (limitObjects != nullptr)
+					{
+						limitObjects->LimitDraw();
+					}
+					else
+					{
+						GameObject::AllDraw();
+					}
+				}
+
+				// ギズモの3D描画
+				Gizmo.Render3D();
+
+				// カリングの描画
+				CullingManager::GetInstance().Draw(*itr);
+
+				// 描画終了
+				(*itr)->End();
+
+				// ポリゴン描画
+				(*itr)->DrawPolygon();
 			}
-
-			// カメラをセットする
-			(*itr)->SetCamera();
-
-			// 画面クリア（バッファクリア＆Zバッファクリア）
-			m_d3dDevice->Clear(0, nullptr, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER), (*itr)->GetClearColor(), 1.0f, 0);
-
-			// ゲームオブジェクトを描画する
-			LimitObjects* limitObjects = (*itr)->gameObject->GetComponent<LimitObjects>();
-			if (limitObjects != nullptr)
-			{
-				limitObjects->LimitDraw();
-			}
-			else
-			{
-				GameObject::AllDraw();
-			}
-
-			// ギズモの3D描画
-			Gizmo.Render3D();
 		}
 
 		// 画面全体のビューポートを設定する
@@ -177,58 +194,11 @@ void Renderer::Draw()
 		m_d3dDevice->EndScene();
 	}
 
-	//--- レンダーテクスチャの書き込み ---
-
-	// 前回の設定として保存しておく
-	LPDIRECT3DSURFACE9 beforeBufferSurface;
-	LPDIRECT3DSURFACE9 beforeDepthSurface;
-	m_d3dDevice->GetRenderTarget(0, &beforeBufferSurface);
-	m_d3dDevice->GetDepthStencilSurface(&beforeDepthSurface);
-
-	for (auto itr = cameras.begin(); itr != cameras.end(); itr++)
-	{
-		Camera* renderCamera = *itr;
-		RenderTexture* renderTexture = renderCamera->gameObject->GetComponent<RenderTexture>();
-		if (renderCamera != nullptr && renderTexture != nullptr)
-		{
-			// 非アクティブのとき
-			if (!renderCamera->gameObject->GetActive() && !renderTexture->GetActive())
-			{
-				continue;
-			}
-
-			// 描画開始
-			if (renderTexture->Begin())
-			{
-				// 画面クリア（バッファクリア＆Zバッファクリア）
-				m_d3dDevice->Clear(0, nullptr, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER), (*itr)->GetClearColor(), 1.0f, 0);
-
-				// カメラをセットする
-				renderCamera->SetCamera();
-
-				// ゲームオブジェクトを描画する
-				LimitObjects* limitObjects = renderCamera->gameObject->GetComponent<LimitObjects>();
-				if (limitObjects != nullptr)
-				{
-					limitObjects->LimitDraw();
-				}
-				else
-				{
-					GameObject::AllDraw();
-				}
-
-				// 終了
-				renderTexture->End();
-			}
-		}
-	}
-
-	// 元の設定に戻す
-	m_d3dDevice->SetDepthStencilSurface(beforeDepthSurface);
-	m_d3dDevice->SetRenderTarget(0, beforeBufferSurface);
-
 	// バックバッファとフロントバッファの入れ替え
 	m_d3dDevice->Present(nullptr, nullptr, nullptr, nullptr);
+
+	// カリングの結果を取得する
+	CullingManager::GetInstance().Result();
 }
 
 //=============================================================

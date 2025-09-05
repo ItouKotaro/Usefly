@@ -25,6 +25,7 @@ bool g_isActiveWindow = true;		// ウィンドウがアクティブ状態か
 bool g_isEnded = false;					// 終了状態か
 bool g_showCursor = true;				// カーソルの表示状態
 bool g_beforeShowCursor = true;	// 前回のカーソル表示状態
+D3DXVECTOR2 g_cursorMove;		// カーソルの移動量
 HWND g_hwnd = nullptr;				// ウィンドウハンドル（識別子）
 
  //=============================================================
@@ -81,6 +82,18 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 		nullptr													// ウィンドウ作成データ
 	);
 
+	// マウスを登録する
+	RAWINPUTDEVICE rid;
+	rid.usUsagePage = 0x01;      // Generic desktop controls
+	rid.usUsage = 0x02;      // Mouse
+	rid.dwFlags = RIDEV_INPUTSINK; // フォーカスがなくても受け取るならRIDEV_INPUTSINK
+	rid.hwndTarget = g_hwnd;
+	if (!RegisterRawInputDevices(&rid, 1, sizeof(rid)))
+	{
+		MessageBox(g_hwnd, "RawInputの登録に失敗しました", "エラー", MB_ICONERROR);
+		Main::GetInstance().ExitApplication();
+	}
+
 	// ウィンドウの表示
 	ShowWindow(g_hwnd, nCmdShow);		// ウィンドウの表示状態を設定
 	UpdateWindow(g_hwnd);						// クライアント領域を更新
@@ -91,8 +104,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 	// Mainの取得
 	Main& mainApp = Main::GetInstance();
 
-	// スレッド開始
-	mainApp.ThreadStart();
+	// 開始
+	mainApp.Start();
 
 	// メッセージループ
 	while (!g_isEnded)
@@ -112,20 +125,31 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 		}
 		else
 		{
+			// メインループ処理
+			mainApp.MainLoop();
+
 			// アクティブ情報の更新
 			g_isActiveWindow = GetActiveWindow() != NULL;
 
 			// カーソルの表示設定の更新
 			if (g_showCursor != g_beforeShowCursor)
 			{
-				ShowCursor(g_showCursor ? TRUE : FALSE);
+				if (g_showCursor)
+				{
+					while (ShowCursor(TRUE) < 0) {}
+				}
+				else
+				{
+					while (ShowCursor(FALSE) >= 0) {}
+				}
+
 				g_beforeShowCursor = g_showCursor;
 			}
 		}
 	}
 
-	// メインループのスレッドが終わるまで待つ
-	mainApp.ThreadJoin();
+	// メインループの終了ログ
+	Log::SendLog("メインループを終了しました");
 
 	// マネージャーの終了
 	Manager::GetInstance()->Uninit();
@@ -143,8 +167,31 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	auto hdc = GetDC(hWnd);
 
+	UINT dwSize = 0;
+	std::vector<BYTE> lpb;
+	RAWINPUT* raw;
+	D3DXVECTOR2 rect = Main::GetInstance().GetWindowSize();
+
 	switch (uMsg)
 	{
+	case WM_INPUT:
+		GetRawInputData((HRAWINPUT)lParam, RID_INPUT, NULL, &dwSize, sizeof(RAWINPUTHEADER));
+		lpb.resize(dwSize);
+		if (GetRawInputData((HRAWINPUT)lParam, RID_INPUT, lpb.data(), &dwSize, sizeof(RAWINPUTHEADER)) != dwSize)
+		{
+			break;
+		}
+
+		raw = (RAWINPUT*)lpb.data();
+		
+		if (raw->header.dwType == RIM_TYPEMOUSE)
+		{
+			// 相対移動量
+			g_cursorMove.x += raw->data.mouse.lLastX;
+			g_cursorMove.y += raw->data.mouse.lLastY;
+		}
+
+		break;
 	case WM_DESTROY:
 		//WM_QUITメッセージを送る
 		PostQuitMessage(0);
@@ -189,27 +236,12 @@ Main::~Main()
 }
 
 //=============================================================
-// スレッドの開始
+// 開始
 //=============================================================
-void Main::ThreadStart()
+void Main::Start()
 {
-	// スレッドを作成する
-	m_thread = new std::thread(&Main::MainLoop, this);
 	m_startupTime = timeGetTime();
-	Log::SendLog("メインループのスレッドを開始しました");
-}
-
-//=============================================================
-// スレッドが終了するまで待つ
-//=============================================================
-void Main::ThreadJoin()
-{
-	if (m_thread != nullptr)
-	{
-		m_thread->join();
-	}
-
-	Log::SendLog("メインループのスレッドを終了しました");
+	Log::SendLog("メインループを開始しました");
 }
 
 //=============================================================
@@ -217,37 +249,41 @@ void Main::ThreadJoin()
 //=============================================================
 void Main::MainLoop()
 {
-	while (!g_isEnded)
+	// 現在時刻を取得
+	m_currentTime = timeGetTime();
+
+	// FPS値の計算
+	if ((m_currentTime - m_fpsLastTime) >= 500)
+	{ // 0.5秒経過毎
+		m_fps = (m_frameCount * 1000) / (m_currentTime - m_fpsLastTime);
+		m_fpsLastTime = m_currentTime;							// 計測した時刻を記録
+		m_frameCount = 0;												// フレームカウントをクリア
+	}
+
+	// 更新
+	if ((m_currentTime - m_execLastTime) >= (1000 / 60))
 	{
-		// 現在時刻を取得
-		m_currentTime = timeGetTime();
+		// デルタタイムを設定する
+		m_deltaTime = (m_currentTime - m_execLastTime) * 0.001f;
 
-		// FPS値の計算
-		if ((m_currentTime - m_fpsLastTime) >= 500)
-		{ // 0.5秒経過毎
-			m_fps = (m_frameCount * 1000) / (m_currentTime - m_fpsLastTime);
-			m_fpsLastTime = m_currentTime;							// 計測した時刻を記録
-			m_frameCount = 0;												// フレームカウントをクリア
-		}
+		//処理開始時刻
+		m_execLastTime = m_currentTime;
 
-		// 更新
-		if ((m_currentTime - m_execLastTime) >= (1000 / 60))
-		{
-			// デルタタイムを設定する
-			m_deltaTime = (m_currentTime - m_execLastTime) * 0.001f;
+		// カーソルの移動量
+		m_moveCursor = m_oldMoveCursor * 0.5f + g_cursorMove * 0.5f;
 
-			//処理開始時刻
-			m_execLastTime = m_currentTime;
+		// 更新処理
+		Manager::GetInstance()->Update();
 
-			// 更新処理
-			Manager::GetInstance()->Update();
+		// 描画処理
+		Manager::GetInstance()->Draw();
 
-			// 描画処理
-			Manager::GetInstance()->Draw();
+		// フレームカウントを加算
+		m_frameCount++;
 
-			// フレームカウントを加算
-			m_frameCount++;
-		}
+		// リセット
+		m_oldMoveCursor = g_cursorMove;
+		g_cursorMove = { 0.0f, 0.0f };
 	}
 }
 
@@ -295,8 +331,8 @@ Main::CursorPos Main::GetCursorClientPos()
 
 	// 画面サイズを考慮して変換する
 	D3DXVECTOR2 rect = GetWindowSize();
-	pos.x *= static_cast<float>(SCREEN_WIDTH / (float)rect.x);
-	pos.y *= static_cast<float>(SCREEN_HEIGHT / (float)rect.y);
+	pos.x = static_cast<long>(pos.x * static_cast<float>(SCREEN_WIDTH / (float)rect.x));
+	pos.y = static_cast<long>(pos.y * static_cast<float>(SCREEN_HEIGHT / (float)rect.y));
 	return pos;
 }
 
@@ -316,8 +352,8 @@ void Main::SetCursorClientPos(long x, long y)
 	ClientToScreen(Manager::GetInstance()->GetRenderer()->GetHWND(), &startPos);
 
 	D3DXVECTOR2 rect = GetWindowSize();
-	pos.x *= rect.x / (float)SCREEN_WIDTH;
-	pos.y *= rect.y / (float)SCREEN_HEIGHT;
+	pos.x = static_cast<long>(pos.x * (rect.x / (float)SCREEN_WIDTH));
+	pos.y = static_cast<long>(pos.y * (rect.y / (float)SCREEN_HEIGHT));
 
 	pos.x += startPos.x;
 	pos.y += startPos.y;
@@ -326,12 +362,20 @@ void Main::SetCursorClientPos(long x, long y)
 }
 
 //=============================================================
+// カーソルの移動量の取得
+//=============================================================
+D3DXVECTOR2 Main::GetMoveCursor()
+{
+	return m_moveCursor;
+}
+
+//=============================================================
 // ウィンドウサイズの取得
 //=============================================================
 D3DXVECTOR2 Main::GetWindowSize()
 {
 	RECT rect;
-	GetWindowRect(g_hwnd, &rect);
+	GetClientRect(g_hwnd, &rect);
 	return D3DXVECTOR2(static_cast<float>(rect.right - rect.left), static_cast<float>(rect.bottom - rect.top));
 }
 

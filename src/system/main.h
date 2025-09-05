@@ -8,7 +8,7 @@
 
  // マクロ定義
 #define CLASS_NAME			"WindowClass"		// クラス名
-#define WINDOW_NAME	"Usefly"	// ウィンドウ名
+#define WINDOW_NAME	"Karate Exorcist"	// ウィンドウ名
 
 // インクルード
 #include <thread>
@@ -29,10 +29,11 @@ public:
 		return instance;
 	}
 
-	//@brief スレッドの開始
-	void ThreadStart();
-	//@brief スレッドの終了を待つ
-	void ThreadJoin();
+	//@brief 開始
+	void Start();
+
+	//@brief メインループ
+	void MainLoop();
 
 	//@brief 起動時刻を取得する
 	DWORD GetStartupTime() { return m_startupTime; }
@@ -60,6 +61,8 @@ public:
 	CursorPos GetCursorClientPos();
 	//@brief クライアント内のカーソル位置を設定する
 	void SetCursorClientPos(long x, long y);
+	//@brief カーソルの移動量
+	D3DXVECTOR2 GetMoveCursor();
 
 	//@brief ウィンドウサイズを取得する
 	D3DXVECTOR2 GetWindowSize();
@@ -69,18 +72,19 @@ private:
 	//@brief コンストラクタ
 	Main();
 
-	//@brief メインループ
-	void MainLoop();
-
 	std::thread* m_thread;		// スレッド
 	DWORD m_currentTime;	// 現在時刻
 	DWORD m_execLastTime;	// 前回の更新時刻
 	DWORD m_fpsLastTime;		// 前回のFPS更新時刻
 	DWORD m_startupTime;		// 起動時刻
+
 	int m_frameCount;				// フレームのカウント
 
 	float m_deltaTime;				// デルタタイム
 	int m_fps;							// FPS値
+
+	D3DXVECTOR2 m_moveCursor;
+	D3DXVECTOR2 m_oldMoveCursor;
 };
 
 #endif // !_MAIN_H_

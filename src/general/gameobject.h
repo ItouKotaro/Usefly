@@ -123,6 +123,11 @@ public:
 	void SetParent(GameObject* gameObject);
 
 	/**
+	 * @brief 親を取得する
+	*/
+	GameObject* GetParent();
+
+	/**
 	 * @brief 優先順位を設定する
 	 * @param[in] priority : 優先順位 (処理順 小 -> 大)
 	*/
@@ -133,6 +138,23 @@ public:
 
 	//@brief コンポーネントをデタッチする
 	void DetachComponent(Component* component);
+
+	/**
+	 * @brief 子オブジェクトを名前検索で取得する
+	*/
+	GameObject* FindChildrenByName(const std::string& name);
+
+	/**
+	 * @brief 子オブジェクトを取得する
+	 * @details このオブジェクトが親に設定されているオブジェクトを取得します
+	*/
+	std::vector<GameObject*> GetChildren();
+
+	/**
+	 * @brief 一括りのオブジェクトリストを取得する
+	 * @param[in] includeParent : 親をリストに含めるか
+	*/
+	std::vector<GameObject*> GetUnityObjects(const bool& includeParent = true);
 
 	//@brief すべてのゲームオブジェクトを取得する
 	static std::list<GameObject*>& GetAllGameObjects() { return m_gameObjects; }

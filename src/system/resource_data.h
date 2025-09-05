@@ -83,6 +83,8 @@ public:
 	D3DXVECTOR3 GetMinRange() { return m_minRange; }
 	//@brief 最大範囲を取得する
 	D3DXVECTOR3 GetMaxRange() { return m_maxRange; }
+	//@brief 最大半径を取得する
+	float GetMaxRadius(const D3DXVECTOR3& scale = { 1.0f, 1.0f, 1.0f });
 private:
 	//@brief 範囲を計算する
 	void CalcVertexRange();
@@ -90,8 +92,8 @@ private:
 	LPD3DXMESH m_mesh;				// メッシュデータ
 	LPD3DXBUFFER m_buffMat;		// マテリアルデータ
 	DWORD m_numMat;					// マテリアル数
-	D3DXVECTOR3 m_minRange;		// 最小範囲
-	D3DXVECTOR3 m_maxRange;		// 最大範囲
+	D3DXVECTOR3 m_minRange;	// 最小範囲
+	D3DXVECTOR3 m_maxRange;	// 最大範囲
 };
 
 
@@ -109,6 +111,9 @@ public:
 
 	//@brief エフェクトを取得する
 	LPD3DXEFFECT GetEffect() { return m_effect; }
+
+	//@brief テクニックを設定する
+	void SetTechnique(const std::string& technique);
 private:
 	LPD3DXEFFECT m_effect;		// エフェクト
 };
@@ -128,9 +133,15 @@ public:
 	//@brief シェーダーデータを参照する
 	ShaderData* RefShader(std::string path);
 
+	//@brief 更新する
+	void Update();
+
 	//@brief すべてのリソースを解放する
 	void AllRelease();
 private:
+	//@brief シェーダーの変数を更新する
+	void UpdateShader();
+
 	std::vector<ResourceData*> m_resourceDatas[ResourceData::FORMAT::MAX];
 };
 

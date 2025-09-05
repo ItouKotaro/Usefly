@@ -6,6 +6,10 @@
 #include "gameobject.h"
 #include "component.h"
 #include "components/3d/model.h"
+#include "components/3d/motion.h"
+#include "components/3d/culling.h"
+#include "components/3d/lod.h"
+#include <string>
 #include <fstream>
 
 using namespace std;
@@ -91,13 +95,16 @@ void GameObject::Uninit()
 //=============================================================
 void GameObject::Update()
 {
-	for (auto itr = m_components.begin(); itr != m_components.end(); itr++)
+	std::vector<Component*> queue(m_components.size());
+	std::copy(m_components.begin(), m_components.end(), queue.begin());
+	for (auto itr = queue.begin(); itr != queue.end(); itr++)
 	{
 		if ((*itr)->GetActive())
 		{
 			(*itr)->Update();
 		}
 	}
+	queue.clear();
 }
 
 //=============================================================
@@ -151,7 +158,20 @@ void GameObject::AllDraw()
 	{
 		if ((*itr)->GetActive())
 		{
-			(*itr)->Draw();
+			CullingData* cull = (*itr)->GetComponent<CullingData>();
+			if (cull != nullptr)
+			{
+				if (!cull->IsDraw())
+				{
+					continue;
+				}
+			}
+
+			Shader* shader = (*itr)->GetComponent<Shader>();
+			if (shader != nullptr || (shader == nullptr && Shader::GetRenderLayer() == Shader::RenderLayer::Opaque))
+			{
+				(*itr)->Draw();
+			}
 		}
 	}
 }
@@ -227,6 +247,18 @@ void GameObject::SetParent(GameObject* gameObject)
 }
 
 //=============================================================
+// 親を取得する
+//=============================================================
+GameObject* GameObject::GetParent()
+{
+	if (this->transform->GetParent() != nullptr)
+	{
+		return this->transform->GetParent()->GetAttachObject();
+	}
+	return nullptr;
+}
+
+//=============================================================
 // 優先順位を設定する
 //=============================================================
 void GameObject::SetPriority(const int& priority)
@@ -253,6 +285,11 @@ void GameObject::SetPriority(const int& priority)
 //=============================================================
 bool GameObject::GetActive()
 {
+	if (!Object::GetActive())
+	{
+		return false;
+	}
+
 	if (transform->GetParent() != nullptr)
 	{
 		return transform->GetParent()->GetAttachObject()->GetActive();
@@ -275,6 +312,88 @@ void GameObject::DetachComponent(Component* component)
 			break;
 		}
 	}
+}
+
+//=============================================================
+// 子オブジェクトを名前検索で取得する
+//=============================================================
+GameObject* GameObject::FindChildrenByName(const std::string& name)
+{
+	auto objects = this->GetUnityObjects(false);
+	for (auto itr = objects.begin(); itr != objects.end(); itr++)
+	{
+		if ((*itr)->name == name)
+		{
+			return *itr;
+		}
+	}
+	return nullptr;
+}
+
+//=============================================================
+// 子オブジェクトを取得する
+//=============================================================
+std::vector<GameObject*> GameObject::GetChildren()
+{
+	std::vector<GameObject*> result;
+
+	for (auto itr = m_gameObjects.begin(); itr != m_gameObjects.end(); itr++)
+	{
+		if ((*itr)->transform->GetParent() == this->transform)
+		{ // 親に設定されているとき
+			result.push_back(*itr);
+		}
+	}
+
+	return result;
+}
+
+//=============================================================
+// 子オブジェクトを含めたリストを取得する
+//=============================================================
+std::vector<GameObject*> GameObject::GetUnityObjects(const bool& includeParent)
+{
+	std::vector<GameObject*> result;
+
+	if (includeParent)
+	{
+		result.push_back(this);
+	}
+
+	// 子オブジェクトを取得する
+	std::vector<GameObject*> children = this->GetChildren();
+	std::vector<GameObject*> queue;
+
+	while (true)
+	{
+		for (auto itr = children.begin(); itr != children.end(); itr++)
+		{
+			// 結果に追加
+			result.push_back(*itr);
+
+			// 子をキューに入れる
+			std::vector<GameObject*> nextChildren = (*itr)->GetChildren();
+			for (auto next = nextChildren.begin(); next != nextChildren.end(); next++)
+			{
+				queue.push_back(*next);
+			}
+		}
+		children.clear();
+
+		// キュー
+		if (!queue.empty())
+		{
+			result.push_back(queue[0]);
+			children = queue[0]->GetChildren();
+			queue.erase(queue.begin());
+		}
+		else
+		{
+			break;
+		}
+	}
+
+	return result;
 }
 
 //=============================================================
@@ -304,6 +423,52 @@ GameObject* GameObject::CreateObuseObject(const std::string& path, const Transfo
 	// プレハブオブジェクトを生成する
 	GameObject* prefab = new GameObject();
 
+	// モーションが含まれているとき
+	bool isContainsMotion = false;
+	if (j.contains("motions"))
+	{
+		prefab->AddComponent<Motion>();
+		isContainsMotion = true;
+	}
+
+	// LOD
+	bool lodEnabled = false;
+	float lodRatio[LOD::LEVEL::MAX] = { 0.5f, 0.3f, 0.15f, 0.05f };
+
+	if (j.contains("lod"))
+	{
+		if (j["lod"].contains("enabled"))
+		{
+			lodEnabled = j["lod"]["enabled"];
+		}
+
+		if (lodEnabled)
+		{
+			if (j["lod"].contains("ratio"))
+			{
+				if (j["lod"]["ratio"].contains("level_0"))
+				{
+					lodRatio[LOD::LEVEL_0] = j["lod"]["ratio"]["level_0"];
+				}
+
+				if (j["lod"]["ratio"].contains("level_1"))
+				{
+					lodRatio[LOD::LEVEL_1] = j["lod"]["ratio"]["level_1"];
+				}
+
+				if (j["lod"]["ratio"].contains("level_2"))
+				{
+					lodRatio[LOD::LEVEL_2] = j["lod"]["ratio"]["level_2"];
+				}
+
+				if (j["lod"]["ratio"].contains("culled"))
+				{
+					lodRatio[LOD::CULLED] = j["lod"]["ratio"]["culled"];
+				}
+			}
+		}
+	}
+	
 	// オブジェクト格納変数をつくる
 	std::vector<GameObject*> objects(j["objects"].size() - 1);
 
@@ -321,6 +486,11 @@ GameObject* GameObject::CreateObuseObject(const std::string& path, const Transfo
 		else
 		{
 			target = new GameObject();
+
+			if (isContainsMotion)
+			{
+				prefab->GetComponent<Motion>()->AddParts(target);
+			}
 		}
 
 		// 基本情報
@@ -382,6 +552,27 @@ GameObject* GameObject::CreateObuseObject(const std::string& path, const Transfo
 		if (j["objects"][id].contains("model"))
 		{
 			target->AddComponent<Model>()->Load(j["objects"][id]["model"]);
+			target->AddComponent<CullingData>();
+
+			if (lodEnabled)
+			{
+				// 固定された読み込み・保存パス
+				std::string inputDir = "data\\MODEL";
+				std::string outputDir = "data\\TEMP\\LOD";
+				std::string relativePath = std::filesystem::relative(target->GetComponent<Model>()->GetModelData()->GetPath(), inputDir).string();
+				std::replace(relativePath.begin(), relativePath.end(), '\\', '/');
+				std::string baseName = outputDir + "\\" + relativePath.substr(0, relativePath.find_last_of('.'));
+
+				// LODを割り当てる
+				std::string level1 = baseName + "_Level1.x";
+				std::string level2 = baseName + "_Level2.x";
+
+				target->AddComponent<LOD>();
+				target->GetComponent<LOD>()->SetLOD(LOD::LEVEL_0, lodRatio[LOD::LEVEL_0], target->GetComponent<Model>()->GetModelData());
+				target->GetComponent<LOD>()->SetLOD(LOD::LEVEL_1, lodRatio[LOD::LEVEL_1], Manager::GetInstance()->GetResourceDataManager()->RefModel(level1));
+				target->GetComponent<LOD>()->SetLOD(LOD::LEVEL_2, lodRatio[LOD::LEVEL_2], Manager::GetInstance()->GetResourceDataManager()->RefModel(level2));
+				target->GetComponent<LOD>()->SetLOD(LOD::CULLED, lodRatio[LOD::CULLED], nullptr);
+			}
 		}
 
 		// コライダー情報
@@ -523,6 +714,65 @@ GameObject* GameObject::CreateObuseObject(const std::string& path, const Transfo
 			{ // プレハブが親のとき
 				objects[target]->SetParent(prefab);
 			}
+		}
+	}
+
+	// モーション
+	if (isContainsMotion)
+	{
+		for (auto itr = j["motions"].items().begin(); itr != j["motions"].items().end(); itr++)
+		{
+			std::string id = (*itr).key();
+			MotionData* data = new MotionData(id);
+
+			// ループ設定
+			if (j["motions"][id].contains("loop"))
+			{
+				data->SetLoop(j["motions"][id]["loop"]);
+			}
+
+			// 最大フレーム数設定
+			if (j["motions"][id].contains("max_frame"))
+			{
+				data->SetMaxFrame(j["motions"][id]["max_frame"]);
+			}
+
+			// キーを追加する
+			for (int partsID = 0; partsID < (int)j["objects"].size() - 1; partsID++)
+			{
+				std::string idx = std::to_string(partsID);
+				if (j["motions"][id]["keys"].contains(idx))
+				{
+					for (auto keys = j["motions"][id]["keys"][idx].begin(); keys != j["motions"][id]["keys"][idx].end(); keys++)
+					{
+						int frame = (*keys)["frame"];
+						D3DXVECTOR3 position = objects[atoi(idx.c_str())]->transform->position;
+						position += D3DXVECTOR3((*keys)["transform"]["position"][0], (*keys)["transform"]["position"][1], (*keys)["transform"]["position"][2]);
+
+						D3DXQUATERNION rotation = { (*keys)["transform"]["rotation"][0], (*keys)["transform"]["rotation"][1], (*keys)["transform"]["rotation"][2], (*keys)["transform"]["rotation"][3] };
+						D3DXQUATERNION rotation_offset = objects[atoi(idx.c_str())]->transform->rotation;
+						D3DXQuaternionMultiply(&rotation, &rotation_offset, &rotation);
+
+						D3DXVECTOR3 scale = { (*keys)["transform"]["scale"][0], (*keys)["transform"]["scale"][1], (*keys)["transform"]["scale"][2] };
+						scale.x *= objects[atoi(idx.c_str())]->transform->scale.x;
+						scale.y *= objects[atoi(idx.c_str())]->transform->scale.y;
+						scale.z *= objects[atoi(idx.c_str())]->transform->scale.z;
+
+						// キーを追加する
+						data->AddKey(atoi(idx.c_str()), frame, position, rotation, scale);
+					}
+				}
+				else
+				{
+					// キーを追加する
+					data->AddKey(atoi(idx.c_str()), 1, objects[atoi(idx.c_str())]->transform->position, objects[atoi(idx.c_str())]->transform->rotation, objects[atoi(idx.c_str())]->transform->scale);
+				}
+
+
+			}
+
+			// モーションを登録する
+			prefab->GetComponent<Motion>()->AddMotionData(data);
 		}
 	}
 

@@ -11,6 +11,10 @@
 //=============================================================
 void Sprite::Init()
 {
+	m_isFirst = true;
+	m_color = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	m_monitor = new TransformMonitor(transform);
+
 	// デバイスへのポインタ
 	LPDIRECT3DDEVICE9 device = Manager::GetInstance()->GetDevice();
 
@@ -67,13 +71,12 @@ void Sprite::Uninit()
 //=============================================================
 void Sprite::Update()
 {
-	if (*transform != m_oldTransform)
+	if (m_isFirst || m_monitor->HasChanged())
 	{
 		// 頂点を更新する
 		UpdateVertex();
 
-		// 前回のトランスフォームを保存する
-		m_oldTransform = *transform;
+		m_isFirst = false;
 	}
 }
 
@@ -117,6 +120,8 @@ void Sprite::SetColor(const D3DXCOLOR& color)
 
 	// 頂点バッファをアンロックする
 	m_vtxBuff->Unlock();
+
+	m_color = color;
 }
 
 //=============================================================
@@ -132,6 +137,25 @@ void Sprite::SetTexture(std::string path)
 	{
 		BindTexture(data->GetTexture());
 	}
+}
+
+//=============================================================
+// UVを設定する
+//=============================================================
+void Sprite::SetUV(const D3DXVECTOR2& topLeft, const D3DXVECTOR2& topRight, const D3DXVECTOR2& bottomLeft, const D3DXVECTOR2& bottomRight)
+{
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	VERTEX_2D* vtx;
+	m_vtxBuff->Lock(0, 0, (void**)&vtx, 0);
+
+	// UVを設定する
+	vtx[0].tex = topLeft;
+	vtx[1].tex = topRight;
+	vtx[2].tex = bottomLeft;
+	vtx[3].tex = bottomRight;
+
+	// 頂点バッファをアンロックする
+	m_vtxBuff->Unlock();
 }
 
 //=============================================================
@@ -180,4 +204,71 @@ void Sprite::UpdateVertex()
 
 	//頂点バッファをアンロックする
 	m_vtxBuff->Unlock();
+}
+
+//=============================================================
+// 更新する
+//=============================================================
+void AnimationSprite::Update()
+{
+	// 更新
+	Sprite::Update();
+
+	// アニメーションの更新
+	if (m_isPlaying)
+	{
+		// 経過時間
+		m_elapsedTime += Main::GetInstance().GetDeltaTime();
+
+		// 次へ
+		if (m_elapsedTime >= m_frameTime)
+		{
+			m_idx++;
+
+			// フレーム上限
+			if (m_idx >= m_width * m_height)
+			{
+				if (m_isLoop)
+				{
+					m_idx = 0;
+				}
+				else
+				{
+					m_isPlaying = false;
+				}
+			}
+		}
+	}
+
+	// 表示
+	int width = m_idx % m_width;
+	float heightPer = (m_idx / (float)m_width);
+	int height = static_cast<int>(heightPer - fmodf(heightPer, 1.0f));
+
+	float uvX = width / (float)m_width;
+	float uvY = height / (float)m_height;
+	float uvWidth = 1.0f / (float)m_width;
+	float uvHeight = 1.0f / (float)m_height;
+
+	SetUV(
+		{ uvX, uvY },
+		{ uvX + uvWidth, uvY },
+		{ uvX, uvY + uvHeight },
+		{ uvX + uvWidth, uvY + uvHeight }
+	);
+}
+
+//=============================================================
+// セルの区分けを設定する
+//=============================================================
+void AnimationSprite::SetCell(const int& width, const int& height)
+{
+	if (width > 0)
+	{
+		m_width = width;
+	}
+	if (height > 0)
+	{
+		m_height = height;
+	}
 }

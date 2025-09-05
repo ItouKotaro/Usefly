@@ -198,10 +198,14 @@
     <ClCompile Include="src\components\3d\camera.cpp" />
     <ClCompile Include="src\components\3d\collider.cpp" />
     <ClCompile Include="src\components\3d\collision.cpp" />
+    <ClCompile Include="src\components\3d\culling.cpp" />
     <ClCompile Include="src\components\3d\light.cpp" />
+    <ClCompile Include="src\components\3d\lod.cpp" />
     <ClCompile Include="src\components\3d\model.cpp" />
+    <ClCompile Include="src\components\3d\motion.cpp" />
+    <ClCompile Include="src\components\3d\sky.cpp" />
     <ClCompile Include="src\components\other\camera_options.cpp" />
-    <ClCompile Include="src\components\other\render_texture.cpp" />
+    <ClCompile Include="src\components\other\post_effect.cpp" />
     <ClCompile Include="src\components\other\shader.cpp" />
     <ClCompile Include="src\general\component.cpp" />
     <ClCompile Include="src\general\gameobject.cpp" />
@@ -211,6 +215,7 @@
     <ClCompile Include="src\scenes\start.cpp" />
     <ClCompile Include="src\scenes\title.cpp" />
     <ClCompile Include="src\scripts\collision_test.cpp" />
+    <ClCompile Include="src\scripts\PostEffectCollection.cpp" />
     <ClCompile Include="src\system\benlib.cpp" />
     <ClCompile Include="src\system\gizmo.cpp" />
     <ClCompile Include="src\system\input.cpp" />
@@ -231,10 +236,14 @@
     <ClInclude Include="src\components\3d\camera.h" />
     <ClInclude Include="src\components\3d\collider.h" />
     <ClInclude Include="src\components\3d\collision.h" />
+    <ClInclude Include="src\components\3d\culling.h" />
     <ClInclude Include="src\components\3d\light.h" />
+    <ClInclude Include="src\components\3d\lod.h" />
     <ClInclude Include="src\components\3d\model.h" />
+    <ClInclude Include="src\components\3d\motion.h" />
+    <ClInclude Include="src\components\3d\sky.h" />
     <ClInclude Include="src\components\other\camera_options.h" />
-    <ClInclude Include="src\components\other\render_texture.h" />
+    <ClInclude Include="src\components\other\post_effect.h" />
     <ClInclude Include="src\components\other\shader.h" />
     <ClInclude Include="src\general\component.h" />
     <ClInclude Include="src\general\gameobject.h" />
@@ -244,6 +253,7 @@
     <ClInclude Include="src\scenes\start.h" />
     <ClInclude Include="src\scenes\title.h" />
     <ClInclude Include="src\scripts\collision_test.h" />
+    <ClInclude Include="src\scripts\PostEffectCollection.h" />
     <ClInclude Include="src\system\benlib.h" />
     <ClInclude Include="src\system\gizmo.h" />
     <ClInclude Include="src\system\input.h" />

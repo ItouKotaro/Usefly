@@ -27,8 +27,9 @@ using json = nlohmann::json;
 #include "system/manager.h"
 #include "system/gizmo.h"
 #include "gameobject.h"
-
 #include "components/3d/collision.h"
+#include "components/other/shader.h"
+#include "world.h"
 
 // ライブラリのリンク
 #pragma comment(lib, "d3d9.lib")		// 描画処理に必要

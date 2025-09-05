@@ -87,6 +87,11 @@ ModelData* ResourceDataManager::RefModel(std::string path)
 //=============================================================
 ShaderData* ResourceDataManager::RefShader(std::string path)
 {
+	if (path == "")
+	{
+		return nullptr;
+	}
+
 	// データが存在するときは返す
 	auto datas = m_resourceDatas[ResourceData::FORMAT::SHADER];
 	for (auto itr = datas.begin(); itr != datas.end(); itr++)
@@ -121,6 +126,15 @@ ShaderData* ResourceDataManager::RefShader(std::string path)
 }
 
 //=============================================================
+// 更新
+//=============================================================
+void ResourceDataManager::Update()
+{
+	// シェーダーの更新
+	UpdateShader();
+}
+
+//=============================================================
 // すべてのリソースを解放する
 //=============================================================
 void ResourceDataManager::AllRelease()
@@ -139,6 +153,22 @@ void ResourceDataManager::AllRelease()
 
 		// リソースを空にする
 		m_resourceDatas[i].clear();
+	}
+}
+
+//=============================================================
+// シェーダーをアップデートする
+//=============================================================
+void ResourceDataManager::UpdateShader()
+{
+	for (auto itr = m_resourceDatas[ResourceData::FORMAT::SHADER].begin(); itr != m_resourceDatas[ResourceData::FORMAT::SHADER].end(); itr++)
+	{
+		ShaderData* data = static_cast<ShaderData*>(*itr);
+		if (data != nullptr)
+		{ 
+			data->GetEffect()->SetFloat("_deltaTime", Main::GetInstance().GetDeltaTime());
+			data->GetEffect()->SetFloat("_elapsedTime", static_cast<float>(Main::GetInstance().GetElapsedTime() * 0.001f));
+		}
 	}
 }
 
@@ -222,6 +252,39 @@ void ModelData::Release()
 }
 
 //=============================================================
+// 最大半径を取得する
+//=============================================================
+float ModelData::GetMaxRadius(const D3DXVECTOR3& scale)
+{
+	// 計算する
+	float maxRadius = 0.0f;
+	float xs[2] = { m_minRange.x * scale.x, m_maxRange.x * scale.x };
+	float ys[2] = { m_minRange.y * scale.y, m_maxRange.y * scale.y };
+	float zs[2] = { m_minRange.z * scale.z, m_maxRange.z * scale.z };
+	for (int xi = 0; xi < 2; xi++)
+	{
+		for (int yi = 0; yi < 2; yi++)
+		{
+			for (int zi = 0; zi < 2; zi++)
+			{
+				float x = xs[xi];
+				float y = ys[yi];
+				float z = zs[zi];
+
+				float distance = sqrtf(x * x + y * y + z * z);
+
+				if (distance > maxRadius)
+				{
+					maxRadius = distance;
+				}
+			}
+		}
+	}
+
+	return maxRadius;
+}
+
+//=============================================================
 // 範囲を計算する
 //=============================================================
 void ModelData::CalcVertexRange()
@@ -286,6 +349,7 @@ void ModelData::CalcVertexRange()
 bool ShaderData::Load(std::string path)
 {
 	auto device = Manager::GetInstance()->GetDevice();
+	LPD3DXBUFFER pErrorBuffer = nullptr;
 
 	// シェーダーを読み込む
 	if (FAILED(D3DXCreateEffectFromFile(
@@ -296,9 +360,13 @@ bool ShaderData::Load(std::string path)
 		0,
 		NULL,
 		&m_effect,
-		NULL
+		&pErrorBuffer
 	)))
 	{
+		// エラーログ
+		Log::SendLog(static_cast<const char*>(pErrorBuffer->GetBufferPointer()));
+		pErrorBuffer->Release();
+
 		return false;
 	}
 
@@ -315,4 +383,12 @@ void ShaderData::Release()
 		m_effect->Release();
 		m_effect = nullptr;
 	}
+}
+
+//=============================================================
+// テクニックを設定する
+//=============================================================
+void ShaderData::SetTechnique(const std::string& technique)
+{
+	m_effect->SetTechnique(technique.c_str());
 }

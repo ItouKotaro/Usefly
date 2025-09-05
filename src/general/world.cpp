@@ -5,6 +5,7 @@
 #include "world.h"
 #include <fstream>
 #include "components/3d/model.h"
+#include "components/3d/culling.h"
 
 //=============================================================
 // ƒ[ƒ‹ƒh‚ð“Ç‚Ýž‚Þ
@@ -84,6 +85,7 @@ void LoadWorld(const std::string& path, const bool& isDestroy)
 
 				// Ý’u‚·‚é
 				GameObject* placeObj = GameObject::CreateObuseObject(path, trans);
+				placeObj->AddComponent<CullingData>();
 				placeObj->name = (*itr)["name"];
 				placeObj->tag = (*itr)["tag"];
 			}

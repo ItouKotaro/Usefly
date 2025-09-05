@@ -31,10 +31,12 @@ public:
 	//@brief 文字情報
 	struct TextInfo
 	{
-		IDirect3DTexture9* texture;	// 文字のテクスチャ
-		D3DXVECTOR3 pos;				// 文字位置
-		int line;									// 行数
-		RECT rect;								// 文字のサイズ情報を保存
+		IDirect3DTexture9* texture = nullptr;				// 文字のテクスチャ
+		D3DXVECTOR3 pos = {0.0f, 0.0f, 0.0f};		// 文字位置
+		int line = 0;														// 行数
+		RECT rect;														// 文字のサイズ情報を保存
+
+		D3DXVECTOR2 scale = { 1.0f, 1.0f };
 	};
 
 	//@brief フォントデータ
@@ -136,6 +138,8 @@ public:
 		COLOR,
 		FONT_COLOR,
 		EDGE_COLOR,
+		SPACE,
+		ICON,
 	};
 	TextTag(const TYPE& type) { m_type = type; }
 	void SetIdx(const int& idx) { m_idx = idx; }
@@ -196,5 +200,39 @@ public:
 private:
 	D3DXCOLOR m_color;
 };
+
+//@brief スペースタグ
+class SpaceTextTag : public TextTag
+{
+public:
+	SpaceTextTag() : TextTag(SPACE) {}
+	void SetSpace(const float& space) { m_space = space; }
+	float GetSpace() { return m_space; }
+private:
+	float m_space;
+};
+
+//@brief アイコンタグ
+class IconTextTag : public TextTag
+{
+public:
+	IconTextTag() : TextTag(ICON)/*, m_width(0), m_height(0)*/ {}
+
+	void SetName(const std::string& name) { strcpy(&m_name[0], name.c_str()); }
+	std::string GetName() const { 
+		std::string convert = m_name;
+		return convert;
+	}
+
+	void SetSize(int w, int h) { m_width = w; m_height = h; }
+	int GetWidth() const { return m_width; }
+	int GetHeight() const { return m_height; }
+
+private:
+	char m_name[MAX_PATH];
+	int m_width;
+	int m_height;
+};
+
 
 #endif // !_TEXT_H_

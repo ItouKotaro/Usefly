@@ -96,9 +96,14 @@ void TextUI::DrawUI()
             0.0f
         };
 
-        m_sprite->Draw((*itr).texture, 0, 0, &pos, D3DXCOLOR(1.0f, 1.0f, 1.0f, m_alpha));
-    }
+        D3DXMATRIX matScale, matTrans, matWorld;
+        D3DXMatrixScaling(&matScale, itr->scale.x, itr->scale.y, 1.0f);
+        D3DXMatrixTranslation(&matTrans, pos.x, pos.y, pos.z);
+        D3DXMatrixMultiply(&matWorld, &matScale, &matTrans);
 
+        m_sprite->SetTransform(&matWorld);
+        m_sprite->Draw(itr->texture, 0, 0, 0, D3DXCOLOR(1, 1, 1, m_alpha));
+    }
     m_sprite->End();
 }
 
@@ -541,6 +546,65 @@ void TextUI::UpdateText()
         it = showWText.cbegin();
     }
 
+    // スペースタグ
+    it = showWText.cbegin();
+    while (std::regex_search(it, showWText.cend(), match, std::regex(R"(<space=(\d+)>)")))
+    {
+        SpaceTextTag* pSpaceTag = new SpaceTextTag();
+        pSpaceTag->SetSpace((float)_wtoi(match.str(1).c_str()));
+
+        pSpaceTag->SetIdx(static_cast<int>(match.position(0)));
+        showWText.erase(match.position(0), match.length());
+        vecTextTag.push_back(pSpaceTag);
+
+        // タグの位置調整
+        for (int i = 0; i < (int)vecTextTag.size(); i++)
+        {
+            if (vecTextTag[i]->GetIdx() > match.position(0))
+            {
+                vecTextTag[i]->SetIdx(vecTextTag[i]->GetIdx() - static_cast<int>(match.length()));
+            }
+        }
+        it = showWText.cbegin();
+    }
+
+    // アイコンタグ
+    it = showWText.cbegin();
+    std::wregex iconRegex(LR"(<icon=([a-zA-Z0-9_]+)(?:,w=(\d+),h=(\d+))?>)");
+    while (std::regex_search(it, showWText.cend(), match, iconRegex))
+    {
+        IconTextTag* pIconTag = new IconTextTag();
+
+        // 名前
+        std::wstring iconNameW = match.str(1);
+        std::string iconName(iconNameW.begin(), iconNameW.end());  // UTF-8変換
+        pIconTag->SetName(iconName);
+
+        // サイズ
+        if (match.size() == 4 && match[2].matched && match[3].matched)
+        {
+            int w = _wtoi(match.str(2).c_str());
+            int h = _wtoi(match.str(3).c_str());
+            pIconTag->SetSize(w, h);
+        }
+
+        pIconTag->SetIdx(static_cast<int>(match.position(0)));
+        showWText.erase(match.position(0), match.length());
+        vecTextTag.push_back(pIconTag);
+
+        // 位置調整
+        for (int i = 0; i < (int)vecTextTag.size(); i++)
+        {
+            if (vecTextTag[i]->GetIdx() > match.position(0))
+            {
+                vecTextTag[i]->SetIdx(vecTextTag[i]->GetIdx() - static_cast<int>(match.length()));
+            }
+        }
+
+        it = showWText.cbegin();
+    }
+
+
     int nTextLength = static_cast<int>(showWText.length());
     float fTextWidth = 0.0f;
     float fTextHeight = 0.0f;
@@ -582,6 +646,59 @@ void TextUI::UpdateText()
                     EdgeColorTextTag* edgeColorTag = (EdgeColorTextTag*)vecTextTag[n];
                     edgeColor = edgeColorTag->GetColor();
                 }
+                else if (vecTextTag[n]->GetType() == TextTag::TYPE::SPACE)
+                {
+                    SpaceTextTag* spaceTag = (SpaceTextTag*)vecTextTag[n];
+
+                    // 現在の行の長さを記録する
+                    lineLengths.push_back(fTextWidth);
+                    lineHeights.push_back(fTextHeight);
+
+                    lineCounter++;
+                    fTextWidth = 0.0f; // 次の行に移るので幅をリセット
+                    fTextHeight = spaceTag->GetSpace();
+                }
+                else if (vecTextTag[n]->GetType() == TextTag::TYPE::ICON)
+                {
+                    IconTextTag* iconTag = (IconTextTag*)vecTextTag[n];
+                    TextInfo textIconInfo;
+                    textIconInfo.texture = nullptr;
+
+                    // アイコンのファイルパス構築
+                    std::string filePath = "data/TEXTURE/ICON/ICON_" + iconTag->GetName() + ".png";
+
+                    if (FAILED(D3DXCreateTextureFromFile(Manager::GetInstance()->GetDevice(), filePath.c_str(), &textIconInfo.texture)))
+                    {
+                        Log::SendLog(filePath + " の読み込みに失敗", Log::TYPE_ERROR);
+                        continue;
+                    }
+
+                    D3DSURFACE_DESC desc;
+                    textIconInfo.texture->GetLevelDesc(0, &desc);
+
+                    float targetW = iconTag->GetWidth() > 0 ? (float)iconTag->GetWidth() : (float)desc.Width;
+                    float targetH = iconTag->GetHeight() > 0 ? (float)iconTag->GetHeight() : (float)desc.Height;
+
+                    textIconInfo.scale.x = targetW / (float)desc.Width;
+                    textIconInfo.scale.y = targetH / (float)desc.Height;
+
+                    textIconInfo.pos = { fTextWidth, targetH, 0.0f };
+
+                    if (fTextHeight < targetH)
+                        fTextHeight = targetH;
+
+                    textIconInfo.line = lineCounter;
+                    fTextWidth += targetW;
+                    m_textInfos.push_back(textIconInfo);
+
+                    if (i == nTextLength - 1)
+                    {
+                        lineLengths.push_back(fTextWidth);
+                        lineHeights.push_back(fTextHeight);
+                    }
+
+                    continue;
+                }
             }
         }
 
@@ -602,18 +719,21 @@ void TextUI::UpdateText()
         }
 
         // フォントテクスチャの生成
-        textInfo.texture = CreateFontTexture(
-            m_fontName.c_str(),
-            DEFAULT_CHARSET,
-            currentChar,
-            fontSize,
-            0,
-            m_outlineSize,
-            edgeColor,
-            fillColor,
-            3,
-            &strInfo
-        );
+        if (textInfo.texture == nullptr)
+        {
+            textInfo.texture = CreateFontTexture(
+                m_fontName.c_str(),
+                DEFAULT_CHARSET,
+                currentChar,
+                fontSize,
+                0,
+                m_outlineSize,
+                edgeColor,
+                fillColor,
+                3,
+                &strInfo
+            );
+        }
 
         if (textInfo.texture == nullptr)
         {

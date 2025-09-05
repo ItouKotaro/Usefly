@@ -12,7 +12,12 @@
 #include "scene.h"
 #include "input.h"
 
-#define Input Manager::GetInstance()->GetInputManager()
+#define AppRenderer		Manager::GetInstance()->GetRenderer()
+#define AppPhysics		Manager::GetInstance()->GetPhysics()
+#define AppAudio			Manager::GetInstance()->GetAudio()
+#define AppResource		Manager::GetInstance()->GetResourceDataManager()
+#define AppScene			Manager::GetInstance()->GetSceneManager()
+#define AppInput			Manager::GetInstance()->GetInputManager()
 
 //@brief 管理クラス
 class Manager final
@@ -46,6 +51,12 @@ public:
 	{
 		static Manager instance;
 		return &instance;
+	}
+
+	//@brief シーンを取得する
+	template<class T> static T* GetScene()
+	{
+		return GetInstance()->GetSceneManager()->GetScene<T>();
 	}
 private:
 	Renderer* m_renderer;											// レンダラー
